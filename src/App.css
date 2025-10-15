@@ -1,0 +1,46 @@
+/* Simple clean styles for the login card */
+* { box-sizing: border-box; }
+body { font-family: Arial, Helvetica, sans-serif; background: #f4f6f8; margin: 0; }
+.app-root { display: flex; flex-direction: column; align-items: center; padding: 40px; min-height: 100vh; }
+.app-header h1 { margin: 0 0 18px 0; color: #1f2937; font-size: 20px; }
+
+/* Card */
+.app-main { width: 100%; display:flex; justify-content:center; }
+.login-card {
+  width: 360px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(20,30,40,0.08);
+}
+
+/* Form controls */
+.input-field { margin-bottom: 12px; }
+.input-field label { display:block; font-size: 13px; margin-bottom:6px; color:#334155; }
+.input-field input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+}
+.error { color: #b91c1c; font-size: 13px; margin-top:6px; }
+
+/* Buttons */
+button {
+  display: inline-block;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 0;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:disabled { opacity: 0.7; cursor: default; }
+
+/* small utility */
+.row { display:flex; gap:8px; align-items:center; }
+.ghost { background: transparent; color: #2563eb; border: 1px solid #cfe0ff; padding: 8px 10px; border-radius: 8px; width: auto; }
+.welcome { text-align:center; padding: 10px; }
