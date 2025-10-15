@@ -1,106 +1,78 @@
+// src/components/Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import InputField from './InputField';
+import './Register.css'; // reuse same styles for card
 
 export default function Login() {
-  // --- state variables ---
-  const [name, setName] = useState('');           
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
-
   const navigate = useNavigate();
 
-  // basic email check
-  function isValidEmail(value) {
-    return /^\S+@\S+\.\S+$/.test(value);
-  }
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  
-  function validate() {
-    const e = {};
-    if (!name) e.name = 'Name is required.';                 
-    if (!email) e.email = 'Email is required.';
-    else if (!isValidEmail(email)) e.email = 'Please enter a valid email address.';
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
-    if (!password) e.password = 'Password is required.';
-    else if (password.length < 6) e.password = 'Password must be at least 6 characters.';
-    return e;
-  }
+    try {
+      const res = await fetch('http://localhost:4000/api/login', {
+        method: 'POST',
+        credentials: 'include', // important so server-set cookie is stored
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-  function handleSubmit(evt) {
-    evt.preventDefault();
-    const validation = validate();
-    setErrors(validation);
-
-    if (Object.keys(validation).length === 0) {
-      setLoading(true);
-
-      
-      setTimeout(() => {
-        setLoading(false);
-
-        sessionStorage.setItem('authName', name);
-
-        sessionStorage.setItem('authEmail', email);
-
-        navigate('/welcome', { state: { name } });
-      }, 900);
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || 'Login failed');
+      } else {
+        // Login OK -> go to welcome page
+        navigate('/welcome');
+      }
+    } catch (err) {
+      console.error('Login error', err);
+      setError('Network error');
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div className="login-card" role="region" aria-label="Login form">
-      <form onSubmit={handleSubmit} noValidate>
-       
-        <InputField
-          id="name"
-          label="Name"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Enter your name"
-          error={errors.name}
-        />
+    <div className="register-container">
+      <div className="register-box" role="region" aria-label="Login form">
+        <h2 className="title">Sign in</h2>
 
-        <InputField
-          id="email"
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-          error={errors.email}
-        />
+        <form onSubmit={handleSubmit} noValidate>
+          <input
+            id="login-email"
+            name="email"
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <div className="row" style={{ alignItems: 'flex-end' }}>
-          <div style={{ flex: 1 }}>
-            <InputField
-              id="password"
-              label="Password"
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              error={errors.password}
-            />
-          </div>
+          <input
+            id="login-password"
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-          <div style={{ marginTop: 22 }}>
-            <button type="button" className="ghost" onClick={() => setShowPassword(s => !s)}>
-              {showPassword ? 'Hide' : 'Show'}
-            </button>
-          </div>
-        </div>
+          {error && <div className="error">{error}</div>}
 
-        <div style={{ marginTop: 10 }}>
           <button type="submit" disabled={loading}>
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
-        </div>
-      </form>
+        </form>
+        <div style={{ marginTop: 12, textAlign: 'center' }}>
+  <small>Don't have an account? <a href="/register" onClick={(e)=>{ e.preventDefault(); navigate('/register'); }}>Register</a></small>
+</div>
+      </div>
     </div>
   );
 }

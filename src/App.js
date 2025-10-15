@@ -1,22 +1,20 @@
+// src/App.js
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Register from './Components/Register';
 import Login from './Components/Login';
-import Welcome from './Components/Welcome';
+import Welcome from './Components/Welcome'; // assume you already have this; it calls /api/me
+import './Components/Register.css';
 
 function App() {
   return (
-    <div className="app-root">
-      <header className="app-header">
-        <h1> Login </h1>
-      </header>
-
-      <main className="app-main">
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/Welcome" element={<Welcome />} />
-        </Routes>
-      </main>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/welcome" element={<Welcome />} />
+      </Routes>
+    </Router>
   );
 }
 

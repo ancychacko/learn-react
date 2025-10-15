@@ -1,0 +1,65 @@
+/* src/components/Register.css */
+
+/* full page center */
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f3f4f6;
+  padding: 20px;
+}
+
+/* white card */
+.register-box {
+  background: #fff;
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.08);
+  width: 380px;
+  max-width: 100%;
+}
+
+/* center the title */
+.register-box .title {
+  margin: 0 0 18px 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  text-align: center;
+}
+
+/* inputs */
+.register-box input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #e6edf3;
+  font-size: 14px;
+}
+
+/* button */
+.register-box button {
+  width: 100%;
+  padding: 12px 14px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+.register-box button:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* error message */
+.register-box .error {
+  color: #b91c1c;
+  margin: 8px 0;
+  font-size: 13px;
+  text-align: center;
+}
