@@ -1,0 +1,127 @@
+
+.welcome-page {
+  background: #f3f4f6;
+  min-height: 100vh;
+  padding: 28px;
+  box-sizing: border-box;
+}
+
+
+.welcome-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+
+.welcome-left {
+  flex: 1;
+}
+
+.welcome-title {
+  margin: 0;
+  font-size: 40px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.welcome-sub {
+  margin-top: 12px;
+  margin-bottom: 0;
+  color: #334155;
+  font-size: 15px;
+}
+
+
+.welcome-right {
+  position: relative; 
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+
+.profile-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: none;
+  background: #eef2ff;
+  color: #1e3a8a;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+
+.profile-menu {
+  position: absolute;
+  right: 0;
+  
+  top: calc(100% + 8px);
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.12);
+  min-width: 200px;
+  z-index: 9999;
+  padding: 6px;
+  overflow: visible;
+}
+
+
+.profile-menu-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+
+.profile-menu-item:hover {
+  background: #f3f4f6;
+}
+
+
+.profile-menu-item.danger {
+  color: #b91c1c;
+}
+
+
+.profile-menu-divider {
+  height: 1px;
+  background: #eef2f4;
+  margin: 6px 0;
+}
+
+
+@media (max-width: 640px) {
+  .welcome-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .welcome-right {
+    align-self: stretch;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+  }
+}
+
+
+.welcome-note {
+  max-width: 1100px;
+  margin: 20px auto 0;
+  color: #374151;
+}

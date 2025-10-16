@@ -1,39 +1,49 @@
-// src/components/Login.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Register.css'; // reuse same styles for card
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import InputField from "./InputField";
+import "./Register.css";
 
 export default function Login() {
   const navigate = useNavigate();
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e) {
+  // If already logged in, go to welcome
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const r = await fetch("http://localhost:4000/api/me", {
+          credentials: "include",
+        });
+        if (r.ok && mounted) navigate("/Welcome", { replace: true });
+      } catch (e) {}
+    })();
+    return () => (mounted = false);
+  }, [navigate]);
+
+  async function submit(e) {
     e.preventDefault();
-    setError('');
+    setErr("");
     setLoading(true);
-
     try {
-      const res = await fetch('http://localhost:4000/api/login', {
-        method: 'POST',
-        credentials: 'include', // important so server-set cookie is stored
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+      const res = await fetch("http://localhost:4000/api/login", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
-
       if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || 'Login failed');
+        const b = await res.json();
+        setErr(b.error || "Login failed");
       } else {
-        // Login OK -> go to welcome page
-        navigate('/welcome');
+        navigate("/Welcome", { replace: true });
       }
-    } catch (err) {
-      console.error('Login error', err);
-      setError('Network error');
+    } catch (e) {
+      console.error(e);
+      setErr("Network error");
     } finally {
       setLoading(false);
     }
@@ -43,35 +53,45 @@ export default function Login() {
     <div className="register-container">
       <div className="register-box" role="region" aria-label="Login form">
         <h2 className="title">Sign in</h2>
-
-        <form onSubmit={handleSubmit} noValidate>
-          <input
+        <form onSubmit={submit} noValidate>
+          <InputField
             id="login-email"
-            name="email"
+            label="Email"
             type="email"
-            placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            name="email"
+            placeholder="you@example.com"
           />
-
-          <input
+          <InputField
             id="login-password"
-            name="password"
+            label="Password"
             type="password"
-            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            name="password"
+            placeholder="Password"
           />
-
-          {error && <div className="error">{error}</div>}
-
+          {err && <div className="error">{err}</div>}
           <button type="submit" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign in'}
+            {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
-        <div style={{ marginTop: 12, textAlign: 'center' }}>
-  <small>Don't have an account? <a href="/register" onClick={(e)=>{ e.preventDefault(); navigate('/register'); }}>Register</a></small>
-</div>
+
+        <div style={{ marginTop: 12, textAlign: "center" }}>
+          <small>
+            Don't have an account?{" "}
+            <a
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/");
+              }}
+            >
+              Register
+            </a>
+          </small>
+        </div>
       </div>
     </div>
   );

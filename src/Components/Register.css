@@ -1,6 +1,4 @@
-/* src/components/Register.css */
 
-/* full page center */
 .register-container {
   display: flex;
   justify-content: center;
@@ -10,7 +8,7 @@
   padding: 20px;
 }
 
-/* white card */
+
 .register-box {
   background: #fff;
   padding: 28px;
@@ -20,7 +18,7 @@
   max-width: 100%;
 }
 
-/* center the title */
+
 .register-box .title {
   margin: 0 0 18px 0;
   font-size: 22px;
@@ -29,7 +27,7 @@
   text-align: center;
 }
 
-/* inputs */
+
 .register-box input {
   width: 100%;
   padding: 12px 14px;
@@ -39,7 +37,7 @@
   font-size: 14px;
 }
 
-/* button */
+
 .register-box button {
   width: 100%;
   padding: 12px 14px;
@@ -56,7 +54,7 @@
   cursor: default;
 }
 
-/* error message */
+
 .register-box .error {
   color: #b91c1c;
   margin: 8px 0;

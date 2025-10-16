@@ -1,21 +1,18 @@
-// src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Register from './Components/Register';
-import Login from './Components/Login';
-import Welcome from './Components/Welcome'; // assume you already have this; it calls /api/me
-import './Components/Register.css';
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Register from "./Components/Register";
+import Login from "./Components/Login";
+import Welcome from "./Components/Welcome";
+import "./App.css";
+//import './Components/Register.css';
 
-function App() {
+export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/welcome" element={<Welcome />} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/" element={<Register />} />
+      <Route path="/Register" element={<Register />} />
+      <Route path="/Login" element={<Login />} />
+      <Route path="/Welcome" element={<Welcome />} />
+    </Routes>
   );
 }
-
-export default App;
