@@ -81,7 +81,7 @@ export default function Register() {
             value={data.name}
             onChange={change}
             name="name"
-            placeholder="Your name (e.g., John)"
+            placeholder="Enter your name"
           />
           <InputField
             id="email"
@@ -90,7 +90,7 @@ export default function Register() {
             value={data.email}
             onChange={change}
             name="email"
-            placeholder="you@example.com"
+            placeholder="Enter your email"
           />
           <InputField
             id="password"
@@ -108,7 +108,7 @@ export default function Register() {
             value={data.confirm}
             onChange={change}
             name="confirm"
-            placeholder="Repeat your password"
+            placeholder="Confirm your password"
           />
           {error && <div className="error">{error}</div>}
           <button type="submit" disabled={loading}>
