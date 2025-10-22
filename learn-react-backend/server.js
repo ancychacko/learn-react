@@ -99,7 +99,7 @@ app.post("/api/register", async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 });
-
+// Login (creates session)
 app.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
