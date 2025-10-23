@@ -10,6 +10,20 @@
 //   );
 // }
 
+
+/*
+  A tiny, reusable input component.
+  Important: it forwards the native event to onChange so parent can read e.target.name and e.target.value.
+  Props:
+    - id (string)
+    - name (string)  <-- must be set so parent change(e) can use e.target.name
+    - label (string) optional (not visible in this minimal example)
+    - type (text|email|password|...)
+    - value (string)
+    - onChange (function) receives native event
+    - placeholder (string)
+*/
+
 import React from "react";
 export default function InputField({
   id,
