@@ -1,16 +1,3 @@
-// import React from 'react';
-
-// export default function InputField({ id, label, type='text', value, onChange, placeholder, error }) {
-//   return (
-//     <div className="input-field">
-//       <label htmlFor={id}>{label}</label>
-//       <input id={id} type={type} value={value} onChange={onChange} placeholder={placeholder} />
-//       {error && <div className="error">{error}</div>}
-//     </div>
-//   );
-// }
-
-
 /*
   A tiny, reusable input component.
   Important: it forwards the native event to onChange so parent can read e.target.name and e.target.value.
