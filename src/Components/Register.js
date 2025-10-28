@@ -14,20 +14,20 @@ export default function Register() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const API_BASE = "http://192.168.2.77:4000"; // Replace with YOUR IP
+
   useEffect(() => {
-    let mounted = true;
     (async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/me", {
+        const res = await fetch(`${API_BASE}/api/me`, {
           credentials: "include",
         });
         if (res.ok) {
-          if (mounted) navigate("/Welcome", { replace: true });
+          navigate("/Welcome", { replace: true });
         }
-      } catch (e) {}
+      } catch {}
     })();
-    return () => (mounted = false);
-  }, [navigate]);
+  }, [navigate, API_BASE]);
 
   function change(e) {
     setData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -36,6 +36,7 @@ export default function Register() {
   async function submit(e) {
     e.preventDefault();
     setError("");
+
     if (!data.name || !data.email || !data.password) {
       setError("Please fill required fields.");
       return;
@@ -44,9 +45,10 @@ export default function Register() {
       setError("Passwords do not match.");
       return;
     }
+
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:4000/api/register", {
+      const res = await fetch(`${API_BASE}/api/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -56,8 +58,18 @@ export default function Register() {
           password: data.password,
         }),
       });
-      const body = await res.json();
-      if (res.status === 201 || res.ok) {
+
+      // Handle non-JSON (404) safely
+      const text = await res.text();
+      let body;
+      try {
+        body = JSON.parse(text);
+      } catch {
+        console.error("Invalid backend response:", text);
+        throw new Error("Invalid server response");
+      }
+
+      if (res.ok) {
         navigate("/Login", { replace: true });
       } else {
         setError(body.error || body.message || "Registration failed");

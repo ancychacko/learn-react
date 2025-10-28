@@ -2,6 +2,10 @@
 
 # dependencies
 /node_modules
+/learn-react-backend/node_modules
+
+# build
+/node_modules
 /.pnp
 .pnp.js
 

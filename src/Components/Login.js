@@ -9,41 +9,56 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
+  const API_BASE_URL = "http://192.168.2.77:4000";
 
-  // If already logged in, go to welcome
+  // 🔹 Check user session on mount
   useEffect(() => {
-    let mounted = true;
     (async () => {
       try {
-        const r = await fetch("http://localhost:4000/api/me", {
+        const res = await fetch(`${API_BASE_URL}/api/me`, {
           credentials: "include",
         });
-        if (r.ok && mounted) navigate("/Welcome", { replace: true });
-      } catch (e) {}
+        if (res.ok) {
+          navigate("/Welcome", { replace: true });
+        }
+      } catch (e) {
+        console.warn("Session check failed:", e);
+      }
     })();
-    return () => (mounted = false);
-  }, [navigate]);
+  }, [navigate, API_BASE_URL]);
 
-  async function submit(e) {
+  // 🔹 Handle login submit
+  async function handleSubmit(e) {
     e.preventDefault();
     setErr("");
     setLoading(true);
+
     try {
-      const res = await fetch("http://localhost:4000/api/login", {
+      const res = await fetch(`${API_BASE_URL}/api/login`, {
         method: "POST",
-        credentials: "include",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
-      if (!res.ok) {
-        const b = await res.json();
-        setErr(b.error || "Login failed");
-      } else {
-        navigate("/Welcome", { replace: true });
+
+      // 404 fix — check if backend returns JSON
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        console.error("Non-JSON response:", text);
+        throw new Error("Server returned invalid response.");
       }
-    } catch (e) {
-      console.error(e);
-      setErr("Network error");
+
+      if (res.ok) {
+        navigate("/Welcome", { replace: true });
+      } else {
+        setErr(data.error || data.message || "Invalid credentials");
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      setErr("Network or server error");
     } finally {
       setLoading(false);
     }
@@ -53,7 +68,8 @@ export default function Login() {
     <div className="register-container">
       <div className="register-box" role="region" aria-label="Login form">
         <h2 className="title">Sign in</h2>
-        <form onSubmit={submit} noValidate>
+
+        <form onSubmit={handleSubmit} noValidate>
           <InputField
             id="login-email"
             label="Email"
@@ -72,7 +88,9 @@ export default function Login() {
             name="password"
             placeholder="Password"
           />
+
           {err && <div className="error">{err}</div>}
+
           <button type="submit" disabled={loading}>
             {loading ? "Signing in..." : "Sign in"}
           </button>
@@ -80,7 +98,7 @@ export default function Login() {
 
         <div style={{ marginTop: 12, textAlign: "center" }}>
           <small>
-            Don't have an account?{" "}
+            Don’t have an account?{" "}
             <a
               href="/"
               onClick={(e) => {
