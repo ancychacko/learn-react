@@ -1,212 +1,572 @@
-/* 
-.welcome-page {
-  background: #f3f4f6;
-  min-height: 100vh;
-  padding: 28px;
-  box-sizing: border-box;
+/* Welcome.css - polished LinkedIn-like layout 
+
+:root {
+  --bg:#f3f2ef;
+  --card:#fff;
+  --accent:#0a66c2;
+  --muted:#666;
 }
 
+body { background:var(--bg); font-family: Inter, system-ui, Arial, sans-serif; color:#111; }
 
-.welcome-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+ Grid layout 
+.home-container {
+  max-width:1200px;
+  margin: 18px auto;
+  display: grid;
+  grid-template-columns: 280px 1fr 300px;
+  gap: 20px;
+  padding: 0 16px;
 }
 
+ Left column 
+.left-col .profile-card { background:var(--card); padding:16px; border-radius:8px; position:sticky; top:20px; }
+.profile-avatar { width:96px; height:96px; border-radius:50%; object-fit:cover; display:block; margin: 0 auto 10px; }
+.search-top input { width:100%; padding:8px; border-radius:8px; border:1px solid #e0e0e0; margin-bottom:12px; }
 
-.welcome-left {
-  flex: 1;
+ Center column 
+.center-col { min-height:400px; }
+.compose-card { background:var(--card); padding:14px; border-radius:8px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+.compose-card textarea { width:100%; min-height:84px; border-radius:8px; border:1px solid #e6e6e6; padding:10px; resize:none; }
+.compose-actions { display:flex; align-items:center; margin-top:10px; gap:10px; }
+.icon-btn { background:#eef3ff; border-radius:8px; padding:8px 10px; cursor:pointer; display:inline-flex; align-items:center; }
+.compose-actions button { background:var(--accent); color:#fff; border:none; padding:8px 12px; border-radius:8px; }
+
+ Post card 
+.post-card { background:var(--card); padding:12px; border-radius:10px; margin-bottom:14px; box-shadow:0 1px 2px rgba(0,0,0,0.03); }
+.post-header { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+.post-body p { margin:12px 0; white-space:pre-wrap; }
+.post-body img, .post-body video { border-radius:8px; margin-top:8px; max-height:480px; width:100%; object-fit:cover; }
+
+ three-dot menu and menu box 
+.dots-btn { background:transparent; border:none; font-size:22px; cursor:pointer; padding:6px 8px; border-radius:6px; }
+.post-menu { position:absolute; right:0; top:28px; background:#fff; border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,.08); padding:6px; display:flex; flex-direction:column; gap:6px; min-width:120px; z-index:200; }
+.post-menu button { background:transparent; border:none; padding:8px 10px; text-align:left; cursor:pointer; border-radius:6px; }
+
+ textarea for edit 
+.post-card textarea { width:100%; min-height:80px; border-radius:8px; padding:10px; border:1px solid #e6e6e6; }
+
+ Right column 
+.right-card { background:var(--card); padding:16px; border-radius:8px; position:sticky; top:20px; }
+.suggestion { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #f3f3f3; }
+.suggestion:last-child { border-bottom:none; }
+
+/* small utilities 
+button:disabled { opacity:.6; cursor:not-allowed; }
+*/
+
+/* Welcome.css - header, dropdowns, posts, profile, right sidebar */
+
+/* /:root {
+  --bg: #f3f2ef;
+  --card: #fff;
+  --accent: #0a66c2;
+  --muted: #6b7280;
 }
 
-.welcome-title {
+Topbar
+.topbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 20px;
+  background:var(--card);
+  border-bottom:1px solid #e6e6e6;
+  position:sticky;
+  top:0;
+  z-index:300;
+}
+.topbar-left { display:flex; gap:12px; align-items:center; }
+.logo { font-weight:700; font-size:18px; margin-right:8px; }
+.top-search input { width:380px; padding:8px 12px; border-radius:8px; border:1px solid #e6e6e6; }
+
+/* profile circle 
+.profile-circle {
+  width:42px; height:42px; border-radius:999px;
+  display:flex; align-items:center; justify-content:center;
+  border:none; background:#eef2ff; color:var(--accent); font-weight:700; cursor:pointer;
+}
+.profile-circle img { width:100%; height:100%; object-fit:cover; border-radius:999px; }
+
+/* profile dropdown 
+.profile-dropdown {
+  position:absolute; right:0; top:54px; background:var(--card); padding:10px; border-radius:8px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.08); min-width:220px; display:flex; flex-direction:column; gap:8px; z-index:400;
+}
+.profile-dropdown .profile-dropdown-top { padding-bottom:6px; border-bottom:1px solid #f3f3f3; }
+.profile-dropdown button { background:transparent; border:none; text-align:left; padding:8px 6px; cursor:pointer; border-radius:6px; }
+.dropdown-divider { height:1px; background:#f3f3f3; margin:6px 0; }
+
+/* layout grid 
+.home-grid {
+  display:grid;
+  grid-template-columns: 300px 1fr 320px;
+  gap:20px;
+  max-width:1200px;
+  margin:20px auto;
+  padding:0 16px;
+}
+
+/* left profile card 
+.profile-card { background:var(--card); padding:16px; border-radius:10px; position:sticky; top:84px; }
+.profile-avatar-lg { width:96px; height:96px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 10px; }
+.profile-name { text-align:center; margin:6px 0; font-size:18px; }
+.profile-about { color:var(--muted); text-align:center; font-size:14px; margin-bottom:10px; }
+.profile-edit-form textarea { width:100%; min-height:80px; margin-top:8px; }
+
+/* center compose 
+.compose-card { background:var(--card); padding:14px; border-radius:10px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); margin-top:24px; }
+.compose-card textarea { width:100%; min-height:84px; border-radius:8px; padding:10px; border:1px solid #e6e6e6; resize:none; }
+.compose-row { display:flex; align-items:center; gap:12px; margin-top:10px; }
+.compose-icon { background:#eef2ff; padding:8px 10px; border-radius:8px; cursor:pointer; }
+
+/* post card 
+.post-card { background:var(--card); padding:12px; border-radius:10px; margin-top:16px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+.post-header { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+.avatar-sm { width:48px; height:48px; border-radius:50%; object-fit:cover; }
+.post-author { font-weight:700; }
+.post-meta { font-size:12px; color:var(--muted); }
+.post-body p { margin:10px 0; white-space:pre-wrap; }
+.post-media { width:100%; max-height:480px; object-fit:cover; border-radius:8px; margin-top:8px; }
+
+/* three-dot menu 
+.dots-btn { background:transparent; border:none; font-size:20px; cursor:pointer; padding:6px 8px; border-radius:6px; }
+.post-menu { position:absolute; right:0; top:28px; background:var(--card); border-radius:8px; box-shadow:0 6px 14px rgba(0,0,0,0.08); padding:8px; display:flex; flex-direction:column; gap:6px; min-width:150px; z-index:350; }
+.post-menu button { background:transparent; border:none; text-align:left; padding:8px 10px; cursor:pointer; border-radius:6px; }
+
+/* edit form 
+.edit-form textarea { width:100%; min-height:80px; border-radius:8px; padding:10px; border:1px solid #e6e6e6; }
+
+/* post actions row 
+.post-actions { display:flex; gap:8px; margin-top:10px; border-top:1px solid #f3f3f3; padding-top:8px; }
+.action-btn { background:transparent; border:none; color:var(--muted); padding:8px 10px; border-radius:6px; cursor:pointer; }
+
+/* right sidebar 
+.right-card { background:var(--card); padding:14px; border-radius:10px; position:sticky; top:84px; }
+.suggest { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid #f7f7f7; }
+
+/* small helpers 
+.btn { background:var(--accent); color:#fff; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }
+.btn-outline { background:transparent; border:1px solid #e6e6e6; padding:8px 10px; border-radius:8px; cursor:pointer; }
+.muted { color:var(--muted); font-size:12px; }
+.loading { padding:24px; text-align:center; }
+.file-name { color:var(--muted); font-size:13px; } */
+
+
+/* ===============================
+   LINKEDIN-STYLE WELCOME PAGE
+   =============================== */
+
+:root {
+  --bg: #f3f2ef;
+  --card: #ffffff;
+  --accent: #0a66c2;
+  --text-dark: #1e1e1e;
+  --text-muted: #6b7280;
+  --border: #e6e6e6;
+  --hover: #f0f6ff;
+}
+
+/* ===============================
+   GENERAL LAYOUT
+   =============================== */
+
+body {
+  background: var(--bg);
+  font-family: "Segoe UI", Roboto, sans-serif;
+  color: var(--text-dark);
   margin: 0;
-  font-size: 40px;
-  font-weight: 700;
-  color: #0f172a;
+  padding: 0;
 }
 
-.welcome-sub {
-  margin-top: 12px;
-  margin-bottom: 0;
-  color: #334155;
-  font-size: 15px;
+/* GRID LAYOUT FOR HOME */
+.home-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr 300px;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 90px auto 40px;
+  padding: 0 16px;
 }
 
+/* ===============================
+   TOPBAR
+   =============================== */
 
-.welcome-right {
-  position: relative; 
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card);
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.topbar-left {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  gap: 12px;
 }
 
-
-.profile-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  border: none;
-  background: #eef2ff;
-  color: #1e3a8a;
+.logo {
   font-weight: 700;
-  font-size: 16px;
+  font-size: 20px;
+  color: var(--accent);
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  user-select: none;
 }
 
-
-.profile-menu {
-  position: absolute;
-  right: 0;
-  
-  top: calc(100% + 8px);
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(2,6,23,0.12);
-  min-width: 200px;
-  z-index: 9999;
-  padding: 6px;
-  overflow: visible;
+.top-search input {
+  width: 380px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #f9f9f9;
+  outline: none;
+  transition: 0.2s;
+}
+.top-search input:focus {
+  border-color: var(--accent);
+  background: #fff;
 }
 
+/* ===============================
+   PROFILE ICON (TOP-RIGHT)
+   =============================== */
 
-.profile-menu-item {
-  display: block;
+.profile-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--accent);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.profile-circle:hover {
+  box-shadow: 0 0 0 3px var(--hover);
+}
+
+.profile-circle img {
   width: 100%;
-  text-align: left;
-  padding: 10px 12px;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ===============================
+   PROFILE DROPDOWN
+   =============================== */
+
+.profile-dropdown {
+  position: absolute;
+  right: 20px;
+  top: 60px;
+  background: var(--card);
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  z-index: 1000; /* ensure visible */
+}
+
+.profile-dropdown button {
   background: transparent;
   border: none;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  color: #0f172a;
+  transition: background 0.2s;
+  color: var(--text-dark);
+}
+.profile-dropdown button:hover {
+  background: var(--hover);
 }
 
-
-.profile-menu-item:hover {
-  background: #f3f4f6;
-}
-
-
-.profile-menu-item.danger {
-  color: #b91c1c;
-}
-
-
-.profile-menu-divider {
+.dropdown-divider {
   height: 1px;
-  background: #eef2f4;
+  background: var(--border);
   margin: 6px 0;
 }
 
+/* ===============================
+   PROFILE CARD (LEFT SIDEBAR)
+   =============================== */
 
-@media (max-width: 640px) {
-  .welcome-inner {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .welcome-right {
-    align-self: stretch;
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-  }
-}
-
-
-.welcome-note {
-  max-width: 1100px;
-  margin: 20px auto 0;
-  color: #374151;
-} */
-
-
-/* src/Components/Welcome.css */
-
-.home-page {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  padding: 20px;
-  background: #f3f2ef;
-}
-
-.home-sidebar {
-  width: 25%;
-}
-
-.home-feed {
-  width: 50%;
-}
-
-/* Profile card */
 .profile-card {
-  background: white;
+  background: var(--card);
   border-radius: 10px;
-  padding: 20px;
-  text-align: center;
+  padding: 16px;
+  position: sticky;
+  top: 100px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
-.profile-img {
-  width: 90px;
-  height: 90px;
+.profile-avatar-lg {
+  width: 96px;
+  height: 96px;
   border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 10px;
+}
+
+.profile-name {
+  text-align: center;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.profile-about {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
   margin-bottom: 10px;
 }
 
-.profile-email {
-  font-size: 0.9em;
-  color: gray;
-}
+/* ===============================
+   COMPOSE CARD (WRITE A POST)
+   =============================== */
 
-/* Posts feed */
-.create-post {
-  background: white;
-  padding: 15px;
+.compose-card {
+  background: var(--card);
   border-radius: 10px;
-  margin-bottom: 20px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-top: 16px;
 }
 
-.create-post textarea {
+.compose-card textarea {
   width: 100%;
-  height: 60px;
+  min-height: 84px;
+  border-radius: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
   resize: none;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 8px;
+  outline: none;
+  transition: 0.2s;
 }
 
-.create-post button {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background: #0a66c2;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.compose-card textarea:focus {
+  border-color: var(--accent);
+  background: #fff;
 }
+
+.compose-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.compose-icon {
+  background: #eef2ff;
+  color: var(--accent);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.3s;
+}
+.compose-icon:hover {
+  background: var(--accent);
+  color: white;
+}
+
+/* ===============================
+   POST CARD
+   =============================== */
 
 .post-card {
-  background: white;
+  background: var(--card);
   border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 15px;
+  padding: 14px;
+  margin-top: 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  position: relative;
 }
 
 .post-header {
   display: flex;
   justify-content: space-between;
-  font-size: 0.9em;
-  margin-bottom: 10px;
+  align-items: flex-start;
 }
 
-.post-time {
-  color: gray;
-  font-size: 0.8em;
+.avatar-sm {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
 }
+
+.post-author {
+  font-weight: 600;
+}
+
+.post-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.post-body p {
+  margin: 10px 0;
+  white-space: pre-wrap;
+}
+
+.post-media {
+  width: 100%;
+  border-radius: 8px;
+  margin-top: 8px;
+  object-fit: cover;
+}
+
+/* ===============================
+   THREE DOT MENU
+   =============================== */
+
+.dots-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.dots-btn:hover {
+  background: var(--hover);
+}
+
+.post-menu {
+  position: absolute;
+  right: 10px;
+  top: 36px;
+  background: var(--card);
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 150px;
+  z-index: 999; /* ensures visibility */
+}
+
+.post-menu button {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-dark);
+  transition: background 0.2s;
+}
+.post-menu button:hover {
+  background: var(--hover);
+}
+
+/* ===============================
+   POST ACTIONS (LIKE, COMMENT, SHARE)
+   =============================== */
+
+.post-actions {
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  margin-top: 8px;
+}
+
+.action-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.action-btn:hover {
+  background: var(--hover);
+  color: var(--accent);
+}
+
+/* ===============================
+   RIGHT SIDEBAR (SUGGESTIONS/TRENDING)
+   =============================== */
+
+.right-card {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 14px;
+  position: sticky;
+  top: 100px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.suggest {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f7f7f7;
+}
+
+.suggest:last-child {
+  border-bottom: none;
+}
+
+/* ===============================
+   BUTTON STYLES
+   =============================== */
+
+.btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn:hover {
+  background: #004182;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-outline:hover {
+  background: var(--hover);
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.loading {
+  padding: 24px;
+  text-align: center;
+}
+
+.file-name {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
