@@ -9,7 +9,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
-  const API_BASE_URL = "http://192.168.2.77:4000";
+  const API_BASE_URL = "http://192.168.2.68:4000";
 
   // 🔹 Check user session on mount
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/login`, {
+      const res = await fetch(`${API_BASE_URL}/api/Login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

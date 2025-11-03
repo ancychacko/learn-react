@@ -245,6 +245,10 @@ body {
   border: 2px solid var(--accent);
   cursor: pointer;
   transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #eef2ff;
 }
 
 .profile-circle:hover {
@@ -254,7 +258,8 @@ body {
 .profile-circle img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover;   /* ✅ fills the circle perfectly */
+  border-radius: 50%;  /* ✅ ensures clean circle edges */
 }
 
 /* ===============================

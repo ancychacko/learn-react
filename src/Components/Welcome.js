@@ -1,7 +1,8 @@
-// // Welcome.js
+// // src/Components/Welcome.js
 // import React, { useEffect, useState } from "react";
+// import Header from "./Header";
 // import ProfileCard from "./ProfileCard";
-// import PostFeed from "./PostFeed";
+// import PostField from "./PostField";
 // import RightSidebar from "./RightSidebar";
 // import "./Welcome.css";
 
@@ -15,40 +16,42 @@
 //   useEffect(() => {
 //     (async () => {
 //       try {
-//         const res = await fetch(`${API_BASE}/api/me`, {
-//           credentials: "include",
-//         });
-//         if (res.status === 401) {
-//           window.location.href = "/login";
+//         const r = await fetch(`${API_BASE}/api/me`, { credentials: "include" });
+//         if (r.status === 401) {
+//           window.location.href = "/Login";
 //           return;
 //         }
-//         const b = await res.json();
-//         setUser(b);
+//         const body = await r.json();
+//         setUser(body);
 //       } catch (e) {
 //         console.error(e);
-//         window.location.href = "/login";
+//         window.location.href = "/Login";
+//       } finally {
+//         setLoading(false);
 //       }
-//       setLoading(false);
 //     })();
 //   }, [API_BASE]);
 
-//   if (loading) return <div style={{ padding: 24 }}>Loading...</div>;
+//   if (loading) return <div className="loading">Loading...</div>;
 //   if (!user) return null;
 
 //   return (
-//     <div className="home-container">
-//       <div className="left-col">
-//         <ProfileCard user={user} API_BASE={API_BASE} />
-//       </div>
+//     <>
+//       <Header API_BASE={API_BASE} />
+//       <div className="home-grid">
+//         <aside className="left-col">
+//           <ProfileCard user={user} API_BASE={API_BASE} />
+//         </aside>
 
-//       <div className="center-col">
-//         <PostFeed API_BASE={API_BASE} currentUserId={user.id} />
-//       </div>
+//         <main className="center-col">
+//           <PostField API_BASE={API_BASE} currentUserId={user.id} />
+//         </main>
 
-//       <div className="right-col">
-//         <RightSidebar API_BASE={API_BASE} />
+//         <aside className="right-col">
+//           <RightSidebar API_BASE={API_BASE} />
+//         </aside>
 //       </div>
-//     </div>
+//     </>
 //   );
 // }
 
@@ -64,37 +67,54 @@ export default function Welcome() {
   const API_BASE =
     process.env.REACT_APP_API_BASE ||
     `${window.location.protocol}//${window.location.hostname}:4000`;
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Fetch the current user (session-based)
   useEffect(() => {
+    let mounted = true;
     (async () => {
       try {
         const r = await fetch(`${API_BASE}/api/me`, { credentials: "include" });
         if (r.status === 401) {
+          // not logged in
           window.location.href = "/login";
           return;
         }
         const body = await r.json();
-        setUser(body);
+        if (mounted) setUser(body);
       } catch (e) {
-        console.error(e);
+        console.error("Failed fetching /api/me:", e);
         window.location.href = "/login";
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     })();
+    return () => (mounted = false);
   }, [API_BASE]);
+
+  // Handler passed to ProfileCard so it can update the user in the parent:
+  function handleProfileUpdate(updatedFields) {
+    // updatedFields is expected to contain new avatar_url and/or about/name
+    setUser((prev) => ({ ...prev, ...(prev ? updatedFields : {}) }));
+  }
 
   if (loading) return <div className="loading">Loading...</div>;
   if (!user) return null;
 
   return (
     <>
-      <Header API_BASE={API_BASE} />
+      {/* pass user so Header can show avatar immediately */}
+      <Header API_BASE={API_BASE} user={user} />
+
       <div className="home-grid">
         <aside className="left-col">
-          <ProfileCard user={user} API_BASE={API_BASE} />
+          <ProfileCard
+            user={user}
+            API_BASE={API_BASE}
+            onUpdate={handleProfileUpdate}
+          />
         </aside>
 
         <main className="center-col">

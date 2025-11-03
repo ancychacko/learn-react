@@ -1,5 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ThumbsUp, MessageCircle, Send } from "lucide-react";
+import {
+  ThumbsUp,
+  MessageCircle,
+  Send,
+  Forward,
+  Pencil,
+  Trash,
+  Flag,
+  Ellipsis
+} from "lucide-react";
 
 export default function Post({ post, API_BASE, currentUserId, refresh }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -105,12 +114,19 @@ export default function Post({ post, API_BASE, currentUserId, refresh }) {
         </div>
 
         <div ref={ref} style={{ position: "relative" }}>
-          <button
+          {/* <button
             className="dots-btn"
             onClick={() => setMenuOpen((s) => !s)}
             aria-haspopup="true"
           >
             ⋯
+          </button> */}
+          <button
+            className="dots-btn"
+            onClick={() => setMenuOpen((prev) => !prev)}
+            title="More options"
+          >
+            <Ellipsis size="20px" color="black" />
           </button>
 
           {menuOpen && (
@@ -123,7 +139,8 @@ export default function Post({ post, API_BASE, currentUserId, refresh }) {
                       setMenuOpen(false);
                     }}
                   >
-                    ✏️ Edit
+                    <Pencil size="16px" />
+                    Edit
                   </button>
                   <button
                     onClick={() => {
@@ -131,7 +148,8 @@ export default function Post({ post, API_BASE, currentUserId, refresh }) {
                       handleDelete();
                     }}
                   >
-                    🗑️ Delete
+                    <Trash size="16px" />
+                    Delete Post
                   </button>
                 </>
               )}
@@ -141,7 +159,7 @@ export default function Post({ post, API_BASE, currentUserId, refresh }) {
                   alert("Send feature not implemented yet");
                 }}
               >
-                📤 Send
+                <Forward size="16px" /> Send
               </button>
               <button
                 onClick={() => {
@@ -149,7 +167,8 @@ export default function Post({ post, API_BASE, currentUserId, refresh }) {
                   alert("Report feature not implemented yet");
                 }}
               >
-                🚩 Report
+                <Flag size="16px" />
+                Report Post
               </button>
             </div>
           )}

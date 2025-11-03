@@ -14,7 +14,7 @@ export default function Register() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const API_BASE = "http://192.168.2.77:4000"; // Replace with YOUR IP
+  const API_BASE = "http://192.168.2.68:4000"; // Replace with YOUR IP
 
   useEffect(() => {
     (async () => {
