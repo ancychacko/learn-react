@@ -161,7 +161,7 @@ export default function Header({ API_BASE, user }) {
     } catch (e) {
       console.error("logout error", e);
     }
-    navigate("/login", { replace: true });
+    navigate("/Login", { replace: true });
   }
 
   function avatarUrl(u) {
@@ -208,7 +208,7 @@ export default function Header({ API_BASE, user }) {
             <button
               onClick={() => {
                 setOpen(false);
-                navigate(`/profile/${me?.id}`);
+                navigate(`/Profile/${me?.name}`);
               }}
             >
               View profile
@@ -216,7 +216,7 @@ export default function Header({ API_BASE, user }) {
             <button
               onClick={() => {
                 setOpen(false);
-                navigate("/settings");
+                navigate(`/Settings/${me?.name}`);
               }}
             >
               Settings
@@ -224,7 +224,7 @@ export default function Header({ API_BASE, user }) {
             <button
               onClick={() => {
                 setOpen(false);
-                navigate("/activity");
+                navigate(`/Activity/${me?.name}`);
               }}
             >
               Posts & Activity

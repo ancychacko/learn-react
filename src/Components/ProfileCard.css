@@ -1,0 +1,134 @@
+.profilecard-container {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: center;
+  font-family: "Segoe UI", sans-serif;
+  position: relative;
+  cursor: default;
+  transition: 0.2s ease;
+}
+
+.profilecard-container:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Cover background */
+.profilecard-cover {
+  height: 60px;
+  background: linear-gradient(135deg, #0a66c2, #004182);
+}
+
+/* Avatar image */
+.profilecard-avatar {
+  position: relative;
+  top: -30px;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.profilecard-avatar img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  object-fit: cover;
+}
+
+/* Name & Title */
+.profilecard-name {
+  margin-top: -15px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.profilecard-title {
+  font-size: 13px;
+  color: #555;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+/* Meta info */
+.profilecard-meta {
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
+}
+
+.profilecard-org {
+  font-size: 12px;
+  color: #0a66c2;
+  margin-top: 2px;
+}
+
+.dot {
+  height: 6px;
+  width: 6px;
+  background: #0a66c2;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+/* Stats section */
+.profilecard-stats {
+  margin-top: 10px;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.profilecard-stat {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: #555;
+  cursor: pointer;
+}
+
+.profilecard-stat:hover {
+  background: #f3f2ef;
+}
+
+/* Premium section */
+.profilecard-premium {
+  padding: 10px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.premium-btn {
+  background: none;
+  border: none;
+  color: #0a66c2;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Bottom links */
+.profilecard-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px 16px 12px;
+}
+
+.profilecard-links button {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 13px;
+  text-align: left;
+  padding: 6px 0;
+  cursor: pointer;
+  width: 100%;
+}
+
+.profilecard-links button:hover {
+  color: #0a66c2;
+  text-decoration: underline;
+}

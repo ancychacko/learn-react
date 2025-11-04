@@ -423,7 +423,6 @@ app.use(cookieParser());
 // CORS: allow frontend origins and include credentials (cookies)
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://127.0.0.1:3000",
   "http://192.168.2.68:3000",
   "http://192.168.2.77:3000",
 ];

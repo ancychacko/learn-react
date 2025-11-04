@@ -79,14 +79,14 @@ export default function Welcome() {
         const r = await fetch(`${API_BASE}/api/me`, { credentials: "include" });
         if (r.status === 401) {
           // not logged in
-          window.location.href = "/login";
+          window.location.href = "/Login";
           return;
         }
         const body = await r.json();
         if (mounted) setUser(body);
       } catch (e) {
         console.error("Failed fetching /api/me:", e);
-        window.location.href = "/login";
+        window.location.href = "/Login";
       } finally {
         if (mounted) setLoading(false);
       }
@@ -118,7 +118,12 @@ export default function Welcome() {
         </aside>
 
         <main className="center-col">
-          <PostField API_BASE={API_BASE} currentUserId={user.id} />
+          {/* <PostField API_BASE={API_BASE} currentUserId={user.id} /> */}
+          <PostField
+            API_BASE={API_BASE}
+            currentUserId={user.name}
+            currentUser={user}
+          />
         </main>
 
         <aside className="right-col">

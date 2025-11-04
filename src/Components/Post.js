@@ -7,7 +7,7 @@ import {
   Pencil,
   Trash,
   Flag,
-  Ellipsis
+  Ellipsis,
 } from "lucide-react";
 
 export default function Post({ post, API_BASE, currentUserId, refresh }) {
@@ -131,7 +131,7 @@ export default function Post({ post, API_BASE, currentUserId, refresh }) {
 
           {menuOpen && (
             <div className="post-menu">
-              {post.user_id === currentUserId && (
+              {post.user_name === currentUserId && (
                 <>
                   <button
                     onClick={() => {
