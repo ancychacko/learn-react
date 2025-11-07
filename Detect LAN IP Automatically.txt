@@ -1,0 +1,26 @@
+// Detect LAN IP automatically
+const os = require("os");
+function getLocalIp() {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const net of interfaces[name]) {
+      if (net.family === "IPv4" && !net.internal) {
+        return net.address;
+      }
+    }
+  }
+  return "localhost";
+}
+
+// Simple endpoint to share backend’s LAN IP
+app.get("/api/server-info", (req, res) => {
+  res.json({
+    ip: getLocalIp(),
+    port: PORT,
+    message: "Server info detected automatically",
+  });
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Server running at http://${getLocalIp()}:${PORT}`);
+});

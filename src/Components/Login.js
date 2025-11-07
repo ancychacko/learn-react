@@ -9,7 +9,9 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
-  const API_BASE_URL = "http://192.168.2.77:4000";
+  const API_BASE_URL =
+    process.env.REACT_APP_API_BASE ||
+    `${window.location.protocol}//${window.location.hostname}:4000`;
 
   // 🔹 Check user session on mount
   useEffect(() => {

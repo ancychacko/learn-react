@@ -247,7 +247,7 @@ export default function EditPostModal({
                 value={visibility}
                 onChange={(e) => setVisibility(e.target.value)}
               >
-                <option value="Anyone">Post to Anyone</option>
+                <option value="Anyone">Post to Everyone</option>
                 <option value="Connections">Connections only</option>
                 <option value="Private">Private</option>
               </select>
@@ -309,7 +309,7 @@ export default function EditPostModal({
               <FilePlusCorner size={20} color="green" />
               <input
                 type="file"
-                accept="docs/*, pdf/*, txt/*, mp3/*, mp4/*"
+                accept="docs/*, pdf/*, txt/*, rtf/*, ppt/*, docx/*, xlsx/*, pptx/*"
                 onChange={handleFileChange}
                 style={{ display: "none" }}
               />
