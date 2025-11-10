@@ -1,16 +1,32 @@
-// src/Components/Header.js
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./Welcome.css";
 import { Avatar } from "@mui/material";
+import {
+  Home,
+  Users2,
+  Briefcase,
+  MessageSquare,
+  Bell,
+  Grid,
+  Search,
+  ChevronDown,
+  Handshake,
+} from "lucide-react";
+import "./Header.css";
 
-export default function Header({ API_BASE, user }) {
+export default function Header({ API_BASE = "", user }) {
   const [me, setMe] = useState(user || null);
   const [open, setOpen] = useState(false);
   const ref = useRef();
   const navigate = useNavigate();
 
-  // If parent provides user prop, prefer it; otherwise fetch own copy
+  // Avatar URL builder
+  function avatarUrl(u) {
+    if (!u) return null;
+    return `${window.location.protocol}//${window.location.hostname}:4000${u}`;
+  }
+
+  // Fetch logged-in user if not provided
   useEffect(() => {
     if (user) {
       setMe(user);
@@ -19,108 +35,172 @@ export default function Header({ API_BASE, user }) {
     let mounted = true;
     (async () => {
       try {
-        const r = await fetch(`${API_BASE}/api/me`, { credentials: "include" });
-        if (r.ok && mounted) {
-          setMe(await r.json());
-        }
-      } catch (e) {
-        // ignore
+        const res = await fetch(`${API_BASE}/api/me`, {
+          credentials: "include",
+        });
+        if (res.ok && mounted) setMe(await res.json());
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
       }
     })();
     return () => (mounted = false);
   }, [API_BASE, user]);
 
-  // close dropdown on outside click
+  // Close dropdown on outside click
   useEffect(() => {
-    function onDoc(e) {
+    const handleClickOutside = (e) => {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false);
-    }
-    document.addEventListener("click", onDoc);
-    return () => document.removeEventListener("click", onDoc);
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  // Logout
   async function handleSignOut() {
     try {
       await fetch(`${API_BASE}/api/logout`, {
         method: "POST",
         credentials: "include",
       });
+      navigate("/Login", { replace: true });
     } catch (e) {
-      console.error("logout error", e);
+      console.error("Logout error:", e);
     }
-    navigate("/Login", { replace: true });
   }
 
-  function avatarUrl(u) {
-    if (!u) return null;
-    return `${window.location.protocol}//${window.location.hostname}:4000${u}`;
-  }
+  const encodedName = encodeURIComponent(me?.name || "");
 
   return (
-    <div className="topbar">
-      <div className="topbar-left">
-        <div className="logo">MyNetwork</div>
-        <div className="top-search">
-          <input placeholder="Search" aria-label="Search" />
+    <header className="linkedin-header">
+      {/* LEFT: Logo + Search */}
+      <div className="header-left">
+        <div className="linkedin-logo" onClick={() => navigate("/Home")}>
+          <Handshake size={100} />
+          Network
+        </div>
+        <div className="header-search">
+          <Search size={18} color="#111010ff" />
+          <input type="text" placeholder="Search" />
         </div>
       </div>
 
-      <div className="topbar-right" ref={ref} style={{ position: "relative" }}>
-        <button
-          className="profile-circle"
-          onClick={() => setOpen((s) => !s)}
-          aria-haspopup="true"
-          aria-expanded={open}
-          title={me ? me.name : "Profile"}
+      {/* CENTER: Navigation Icons */}
+      <nav className="header-nav">
+        <div className="nav-item" onClick={() => navigate("/Home")}>
+          <Home />
+          <span>Home</span>
+        </div>
+        <div className="nav-item" onClick={() => navigate("/MyNetwork")}>
+          <Users2 />
+          <span>My Network</span>
+        </div>
+        <div className="nav-item" onClick={() => navigate("/Jobs")}>
+          <Briefcase />
+          <span>Jobs</span>
+        </div>
+        <div className="nav-item" onClick={() => navigate("/Messaging")}>
+          <MessageSquare />
+          <span>Messaging</span>
+        </div>
+        <div className="nav-item" onClick={() => navigate("/Notifications")}>
+          <Bell />
+          <span>Notifications</span>
+        </div>
+
+        {/* “Me” Section */}
+        <div
+          className="nav-item me-item"
+          ref={ref}
+          onClick={() => setOpen((o) => !o)}
         >
-          {me && me.avatar_url ? (
-            // <img src={avatarUrl(me.avatar_url)} alt="avatar" />
-            <Avatar src={avatarUrl(me.avatar_url)} />
-          ) : me ? (
-            <span style={{ fontWeight: 700, color: "#0a66c2" }}>
-              {me.name ? me.name.charAt(0).toUpperCase() : "?"}
-            </span>
+          {me?.avatar_url ? (
+            <Avatar
+              src={avatarUrl(me.avatar_url)}
+              sx={{ width: 28, height: 28 }}
+            />
           ) : (
-            "?"
+            <Avatar sx={{ width: 28, height: 28, bgcolor: "#0a66c2" }}>
+              {me?.name ? me.name.charAt(0).toUpperCase() : "?"}
+            </Avatar>
           )}
-        </button>
+          <span className="me-label">
+            <strong>Me </strong> <ChevronDown size={10} color="black" />
+          </span>
 
-        {open && (
-          <div className="profile-dropdown" role="menu">
-            <div className="profile-dropdown-top">
-              <strong>{me?.name}</strong>
-              <div className="muted">{me?.email}</div>
+          {open && (
+            <div className="me-dropdown">
+              <div className="me-card">
+                <div className="me-card-left">
+                  {me?.avatar_url ? (
+                    <img
+                      src={avatarUrl(me.avatar_url)}
+                      alt="avatar"
+                      className="me-card-avatar"
+                    />
+                  ) : (
+                    <Avatar sx={{ width: 64, height: 64, bgcolor: "#0a66c2" }}>
+                      {me?.name ? me.name.charAt(0).toUpperCase() : "?"}
+                    </Avatar>
+                  )}
+                </div>
+                <div className="me-card-right">
+                  <div className="me-name">{me?.name}</div>
+                  <div className="me-role">
+                    {me?.about
+                      ? me.about.split("\n")[0]
+                      : "Full Stack Developer"}
+                  </div>
+                  <button
+                    className="btn-view-profile"
+                    onClick={() => navigate(`/Profile/${encodedName}`)}
+                  >
+                    View profile
+                  </button>
+                </div>
+              </div>
+
+              <div className="me-section">
+                <div className="me-section-title">Account</div>
+                <button onClick={() => navigate("/Settings")}>
+                  Settings & Privacy
+                </button>
+                <button onClick={() => navigate("/Help")}>Help</button>
+                <button onClick={() => navigate("/Language")}>Language</button>
+              </div>
+
+              <div className="me-section">
+                <div className="me-section-title">Manage</div>
+                <button onClick={() => navigate(`/Activity/${encodedName}`)}>
+                  Posts & Activity
+                </button>
+                <button onClick={() => navigate("/job-posting")}>
+                  Job Posting Account
+                </button>
+              </div>
+
+              <div className="me-divider" />
+              <button className="me-signout" onClick={handleSignOut}>
+                Sign Out
+              </button>
             </div>
+          )}
+        </div>
 
-            <button
-              onClick={() => {
-                setOpen(false);
-                navigate(`/Profile/${me?.name}`);
-              }}
-            >
-              View profile
-            </button>
-            <button
-              onClick={() => {
-                setOpen(false);
-                navigate(`/Settings/${me?.name}`);
-              }}
-            >
-              Settings
-            </button>
-            <button
-              onClick={() => {
-                setOpen(false);
-                navigate(`/Activity/${me?.name}`);
-              }}
-            >
-              Posts & Activity
-            </button>
-            <div className="dropdown-divider" />
-            <button onClick={handleSignOut}>Sign out</button>
-          </div>
-        )}
+        <div className="nav-item">
+          <Grid size={22} />
+          <span>
+            For Business
+            <ChevronDown size={10} color="black" />
+          </span>
+        </div>
+      </nav>
+
+      {/* RIGHT: Premium */}
+      <div className="header-right">
+        <a href="#" className="premium-link">
+          Reactivate Premium: <span>50% Off</span>
+        </a>
       </div>
-    </div>
+    </header>
   );
 }

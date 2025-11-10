@@ -25,7 +25,7 @@ export default function Register() {
           credentials: "include",
         });
         if (res.ok) {
-          navigate("/Welcome", { replace: true });
+          navigate("/Home", { replace: true });
         }
       } catch {}
     })();

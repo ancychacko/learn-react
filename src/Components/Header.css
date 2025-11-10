@@ -1,0 +1,238 @@
+/* === LINKEDIN STYLE HEADER === */
+.linkedin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  height: 58px;
+  padding: 0 24px;
+  border-bottom: 1px solid #e6e6e6;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  font-family: system-ui, sans-serif;
+}
+
+/* LEFT SECTION */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.linkedin-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 12px;
+  /* color: #666; */
+  cursor: pointer;
+  position: relative;
+  text-align: center;
+  transition: color 0.2s;
+   width: 100px;
+  height: 50px;
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  background: #0a66c2;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  padding: 4px 6px;
+  /* 
+  color: white;
+  
+  
+  font-family: "Segoe UI", Arial, sans-serif;
+  display: flex;
+  
+  */
+}
+.header-search {
+  display: flex;
+  align-items: center;
+  background: #eef3f8;
+  border-radius: 5px;
+  padding: 6px 10px;
+  width: 350px;
+}
+.header-search input {
+  border: none;
+  outline: none;
+  background: transparent;
+  margin-left: 6px;
+  font-size: 14px;
+  width: 100%;
+}
+
+/* CENTER NAV */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+  flex: 1;
+  justify-content: center;
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 12px;
+  color: #666;
+  cursor: pointer;
+  position: relative;
+  text-align: center;
+  transition: color 0.2s;
+}
+.nav-item svg {
+  margin-bottom: 2px;
+}
+.nav-item:hover {
+  color: #0a66c2;
+}
+.nav-item.active {
+  color: #0a66c2;
+  border-bottom: 2px solid #0a66c2;
+  padding-bottom: 2px;
+}
+
+/* ME SECTION */
+.me-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.me-item .me-label {
+  font-size: 11px;
+  color: #333;
+  margin-top: 2px;
+}
+
+/* DROPDOWN */
+.me-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 300px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  padding: 14px;
+  z-index: 1000;
+}
+.me-card {
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+.me-card-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.me-card-right {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.me-name {
+  font-weight: 700;
+  font-size: 15px;
+}
+.me-role {
+  font-size: 12px;
+  color: #777;
+}
+.btn-view-profile {
+  border: 1px solid #dbeafe;
+  background: #fff;
+  color: #0a66c2;
+  border-radius: 26px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 600;
+  width: 100%;
+  text-align: center;
+}
+
+/* SECTION */
+.me-section {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+.me-section-title {
+  color: #666;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.me-section button {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 6px 0;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+.me-section button:hover {
+  background: #f3f3f3;
+  border-radius: 4px;
+}
+
+/* SIGN OUT */
+.me-divider {
+  height: 1px;
+  background: #eee;
+  margin: 8px 0;
+}
+.me-signout {
+  background: transparent;
+  border: none;
+  padding: 6px 0;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  color: #021329;
+  font-size: 14px;
+}
+
+/* RIGHT SECTION */
+.header-right {
+  display: flex;
+  align-items: center;
+}
+.premium-link {
+  font-size: 13px;
+  color: #7a4700;
+  text-decoration: none;
+}
+.premium-link span {
+  color: #b24020;
+  font-weight: 600;
+}
+/* Business */
+.business-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 300px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  padding: 14px;
+  z-index: 1000;
+}
+.business-card{
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}

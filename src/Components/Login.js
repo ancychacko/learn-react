@@ -21,7 +21,7 @@ export default function Login() {
           credentials: "include",
         });
         if (res.ok) {
-          navigate("/Welcome", { replace: true });
+          navigate("/Home", { replace: true });
         }
       } catch (e) {
         console.warn("Session check failed:", e);
@@ -54,7 +54,7 @@ export default function Login() {
       }
 
       if (res.ok) {
-        navigate("/Welcome", { replace: true });
+        navigate("/Home", { replace: true });
       } else {
         setErr(data.error || data.message || "Invalid credentials");
       }
