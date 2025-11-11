@@ -1,4 +1,4 @@
-/* Header (LinkedIn-like) */
+/* /* Header (LinkedIn-like) 
 
 /* small helpers */
 .muted { color:#6b7280; font-size:12px; }
@@ -503,7 +503,7 @@ body {
   cursor: pointer;
 }
 
-/* --- Post Dropdown --- */
+/* --- Post Dropdown --- 
 .post-menu {
   position: absolute;
   top: 25px;
@@ -834,47 +834,18 @@ body {
 }
 
 .action-btn,
-.like-btn
-{
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 14px;
-  color: #6b7280;
-  padding: 10px 10px;
-  border-radius: 8px;
-  transition: 0.2s;
-
-}
-.comment-btn
-{
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 14px;
-  color: #6b7280;
-  padding: 10px 10px;
-  border-radius: 8px;
-  transition: 0.2s;
-  
-
-}
+.like-btn,
+.comment-btn,
 .send-btn {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   border: none;
   background: transparent;
   cursor: pointer;
   font-size: 14px;
   color: #6b7280;
-  padding: 10px 10px;
+  padding: 6px 10px;
   border-radius: 8px;
   transition: 0.2s;
 }
@@ -891,3 +862,433 @@ body {
   color: #0a66c2;
 }
 
+/* ---------- Action buttons alignment (Like / Comment / Share) ---------- */
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;               /* space between buttons */
+  padding: 10px 6px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid #f4f4f4;
+  margin-top: 8px;
+}
+
+/* standard action button */
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 14px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  transition: background 0.12s, color 0.12s;
+  min-height: 36px;
+}
+
+/* icon inside button */
+.action-btn .icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* hover effect */
+.action-btn:hover {
+  background: rgba(10,102,194,0.04);
+  color: #0a66c2;
+}
+
+/* liked state */
+.like-btn.liked {
+  color: #0a66c2;
+  font-weight: 600;
+}
+
+/* small stats row below actions */
+.post-stats {
+  display: flex;
+  gap: 12px;
+  padding: 8px 10px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* comments box styling */
+.comments-box {
+  margin-top: 8px;
+  padding: 10px;
+  border-top: 1px solid #f3f3f3;
+  background: #fafafa;
+  border-radius: 6px;
+}
+
+.comment-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.comment-form input[type="text"] {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #e6e6e6;
+  outline: none;
+}
+
+.comment-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.comment-item {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.comment-body {
+  background: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #f0f0f0;
+  width: 100%;
+}
+
+.comment-author {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.comment-text {
+  margin-bottom: 6px;
+  white-space: pre-wrap;
+}
+
+.comment-meta {
+  font-size: 12px;
+  color: #8b8b8b;
+}
+
+/* small button style override for modal buttons used in comments */
+.btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.post-actions {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  padding: 10px 6px;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+ */
+
+ /* ===============================
+   LINKEDIN-STYLE WELCOME PAGE
+   =============================== */
+
+:root {
+  --bg: #f3f2ef;
+  --card: #ffffff;
+  --accent: #0a66c2;
+  --text-dark: #1e1e1e;
+  --text-muted: #6b7280;
+  --border: #e6e6e6;
+  --hover: #f0f6ff;
+}
+
+/* ===============================
+   GENERAL LAYOUT
+   =============================== */
+
+body {
+  background: var(--bg);
+  font-family: "Segoe UI", Roboto, sans-serif;
+  color: var(--text-dark);
+  margin: 0;
+  padding: 0;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr 300px;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 90px auto 40px;
+  padding: 0 16px;
+}
+
+.muted {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* ===============================
+   TOPBAR
+   =============================== */
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--card);
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.top-search input {
+  width: 380px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #f9f9f9;
+  outline: none;
+  transition: 0.2s;
+}
+.top-search input:focus {
+  border-color: var(--accent);
+  background: #fff;
+}
+
+/* ===============================
+   PROFILE ICON (TOP-RIGHT)
+   =============================== */
+
+.profile-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--accent);
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #eef2ff;
+}
+
+.profile-circle:hover {
+  box-shadow: 0 0 0 3px var(--hover);
+}
+
+.profile-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* ===============================
+   PROFILE DROPDOWN
+   =============================== */
+
+.profile-dropdown {
+  position: absolute;
+  right: 20px;
+  top: 60px;
+  background: var(--card);
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  z-index: 1000;
+}
+
+.profile-dropdown button {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+  color: var(--text-dark);
+}
+.profile-dropdown button:hover {
+  background: var(--hover);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 6px 0;
+}
+
+/* ===============================
+   PROFILE CARD (LEFT SIDEBAR)
+   =============================== */
+
+.profile-card {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 16px;
+  position: sticky;
+  top: 100px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.profile-avatar-lg {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 10px;
+}
+
+.profile-name {
+  text-align: center;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.profile-about {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* ===============================
+   COMPOSE CARD (WRITE A POST)
+   =============================== */
+
+.compose-card {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-top: 16px;
+}
+
+.compose-card textarea {
+  width: 100%;
+  min-height: 84px;
+  border-radius: 8px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  resize: none;
+  outline: none;
+  transition: 0.2s;
+}
+
+.compose-card textarea:focus {
+  border-color: var(--accent);
+  background: #fff;
+}
+
+.compose-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.compose-icon {
+  background: #eef2ff;
+  color: var(--accent);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.3s;
+}
+.compose-icon:hover {
+  background: var(--accent);
+  color: white;
+}
+
+/* ===============================
+   RIGHT SIDEBAR
+   =============================== */
+
+.right-card {
+  background: var(--card);
+  border-radius: 10px;
+  padding: 14px;
+  position: sticky;
+  top: 100px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.suggest {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f7f7f7;
+}
+
+.suggest:last-child {
+  border-bottom: none;
+}
+
+/* ===============================
+   BUTTONS
+   =============================== */
+
+.btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn:hover {
+  background: #004182;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-outline:hover {
+  background: var(--hover);
+}
