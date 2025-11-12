@@ -1,0 +1,133 @@
+.comment-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.comment-area-container {
+  width: 100%;
+}
+
+.comment-area-open {
+  margin-top: 8px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+.comment-area-closed {
+  display: none;
+}
+
+/* Input Row */
+.comment-input-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 0 12px;
+}
+
+.comment-avatar.current-user {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Input box styling */
+.comment-input-container {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  transition: all 0.2s ease-in-out;
+  min-height: 38px;
+}
+
+.comment-input-container.expanded {
+  border-color: #0a66c2;
+  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.1);
+}
+
+/* Textarea */
+.comment-textarea {
+  flex: 1;
+  resize: none;
+  overflow: hidden;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background: transparent;
+  line-height: 1.4;
+  min-height: 24px;
+  
+}
+
+/* Icons and button */
+.comment-icons {
+  display: flex;
+  gap: 8px;
+  color: #6b7280;
+  align-items: center;
+  padding-left: 8px;
+}
+
+.comment-icons .icon {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.comment-icons .icon:hover {
+  color: #0a66c2;
+}
+
+.comment-post-btn {
+  background: #0a66c2;
+  color: white;
+  border: none;
+  border-radius: 70px;
+  padding: 4px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: background 0.2s;
+  width: 100px;
+}
+
+.comment-post-btn:hover {
+  background: #004182;
+}
+
+/* Comment list */
+.comments-list {
+  margin-top: 10px;
+  margin-left: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comment-item {
+  display: flex;
+  gap: 8px;
+}
+
+.comment-body {
+  background: #f3f3f3;
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
+.comment-author {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.comment-meta {
+  font-size: 12px;
+  color: gray;
+}

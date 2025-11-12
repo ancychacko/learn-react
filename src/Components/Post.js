@@ -12,6 +12,7 @@
 //   Forward,
 //   BookMarked,
 //   ThumbsUp,
+//   MessageCircle,
 // } from "lucide-react";
 
 // import Like from "./Like";
@@ -24,20 +25,21 @@
 //   post,
 //   API_BASE = "",
 //   currentUserName = "",
-//   refresh, // function to refresh feed from parent
-//   currentUser, // object { id, name, avatar_url } optional
+//   refresh,
+//   currentUser,
 // }) {
 //   const [menuOpen, setMenuOpen] = useState(false);
 //   const [showEditModal, setShowEditModal] = useState(false);
-
-//   // counts / states kept in Post so they display consistently
 //   const [likeCount, setLikeCount] = useState(Number(post.like_count || 0));
 //   const [likedByMe, setLikedByMe] = useState(!!post.liked_by_me);
 //   const [shareCount, setShareCount] = useState(Number(post.share_count || 0));
+//   const [commentCount, setCommentCount] = useState(
+//     Number(post.comment_count || 0)
+//   );
+//   const [openComment, setOpenComment] = useState(false); // 🔹 for toggling comment box
 
 //   const ref = useRef();
 
-//   // Close dropdown when clicking outside
 //   useEffect(() => {
 //     function handleClickOutside(e) {
 //       if (ref.current && !ref.current.contains(e.target)) setMenuOpen(false);
@@ -46,16 +48,13 @@
 //     return () => document.removeEventListener("click", handleClickOutside);
 //   }, []);
 
-//   // Build full URL for media / avatars served from backend
 //   function mediaUrl(path) {
 //     if (!path) return null;
-//     // ensure correct host and backend port; change port if your backend runs somewhere else
 //     const host = window.location.hostname;
 //     const protocol = window.location.protocol;
 //     return `${protocol}//${host}:4000${path}`;
 //   }
 
-//   // Delete post
 //   async function handleDelete() {
 //     const confirmDelete = window.confirm(
 //       "Are you sure you want to delete this post?"
@@ -66,20 +65,16 @@
 //         method: "DELETE",
 //         credentials: "include",
 //       });
-//       if (r.ok) {
-//         // Ask parent to refresh feed
-//         if (typeof refresh === "function") refresh();
-//       } else {
+//       if (r.ok && typeof refresh === "function") refresh();
+//       else {
 //         const b = await r.json();
 //         alert(b.error || "Delete failed");
 //       }
 //     } catch (err) {
 //       console.error("delete error", err);
-//       alert("Network error");
 //     }
 //   }
 
-//   // Visibility display helper
 //   function renderVisibility() {
 //     switch (post.visibility || "Anyone") {
 //       case "Connections":
@@ -103,7 +98,6 @@
 //     }
 //   }
 
-//   // Ownership check: compare names (case-insensitive, trimmed)
 //   const isMyPost =
 //     String(post.user_name || "")
 //       .trim()
@@ -112,20 +106,18 @@
 //       .trim()
 //       .toLowerCase();
 
-//   // Called by Like component when toggled
 //   function onLikeToggled(liked, newCount) {
 //     setLikedByMe(Boolean(liked));
 //     setLikeCount(Number(newCount || 0));
 //   }
 
-//   // Called by Send/Share component when share happens
 //   function onShared(newCount) {
 //     setShareCount(Number(newCount || 0));
 //   }
 
 //   return (
-//     <article className="post-card" aria-labelledby={`post-${post.id}`}>
-//       {/* ===== Header ===== */}
+//     <article className="post-card">
+//       {/* HEADER */}
 //       <div className="post-header">
 //         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
 //           <img
@@ -135,36 +127,25 @@
 //                 : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
 //             }
 //             className="avatar-sm"
-//             alt={`${post.user_name || "User"} avatar`}
+//             alt="avatar"
 //           />
 //           <div>
-//             <div id={`post-${post.id}`} className="post-author">
-//               {post.user_name}
-//             </div>
+//             <div className="post-author">{post.user_name}</div>
 //             <div className="post-meta">
-//               {post.created_at
-//                 ? new Date(post.created_at).toLocaleString()
-//                 : ""}
-//               {" • "}
+//               {new Date(post.created_at).toLocaleString()} •{" "}
 //               <span className="post-visibility">{renderVisibility()}</span>
 //             </div>
 //           </div>
 //         </div>
 
-//         {/* ===== 3-dot menu ===== */}
+//         {/* MENU */}
 //         <div ref={ref} style={{ position: "relative" }}>
-//           <button
-//             className="dots-btn"
-//             aria-haspopup="true"
-//             aria-expanded={menuOpen}
-//             onClick={() => setMenuOpen((p) => !p)}
-//             title="More options"
-//           >
+//           <button className="dots-btn" onClick={() => setMenuOpen((p) => !p)}>
 //             <Ellipsis size={20} color="black" />
 //           </button>
 
 //           {menuOpen && (
-//             <div className="post-menu" role="menu" aria-label="Post options">
+//             <div className="post-menu">
 //               {isMyPost ? (
 //                 <>
 //                   <button
@@ -184,11 +165,10 @@
 //                     <Trash size={16} /> Delete
 //                   </button>
 //                   <button
+//                     disabled
 //                     onClick={() => {
 //                       setMenuOpen(false);
-//                       alert(
-//                         "Visibility editing will be available in settings (demo)."
-//                       );
+//                       alert("Coming Soon.");
 //                     }}
 //                   >
 //                     <Eye size={16} /> Who can see this post?
@@ -199,18 +179,17 @@
 //                   <button
 //                     onClick={() => {
 //                       setMenuOpen(false);
-//                       alert("Report feature coming soon (demo).");
+//                       alert("Report feature coming soon.");
 //                     }}
 //                   >
 //                     <Flag size={16} /> Report Post
 //                   </button>
 //                 </>
 //               )}
-
 //               <button
 //                 onClick={() => {
 //                   setMenuOpen(false);
-//                   alert("Save post feature coming soon (demo).");
+//                   alert("Save Post feature coming soon.");
 //                 }}
 //               >
 //                 <BookMarked size={16} /> Save Post
@@ -220,18 +199,16 @@
 //         </div>
 //       </div>
 
-//       {/* ===== Body ===== */}
-//       <div className="post-body" gap={12}>
-//         <p style={{ margin: 0, whiteSpace: "pre-wrap" }}>{post.content}</p>
-
+//       {/* BODY */}
+//       <div className="post-body">
+//         <p>{post.content}</p>
 //         {post.media_url && post.media_type === "image" && (
 //           <img
 //             className="post-media"
 //             src={mediaUrl(post.media_url)}
-//             alt="Post media"
+//             alt="post"
 //           />
 //         )}
-
 //         {post.media_url && post.media_type === "video" && (
 //           <video controls className="post-media">
 //             <source src={mediaUrl(post.media_url)} />
@@ -239,9 +216,8 @@
 //         )}
 //       </div>
 
-//       {/* ===== Action buttons row =====
-//             Buttons are separate components; they call callbacks when counts change. */}
-//       <div className="post-actions" role="toolbar" aria-label="Post actions">
+//       {/* ACTION BUTTONS */}
+//       <div className="post-actions">
 //         <Like
 //           API_BASE={API_BASE}
 //           postId={post.id}
@@ -250,32 +226,45 @@
 //           onToggle={onLikeToggled}
 //         />
 
+//         {/* ✅ Separate button for toggling comment box */}
+//         <button
+//           className="action-btn comment-btn"
+//           onClick={() => setOpenComment((p) => !p)}
+//         >
+//           <MessageCircle size={18} className="icon" />
+//           <span>Comment</span>
+//         </button>
+
+//         <Share API_BASE={API_BASE} postId={post.id} onShared={onShared} />
+//       </div>
+
+//       {/* ✅ COMMENT SECTION BELOW BUTTONS */}
+//       {openComment && (
 //         <Comment
 //           API_BASE={API_BASE}
 //           postId={post.id}
 //           currentUser={currentUser}
+//           onCountChange={(count) => setCommentCount(count)}
 //         />
+//       )}
 
-//         <Share API_BASE={API_BASE} postId={post.id} onShare={onShared} />
+//       {/* COUNTS */}
+//       <div className="post-stats">
+//         <span className="stats-item">
+//           <ThumbsUp size={14} /> {likeCount}{" "}
+//           {likeCount === 1 ? "Like" : "Likes"}
+//         </span>
+//         <span className="stats-item">
+//           <MessageCircle size={14} /> {commentCount}{" "}
+//           {commentCount === 1 ? "Comment" : "Comments"}
+//         </span>
+//         <span className="stats-item">
+//           <Forward size={14} /> {shareCount}{" "}
+//           {shareCount === 1 ? "Share" : "Shares"}
+//         </span>
 //       </div>
 
-//       {/* ===== small summary of counts (likes/shares) ===== */}
-//       <div className="post-stats" aria-hidden={false}>
-//         {likeCount > 0 && (
-//           <span className="stats-item" style={{ marginRight: 12 }}>
-//             <ThumbsUp size={14} /> {likeCount}{" "}
-//             {likeCount === 1 ? "Like" : "Likes"}
-//           </span>
-//         )}
-//         {shareCount > 0 && (
-//           <span className="stats-item">
-//             <Forward size={14} /> {shareCount}{" "}
-//             {shareCount === 1 ? "Share" : "Shares"}
-//           </span>
-//         )}
-//       </div>
-
-//       {/* ===== Edit modal (if owner) ===== */}
+//       {/* EDIT MODAL */}
 //       {showEditModal && (
 //         <EditPostModal
 //           API_BASE={API_BASE}
@@ -283,7 +272,6 @@
 //           onClose={() => setShowEditModal(false)}
 //           onSaveSuccess={() => {
 //             setShowEditModal(false);
-//             // refresh parent feed if provided
 //             if (typeof refresh === "function") refresh();
 //           }}
 //           currentUser={{ name: post.user_name, avatar_url: post.avatar_url }}
@@ -293,6 +281,7 @@
 //   );
 // }
 
+// src/Components/Post.js
 import React, { useEffect, useRef, useState } from "react";
 import {
   Ellipsis,
@@ -314,6 +303,7 @@ import Comment from "./Comment";
 import Share from "./Share";
 import EditPostModal from "./EditPostModal";
 import "./Post.css";
+//import "./Comment.css";
 
 export default function Post({
   post,
@@ -330,6 +320,7 @@ export default function Post({
   const [commentCount, setCommentCount] = useState(
     Number(post.comment_count || 0)
   );
+  const [openComment, setOpenComment] = useState(false);
 
   const ref = useRef();
 
@@ -518,16 +509,27 @@ export default function Post({
           initialCount={likeCount}
           onToggle={onLikeToggled}
         />
+        <button
+          className="action-btn comment-btn"
+          onClick={() => setOpenComment((p) => !p)}
+        >
+          <MessageCircle size={18} className="icon" />
+          <span>Comment</span>
+        </button>
+        <Share API_BASE={API_BASE} postId={post.id} onShared={onShared} />
+      </div>
+
+      {/* COMMENT SECTION */}
+      {openComment && (
         <Comment
           API_BASE={API_BASE}
           postId={post.id}
           currentUser={currentUser}
           onCountChange={(count) => setCommentCount(count)}
         />
-        <Share API_BASE={API_BASE} postId={post.id} onShared={onShared} />
-      </div>
+      )}
 
-      {/* COUNTS */}
+      {/* STATS */}
       <div className="post-stats">
         <span className="stats-item">
           <ThumbsUp size={14} /> {likeCount}{" "}
