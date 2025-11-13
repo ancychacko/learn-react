@@ -77,7 +77,7 @@ const pool = new pg.Pool(poolConfig);
         created_at TIMESTAMPTZ DEFAULT now()
       );
     `);
-    console.log("✅ Likes, Comments, Shares tables ensured.");
+    // console.log("✅ Likes, Comments, Shares tables ensured.");
   } catch (err) {
     console.error("Table creation failed:", err);
   }
@@ -185,7 +185,7 @@ function safeUnlink(relPath) {
 // -----------------------------
 // Auth Routes
 // -----------------------------
-app.post("/api/register", async (req, res) => {
+app.post("/api/Register", async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password)
     return res
@@ -215,7 +215,7 @@ app.post("/api/register", async (req, res) => {
   }
 });
 
-app.post("/api/login", async (req, res) => {
+app.post("/api/Login", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
     return res.status(400).json({ error: "Email + password required" });
@@ -509,15 +509,69 @@ app.post("/api/posts/:id/share", async (req, res) => {
 });
 
 // ✅ Edit + Delete post remain same
+// app.put("/api/posts/:id", upload.single("media"), async (req, res) => {
+//   if (!req.session.userId)
+//     return res.status(401).json({ error: "Not authenticated" });
+//   const postId = req.params.id;
+//   const { content, visibility = "Anyone" } = req.body;
+
+//   try {
+//     const r = await pool.query(
+//       "SELECT user_id, media_url FROM posts WHERE id=$1",
+//       [postId]
+//     );
+//     if (!r.rows.length)
+//       return res.status(404).json({ error: "Post not found" });
+
+//     const post = r.rows[0];
+//     if (post.user_id !== req.session.userId)
+//       return res.status(403).json({ error: "Forbidden" });
+
+//     let media_url = post.media_url;
+//     let media_type = null;
+
+//     if (req.file) {
+//       if (post.media_url) safeUnlink(post.media_url);
+//       media_url = `/uploads/${req.file.filename}`;
+//       const mimetype =
+//         req.file.mimetype || mime.lookup(req.file.filename) || "";
+//       media_type = mimetype.startsWith("image/")
+//         ? "image"
+//         : mimetype.startsWith("video/")
+//         ? "video"
+//         : "file";
+//     }
+
+//     if (req.file) {
+//       await pool.query(
+//         "UPDATE posts SET content=$1, media_url=$2, media_type=$3, visibility=$4 WHERE id=$5",
+//         [content, media_url, media_type, visibility, postId]
+//       );
+//     } else {
+//       await pool.query(
+//         "UPDATE posts SET content=$1, visibility=$2 WHERE id=$3",
+//         [content, visibility, postId]
+//       );
+//     }
+
+//     res.json({ ok: true });
+//   } catch (err) {
+//     console.error("edit post err", err);
+//     res.status(500).json({ error: "Server error" });
+//   }
+// });
+
+// ✅ Edit + Delete post (supports media deletion)
 app.put("/api/posts/:id", upload.single("media"), async (req, res) => {
   if (!req.session.userId)
     return res.status(401).json({ error: "Not authenticated" });
+
   const postId = req.params.id;
-  const { content, visibility = "Anyone" } = req.body;
+  const { content, visibility = "Anyone", remove_media } = req.body;
 
   try {
     const r = await pool.query(
-      "SELECT user_id, media_url FROM posts WHERE id=$1",
+      "SELECT user_id, media_url, media_type FROM posts WHERE id=$1",
       [postId]
     );
     if (!r.rows.length)
@@ -528,31 +582,43 @@ app.put("/api/posts/:id", upload.single("media"), async (req, res) => {
       return res.status(403).json({ error: "Forbidden" });
 
     let media_url = post.media_url;
-    let media_type = null;
+    let media_type = post.media_type;
 
+    // -----------------------------------------
+    // 🔥 CASE 1: User uploaded NEW media
+    // -----------------------------------------
     if (req.file) {
       if (post.media_url) safeUnlink(post.media_url);
+
       media_url = `/uploads/${req.file.filename}`;
       const mimetype =
         req.file.mimetype || mime.lookup(req.file.filename) || "";
-      media_type = mimetype.startsWith("image/")
-        ? "image"
-        : mimetype.startsWith("video/")
-        ? "video"
-        : "file";
+
+      if (mimetype.startsWith("image/")) media_type = "image";
+      else if (mimetype.startsWith("video/")) media_type = "video";
+      else media_type = "file";
+    }
+    // -----------------------------------------
+    // 🔥 CASE 2: User deleted existing media
+    // -----------------------------------------
+    else if (remove_media === "true") {
+      if (post.media_url) safeUnlink(post.media_url);
+      media_url = null;
+      media_type = null;
     }
 
-    if (req.file) {
-      await pool.query(
-        "UPDATE posts SET content=$1, media_url=$2, media_type=$3, visibility=$4 WHERE id=$5",
-        [content, media_url, media_type, visibility, postId]
-      );
-    } else {
-      await pool.query(
-        "UPDATE posts SET content=$1, visibility=$2 WHERE id=$3",
-        [content, visibility, postId]
-      );
-    }
+    // -----------------------------------------
+    // 🔥 UPDATE database
+    // -----------------------------------------
+    await pool.query(
+      `UPDATE posts 
+       SET content=$1,
+           visibility=$2,
+           media_url=$3,
+           media_type=$4
+       WHERE id=$5`,
+      [content, visibility, media_url, media_type, postId]
+    );
 
     res.json({ ok: true });
   } catch (err) {

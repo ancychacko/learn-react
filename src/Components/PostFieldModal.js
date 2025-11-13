@@ -26,6 +26,12 @@ export default function PostFieldModal({
     setMedia(null);
     setPreviewUrl(null);
   };
+  const closeModal = () => {
+    setShowModal(false);
+    setContent("");
+    setMedia(null);
+    setPreviewUrl(null);
+  };
 
   return ReactDOM.createPortal(
     <div className="modal-overlay">
@@ -36,7 +42,7 @@ export default function PostFieldModal({
           <button
             className="close-btn"
             style={{ width: "50px" }}
-            onClick={() => setShowModal(false)}
+            onClick={closeModal}
           >
             <X size={22} color="black" />
           </button>
