@@ -1,6 +1,7 @@
 //src/Components/Comment.js
 import React, { useEffect, useState, useRef } from "react";
 import { Smile, Image as ImageIcon } from "lucide-react";
+import CommentList from "./CommentList";
 import "./Comment.css";
 
 export default function Comment({
@@ -77,6 +78,14 @@ export default function Comment({
 
   return (
     <div className="comment-section">
+      <div className="comment-section">
+        <CommentList
+          API_BASE={API_BASE}
+          postId={postId}
+          currentUser={currentUser}
+          onCountChange={onCountChange}
+        />
+      </div>
       <form onSubmit={handleAddComment} className="comment-input-row">
         <img
           src={
