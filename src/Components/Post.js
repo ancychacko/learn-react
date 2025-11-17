@@ -500,6 +500,22 @@ export default function Post({
         )}
       </div>
 
+      {/* STATS */}
+      <div className="post-stats">
+        <span className="stats-item">
+          <ThumbsUp size={14} /> {likeCount}{" "}
+          {likeCount === 1 ? "Like" : "Likes"}
+        </span>
+        <span className="stats-item">
+          <MessageCircle size={14} /> {commentCount}{" "}
+          {commentCount === 1 ? "Comment" : "Comments"}
+        </span>
+        <span className="stats-item">
+          <Forward size={14} /> {shareCount}{" "}
+          {shareCount === 1 ? "Share" : "Shares"}
+        </span>
+      </div>
+
       {/* ACTION BUTTONS */}
       <div className="post-actions">
         <Like
@@ -530,7 +546,7 @@ export default function Post({
       )}
 
       {/* STATS */}
-      <div className="post-stats">
+      {/* <div className="post-stats">
         <span className="stats-item">
           <ThumbsUp size={14} /> {likeCount}{" "}
           {likeCount === 1 ? "Like" : "Likes"}
@@ -543,7 +559,7 @@ export default function Post({
           <Forward size={14} /> {shareCount}{" "}
           {shareCount === 1 ? "Share" : "Shares"}
         </span>
-      </div>
+      </div> */}
 
       {/* EDIT MODAL */}
       {showEditModal && (
