@@ -277,3 +277,16 @@
   border-radius: 8px;
   margin-top: 6px;
 }
+
+.dots-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.dots-btn:hover {
+  background: #f0f6ff;
+}
