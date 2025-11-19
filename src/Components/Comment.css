@@ -1,4 +1,4 @@
-.comment-wrapper {
+/* .comment-wrapper {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -289,4 +289,262 @@
 }
 .dots-btn:hover {
   background: #f0f6ff;
+} */
+
+/* LinkedIn-like comment CSS (replace existing Comment.css) */
+
+/* wrapper */
+.linkedin-comments-wrapper {
+  width: 100%;
+  margin-top: 12px;
+}
+
+/* header */
+.comments-header {
+  padding: 0 8px 8px 8px;
+  font-size: 15px;
+}
+
+/* input area */
+.comment-input-area {
+  padding: 0 8px 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Input row (avatar + input) */
+.linkedin-input-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* avatar */
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* current user avatar */
+.comment-avatar.current-user {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+/* input box */
+.comment-input-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 24px;
+  padding: 8px 12px;
+  min-height: 42px;
+}
+
+.comment-input-container.expanded {
+  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.06);
+  border-color: rgba(10, 102, 194, 0.6);
+}
+
+/* textarea */
+.comment-textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  font-size: 14px;
+  line-height: 1.4;
+  min-height: 28px;
+  max-height: 160px;
+}
+
+/* icons */
+.comment-icons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: #6b7280;
+}
+
+/* post button */
+.comment-post-btn {
+  background: #0a66c2;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+
+/* Sorting row positioned under input, right aligned */
+.comments-sort-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px;
+}
+
+/* placeholder left side to keep sort on right */
+.sort-placeholder {
+  flex: 1;
+}
+
+/* sort control on the right */
+.sort-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sort-label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.sort-select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #e6e6e6;
+  background: #fff;
+  font-size: 13px;
+}
+
+/* comment list */
+.comments-list {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 8px 8px 8px;
+}
+
+/* each comment row */
+.linkedin-comment-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* main area for comment (right side) */
+.comment-main {
+  flex: 1;
+}
+
+/* comment card (white box) */
+.comment-card {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+/* author name */
+.comment-author {
+  font-weight: 600;
+  font-size: 14px;
+  color: #111;
+}
+
+/* comment text */
+.comment-text {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #222;
+  white-space: pre-wrap;
+}
+
+/* actions row (outside the card) */
+.comment-actions-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+/* action button base */
+.action-btn {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+/* liked state */
+.like-btn.liked,
+.action-btn:hover {
+  color: #0a66c2;
+  background: rgba(10, 102, 194, 0.06);
+}
+
+/* action text */
+.action-text {
+  margin-left: 4px;
+}
+
+/* meta (time + reply count) */
+.action-meta {
+  margin-left: 6px;
+  color: #6b7280;
+  font-size: 13px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* reply area (input + replies) */
+.comment-replies-area {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* replies list (each reply is indented) */
+.replies-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 48px;
+  margin-top: 6px;
+}
+
+/* reply row layout */
+.reply-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* reply main content */
+.reply-main {
+  flex: 1;
+}
+
+.reply-card {
+  background: #fff;
+  border: 1px solid #f0f1f2;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+/* small adjustments */
+.muted {
+  color: #6b7280;
+  font-size: 13px;
 }

@@ -163,7 +163,7 @@ export default function Post({
                       handleDelete();
                     }}
                   >
-                    <Trash size={16} /> Delete
+                    <Trash size={16} /> Delete Post
                   </button>
                   <button
                     disabled

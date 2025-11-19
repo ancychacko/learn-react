@@ -107,7 +107,7 @@ app.use(cookieParser());
 const allowedOrigins = [
   "http://localhost:3000",
   "http://172.16.2.164:3000",
-  "http://192.168.2.77:3000",
+  "http://192.168.2.89:3000",
 ];
 if (CORS_ORIGINS) {
   CORS_ORIGINS.split(",").forEach((o) => {

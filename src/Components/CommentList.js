@@ -1,4 +1,4 @@
-// src/Components/CommentList.js
+// // src/Components/CommentList.js
 // import React, { useEffect, useState } from "react";
 // import CommentItem from "./CommentItem";
 // import CommentInput from "./CommentInput";
@@ -10,61 +10,56 @@
 //   currentUser,
 //   onCountChange,
 // }) {
-//   const [comments, setComments] = useState([]); // nested
+//   const [comments, setComments] = useState([]);
 //   const [loading, setLoading] = useState(false);
-//   const [sort, setSort] = useState("recent"); // recent | oldest | relevant
+//   const [sort, setSort] = useState("recent");
+
+//   // ⭐ Only ONE comment's reply section open at a time
+//   const [openReplyFor, setOpenReplyFor] = useState(null);
 
 //   async function loadComments() {
 //     setLoading(true);
 //     try {
-//       const r = await fetch(
-//         `${API_BASE}/api/posts/${postId}/comments?sort=${encodeURIComponent(
-//           sort
-//         )}`,
-//         {
-//           credentials: "include",
-//         }
+//       const res = await fetch(
+//         `${API_BASE}/api/posts/${postId}/comments?sort=${sort}`,
+//         { credentials: "include" }
 //       );
-//       if (r.ok) {
-//         const data = await r.json();
-//         setComments(data || []);
+//       if (res.ok) {
+//         const data = await res.json();
+//         setComments(data);
+
 //         if (onCountChange) {
-//           // compute total comments count (including replies)
 //           let total = 0;
-//           (data || []).forEach((c) => {
+//           data.forEach((c) => {
 //             total += 1 + (c.replies ? c.replies.length : 0);
 //           });
 //           onCountChange(total);
 //         }
-//       } else {
-//         console.warn("Failed loading comments");
 //       }
-//     } catch (err) {
-//       console.error(err);
-//     } finally {
-//       setLoading(false);
+//     } catch (e) {
+//       console.error(e);
 //     }
+//     setLoading(false);
 //   }
 
 //   useEffect(() => {
 //     loadComments();
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
 //   }, [sort]);
 
-//   // when a new top-level comment is added, insert it at top (recent-first)
 //   function handleNewTopComment(created) {
-//     // server returns created comment (single comment object)
 //     setComments((s) => [{ ...created, replies: [] }, ...s]);
-//     if (onCountChange) onCountChange((prev) => (prev || 0) + 1);
+//     if (onCountChange) onCountChange((prev) => prev + 1);
 //   }
 
-//   // reload full list (useful after reply or like)
-//   function reload() {
-//     loadComments();
+//   function reloadComments(keepOpenId = null) {
+//     loadComments().then(() => {
+//       setOpenReplyFor(keepOpenId);
+//     });
 //   }
 
 //   return (
-//     <div className="comment-section" role="region" aria-label="Comments">
+//     <div className="comment-section">
+//       {/* Header */}
 //       <div
 //         style={{
 //           display: "flex",
@@ -85,23 +80,19 @@
 //         </div>
 //       </div>
 
+//       {/* Input */}
 //       <div style={{ padding: "0 12px 8px 12px" }}>
 //         <CommentInput
 //           API_BASE={API_BASE}
 //           postId={postId}
 //           currentUser={currentUser}
-//           onPosted={(c) => {
-//             handleNewTopComment(c);
-//           }}
+//           onPosted={(c) => handleNewTopComment(c)}
 //         />
 //       </div>
 
+//       {/* List */}
 //       <div className="comments-list">
-//         {loading && (
-//           <div className="muted" style={{ paddingLeft: 12 }}>
-//             Loading...
-//           </div>
-//         )}
+//         {loading && <div className="muted">Loading...</div>}
 //         {!loading && comments.length === 0 && (
 //           <div className="muted">No comments yet</div>
 //         )}
@@ -112,8 +103,10 @@
 //             comment={c}
 //             API_BASE={API_BASE}
 //             currentUser={currentUser}
-//             onReplyAdded={() => reload()}
-//             onToggleLike={() => reload()}
+//             openReplyFor={openReplyFor}
+//             setOpenReplyFor={setOpenReplyFor}
+//             onReplyAdded={() => reloadComments(c.id)}
+//             onToggleLike={() => reloadComments(openReplyFor)}
 //           />
 //         ))}
 //       </div>
@@ -133,87 +126,97 @@ export default function CommentList({
   currentUser,
   onCountChange,
 }) {
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState([]); // nested
   const [loading, setLoading] = useState(false);
-  const [sort, setSort] = useState("recent");
+  const [sort, setSort] = useState("recent"); // recent | oldest | relevant
 
-  // ⭐ Only ONE comment's reply section open at a time
+  // Only one comment's reply section open at a time
   const [openReplyFor, setOpenReplyFor] = useState(null);
 
   async function loadComments() {
     setLoading(true);
     try {
-      const res = await fetch(
-        `${API_BASE}/api/posts/${postId}/comments?sort=${sort}`,
+      const r = await fetch(
+        `${API_BASE}/api/posts/${postId}/comments?sort=${encodeURIComponent(
+          sort
+        )}`,
         { credentials: "include" }
       );
-      if (res.ok) {
-        const data = await res.json();
-        setComments(data);
-
+      if (r.ok) {
+        const data = await r.json();
+        setComments(data || []);
         if (onCountChange) {
+          // compute total comments count (including replies)
           let total = 0;
-          data.forEach((c) => {
+          (data || []).forEach((c) => {
             total += 1 + (c.replies ? c.replies.length : 0);
           });
           onCountChange(total);
         }
+      } else {
+        console.warn("Failed loading comments");
       }
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   useEffect(() => {
     loadComments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sort]);
 
+  // when a new top-level comment is added, insert it at top (recent-first)
   function handleNewTopComment(created) {
     setComments((s) => [{ ...created, replies: [] }, ...s]);
-    if (onCountChange) onCountChange((prev) => prev + 1);
+    if (onCountChange) onCountChange((prev) => (prev || 0) + 1);
   }
 
-  function reloadComments(keepOpenId = null) {
-    loadComments().then(() => {
-      setOpenReplyFor(keepOpenId);
-    });
+  // reload full list (useful after reply or like)
+  async function reload(keepOpenId = null) {
+    await loadComments();
+    // keep the same reply open if requested; otherwise close
+    setOpenReplyFor(keepOpenId || null);
   }
 
   return (
-    <div className="comment-section">
-      {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          padding: "8px 12px",
-        }}
-      >
-        <div style={{ fontWeight: 600 }}>Comments</div>
-        <div>
-          <label style={{ marginRight: 8, fontSize: 13, color: "#6b7280" }}>
-            Sort
-          </label>
-          <select value={sort} onChange={(e) => setSort(e.target.value)}>
-            <option value="recent">Most recent</option>
-            <option value="relevant">Most relevant</option>
-            <option value="oldest">Oldest</option>
-          </select>
-        </div>
+    <div className="linkedin-comments">
+      <div className="comments-header">
+        <strong>Comments</strong>
       </div>
 
-      {/* Input */}
-      <div style={{ padding: "0 12px 8px 12px" }}>
+      {/* Comment input */}
+      <div className="comment-input-area">
         <CommentInput
           API_BASE={API_BASE}
           postId={postId}
           currentUser={currentUser}
-          onPosted={(c) => handleNewTopComment(c)}
+          onPosted={(c) => {
+            handleNewTopComment(c);
+          }}
         />
+
+        {/* Sorting - placed under input, right aligned */}
+        <div className="comments-sort-row">
+          <div className="sort-placeholder" />
+          <div className="sort-control">
+            <label className="sort-label">Sort</label>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className="sort-select"
+            >
+              <option value="relevant">Most relevant</option>
+              <option value="recent">Newest</option>
+              <option value="oldest">Oldest</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      {/* List */}
+      {/* Comments list */}
       <div className="comments-list">
         {loading && <div className="muted">Loading...</div>}
         {!loading && comments.length === 0 && (
@@ -228,8 +231,8 @@ export default function CommentList({
             currentUser={currentUser}
             openReplyFor={openReplyFor}
             setOpenReplyFor={setOpenReplyFor}
-            onReplyAdded={() => reloadComments(c.id)}
-            onToggleLike={() => reloadComments(openReplyFor)}
+            onReplyAdded={() => reload(c.id)} // keep that comment open after reply
+            onToggleLike={() => reload(openReplyFor)}
           />
         ))}
       </div>
