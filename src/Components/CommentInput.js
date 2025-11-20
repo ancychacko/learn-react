@@ -1,4 +1,4 @@
-// src/Components/CommentInput.js
+//src/Components/CommentInput.js
 // import React, { useRef, useState, useEffect } from "react";
 // import { Smile, Image as ImageIcon } from "lucide-react";
 // import "./Comment.css";
@@ -82,7 +82,7 @@
 //   return (
 //     <form
 //       onSubmit={handleSubmit}
-//       className="comment-input-row"
+//       className={`comment-input-row linkedin-input-row`}
 //       style={{ alignItems: "flex-start" }}
 //     >
 //       <img
@@ -143,7 +143,7 @@
 //   );
 // }
 
-//src/Components/CommentInput.js
+// src/Components/Commentinput.js
 import React, { useRef, useState, useEffect } from "react";
 import { Smile, Image as ImageIcon } from "lucide-react";
 import "./Comment.css";
@@ -241,9 +241,7 @@ export default function CommentInput({
       />
 
       <div
-        className={`comment-input-container ${
-          text.length > 0 ? "expanded" : ""
-        }`}
+        className={`comment-input-container ${text.length > 0 ? "expanded" : ""}`}
       >
         <textarea
           ref={taRef}
@@ -255,18 +253,8 @@ export default function CommentInput({
         />
         <div className="comment-icons">
           <Smile size={18} className="icon" />
-          <ImageIcon
-            size={18}
-            className="icon"
-            onClick={() => photoRef.current?.click()}
-          />
-          <input
-            ref={photoRef}
-            type="file"
-            accept="image/*"
-            onChange={handlePhoto}
-            style={{ display: "none" }}
-          />
+          <ImageIcon size={18} className="icon" onClick={() => photoRef.current?.click()} />
+          <input ref={photoRef} type="file" accept="image/*" onChange={handlePhoto} style={{ display: "none" }} />
         </div>
         {text.trim().length > 0 && (
           <button type="submit" className="comment-post-btn" disabled={loading}>
@@ -277,11 +265,7 @@ export default function CommentInput({
 
       {previewUrl && (
         <div style={{ marginLeft: 56, marginTop: 8 }}>
-          <img
-            src={previewUrl}
-            alt="preview"
-            style={{ maxWidth: 120, borderRadius: 8 }}
-          />
+          <img src={previewUrl} alt="preview" style={{ maxWidth: 120, borderRadius: 8 }} />
         </div>
       )}
     </form>
