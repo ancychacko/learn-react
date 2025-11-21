@@ -727,14 +727,65 @@
   color: #fff;
   border: none;
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: 6px; 
   cursor: pointer;
 }
 .cancel-btn {
   background: transparent;
-  color: #111;
+  color: #e5d3d3;
   border: 1px solid #e5e7eb;
   padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
 }
+
+/* Active like color */
+.meta-btn[aria-pressed="true"], .meta-btn[style*="#0a66c2"] {
+  color: #0a66c2 !important;
+}
+.meta-btn svg[style*="#0a66c2"] { color: #0a66c2 !important; }
+
+/* LinkedIn-style dropdown (already added earlier) */
+.linked-dropdown {
+  position: absolute;
+  right: 0;
+  top: 28px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  border-radius: 8px;
+  min-width: 220px;
+  padding: 6px;
+  z-index: 2000;
+  animation: dropdownIn 140ms ease;
+}
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.menu-item-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #111;
+  text-align: left;
+}
+.menu-item-btn svg { color: #444; }
+.menu-item-btn:hover { background: #f3f4f6; border-radius: 6px; }
+.menu-item-btn.delete { color: #b91c1c; }
+.menu-item-btn.delete svg { color: #b91c1c; }
+.delete-confirm-btn { background: #b91c1c; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+.delete-cancel-btn { background: #f3f4f6; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+.menu-trigger-btn { background: transparent; border: none; padding: 6px; cursor: pointer; color: #6b7280; }
+.menu-trigger-btn:hover { background: rgba(10,102,194,0.03); border-radius: 6px; }
+
+/* Toast styles (match provider) */
+.app-toast.info { background: #111; }
+.app-toast.success { background: #0a66c2; }
+.app-toast.error { background: #b91c1c; }

@@ -1,10 +1,25 @@
 // src/Components/CommentItem.js
 // import React, { useState, useRef, useEffect } from "react";
-// import { ThumbsUp, CornerDownLeft, MoreHorizontal } from "lucide-react";
+// import {
+//   ThumbsUp,
+//   CornerDownLeft,
+//   MoreHorizontal,
+//   Link as LinkIcon,
+//   UserPlus,
+//   Flag,
+//   EyeOff,
+//   Edit,
+//   Trash2,
+//   Eye,
+//   XCircle,
+//   CheckCircle,
+// } from "lucide-react";
+
 // import ReplyItem from "./ReplyItem";
 // import CommentInput from "./CommentInput";
-// import CommentMenu from "./CommentMenu";
 // import "./Comment.css";
+// import useClickOutside from "../Hooks/useClickOutside";
+// import { useToast } from "../ontexts/ToastContext";
 
 // export default function CommentItem({
 //   comment,
@@ -15,25 +30,30 @@
 //   onReplyAdded,
 //   onToggleLike,
 // }) {
+//   const toast = useToast();
 //   const [likeLoading, setLikeLoading] = useState(false);
 //   const [liked, setLiked] = useState(Boolean(comment.liked_by_me));
 //   const [likeCount, setLikeCount] = useState(Number(comment.like_count || 0));
+//   const [menuOpen, setMenuOpen] = useState(false);
+//   const [editing, setEditing] = useState(false);
+//   const [editedText, setEditedText] = useState(comment.content);
+//   const [processingFollow, setProcessingFollow] = useState(false);
+//   const [isFollowing, setIsFollowing] = useState(Boolean(comment.is_following));
+//   const [deleteConfirm, setDeleteConfirm] = useState(false);
+//   const menuRef = useRef(null);
+//   useClickOutside(menuRef, () => setMenuOpen(false));
 
 //   const isOpen = openReplyFor === comment.id;
 
-//   const [editing, setEditing] = useState(false);
-//   const [editedText, setEditedText] = useState(comment.content);
-
-//   // menu open state
-//   const [menuOpen, setMenuOpen] = useState(false);
-//   const menuBtnRef = useRef(null);
-
 //   useEffect(() => {
-//     function onClose() {
-//       setMenuOpen(false);
+//     // close menu on Escape
+//     function onKey(e) {
+//       if (e.key === "Escape") {
+//         setMenuOpen(false);
+//       }
 //     }
-//     window.addEventListener("closeCommentMenus", onClose);
-//     return () => window.removeEventListener("closeCommentMenus", onClose);
+//     window.addEventListener("keydown", onKey);
+//     return () => window.removeEventListener("keydown", onKey);
 //   }, []);
 
 //   async function toggleLike() {
@@ -49,107 +69,102 @@
 //         setLiked(Boolean(b.liked));
 //         setLikeCount(Number(b.count || 0));
 //         if (onToggleLike) onToggleLike();
+//       } else {
+//         toast.addToast("Failed to toggle like", { type: "error" });
 //       }
 //     } catch (err) {
 //       console.error(err);
-//     } finally {
-//       setLikeLoading(false);
+//       toast.addToast("Network error while liking", { type: "error" });
 //     }
+//     setLikeLoading(false);
 //   }
 
-//   function onReplyClick() {
+//   function toggleReply() {
 //     setOpenReplyFor((cur) => (cur === comment.id ? null : comment.id));
 //   }
 
-//   // menu callbacks
-//   function handleEdit() {
+//   function copyLink() {
+//     const link = `${window.location.origin}/post/${comment.post_id}#comment-${comment.id}`;
+//     navigator.clipboard
+//       .writeText(link)
+//       .then(() => toast.addToast("Comment link copied", { type: "success" }))
+//       .catch(() => toast.addToast("Failed to copy link", { type: "error" }));
 //     setMenuOpen(false);
-//     setEditing(true);
 //   }
-//   async function handleDelete() {
+
+//   async function toggleFollow() {
+//     if (processingFollow) return;
+//     setProcessingFollow(true);
+//     try {
+//       const r = await fetch(`${API_BASE}/api/users/${comment.user_id}/follow`, {
+//         method: "POST",
+//         credentials: "include",
+//       });
+//       if (r.ok) {
+//         const body = await r.json();
+//         setIsFollowing(Boolean(body.following));
+//         toast.addToast(
+//           body.following
+//             ? `Following ${comment.user_name}`
+//             : `Unfollowed ${comment.user_name}`,
+//           { type: "success" }
+//         );
+//       } else {
+//         toast.addToast("Failed to toggle follow", { type: "error" });
+//       }
+//     } catch (err) {
+//       console.error(err);
+//       toast.addToast("Network error", { type: "error" });
+//     } finally {
+//       setProcessingFollow(false);
+//       setMenuOpen(false);
+//     }
+//   }
+
+//   async function reportComment() {
+//     try {
+//       const r = await fetch(`${API_BASE}/api/comments/${comment.id}/report`, {
+//         method: "POST",
+//         credentials: "include",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ reason: "Reported from UI" }),
+//       });
+//       if (r.ok) toast.addToast("Reported — thank you", { type: "success" });
+//       else toast.addToast("Failed to report", { type: "error" });
+//     } catch (err) {
+//       console.error(err);
+//       toast.addToast("Network error", { type: "error" });
+//     }
 //     setMenuOpen(false);
-//     const confirmDelete = window.confirm("Delete this comment? This action cannot be undone.");
-//     if (!confirmDelete) return;
+//   }
+
+//   async function confirmDelete() {
 //     try {
 //       const r = await fetch(`${API_BASE}/api/comments/${comment.id}`, {
 //         method: "DELETE",
 //         credentials: "include",
 //       });
 //       if (r.ok) {
-//         if (onReplyAdded) onReplyAdded(); // reload list
+//         toast.addToast("Comment deleted", { type: "success" });
+//         if (onReplyAdded) onReplyAdded();
 //       } else {
 //         const b = await r.json().catch(() => ({}));
-//         alert(b.error || "Failed to delete");
+//         toast.addToast(b.error || "Failed to delete", { type: "error" });
 //       }
 //     } catch (err) {
 //       console.error(err);
-//     }
-//   }
-//   function handleWhoCanSee() {
-//     setMenuOpen(false);
-//     if (typeof onReplyAdded === "function") {
-//       // placeholder: open a UI in future
-//       alert("Who can see this — this is a placeholder.");
-//     }
-//   }
-//   async function handleReport() {
-//     setMenuOpen(false);
-//     const reason = prompt("Why are you reporting this comment? (optional)");
-//     try {
-//       const r = await fetch(`${API_BASE}/api/comments/${comment.id}/report`, {
-//         method: "POST",
-//         credentials: "include",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ reason }),
-//       });
-//       if (r.ok) {
-//         alert("Reported — thank you.");
-//       } else {
-//         const b = await r.json().catch(() => ({}));
-//         alert(b.error || "Failed to report");
-//       }
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   }
-//   async function handleDontWantToSee() {
-//     setMenuOpen(false);
-//     // placeholder: implement preference on backend if desired
-//     alert("We will hide similar content (placeholder).");
-//   }
-//   async function handleFollow(username) {
-//     setMenuOpen(false);
-//     // we need the user's id — backend follow endpoint expects user id. We have only username.
-//     // Best to fetch the user by name endpoint if you have. For demo, we attempt to find user id via API:
-//     try {
-//       const lookup = await fetch(`${API_BASE}/api/suggestions`); // fallback - uses suggestions list
-//       if (lookup.ok) {
-//         const list = await lookup.json();
-//         const u = list.find((x) => x.name === username);
-//         if (!u) {
-//           alert("Unable to find user to follow.");
-//           return;
-//         }
-//         const r = await fetch(`${API_BASE}/api/users/${u.id}/follow`, {
-//           method: "POST",
-//           credentials: "include",
-//         });
-//         if (r.ok) {
-//           alert(`You followed ${username}`);
-//         } else {
-//           const b = await r.json().catch(() => ({}));
-//           alert(b.error || "Failed to follow");
-//         }
-//       } else {
-//         alert("Unable to follow user (lookup failed).");
-//       }
-//     } catch (err) {
-//       console.error(err);
+//       toast.addToast("Network error", { type: "error" });
+//     } finally {
+//       setMenuOpen(false);
+//       setDeleteConfirm(false);
 //     }
 //   }
 
 //   async function submitEdit() {
-//     if (!editedText.trim()) return alert("Content required");
+//     if (!editedText.trim()) {
+//       toast.addToast("Content required", { type: "error" });
+//       return;
+//     }
 //     try {
 //       const r = await fetch(`${API_BASE}/api/comments/${comment.id}`, {
 //         method: "PUT",
@@ -158,19 +173,22 @@
 //         body: JSON.stringify({ content: editedText }),
 //       });
 //       if (r.ok) {
+//         toast.addToast("Comment updated", { type: "success" });
 //         setEditing(false);
-//         if (onReplyAdded) onReplyAdded(); // reload
+//         setMenuOpen(false);
+//         if (onReplyAdded) onReplyAdded();
 //       } else {
 //         const b = await r.json().catch(() => ({}));
-//         alert(b.error || "Failed to edit");
+//         toast.addToast(b.error || "Failed to edit", { type: "error" });
 //       }
 //     } catch (err) {
 //       console.error(err);
+//       toast.addToast("Network error", { type: "error" });
 //     }
 //   }
 
 //   return (
-//     <div className="linkedin-comment-row">
+//     <div className="comment-item" style={{ marginBottom: 8 }}>
 //       <img
 //         src={
 //           comment.avatar_url
@@ -180,139 +198,227 @@
 //         className="comment-avatar"
 //         alt={comment.user_name}
 //       />
-
-//       <div className="comment-main">
-//         <div className="comment-card" style={{ position: "relative" }}>
-//           {/* ellipsis menu button (top-right) */}
+//       <div style={{ flex: 1 }}>
+//         <div className="comment-body" style={{ position: "relative" }}>
 //           <div
-//             className="comment-ellipsis"
-//             style={{ position: "absolute", top: 8, right: 8 }}
+//             style={{
+//               display: "flex",
+//               justifyContent: "space-between",
+//               alignItems: "start",
+//             }}
 //           >
+//             <div style={{ width: "100%" }}>
+//               <div className="comment-author">{comment.user_name}</div>
+
+//               {!editing ? (
+//                 <div className="comment-text">{comment.content}</div>
+//               ) : (
+//                 <div style={{ marginTop: 6 }}>
+//                   <textarea
+//                     className="edit-textarea"
+//                     value={editedText}
+//                     onChange={(e) => setEditedText(e.target.value)}
+//                     style={{
+//                       width: "100%",
+//                       minHeight: 70,
+//                       padding: 8,
+//                       borderRadius: 6,
+//                     }}
+//                   />
+//                   <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+//                     <button className="save-btn" onClick={submitEdit}>
+//                       <CheckCircle size={16} style={{ marginRight: 6 }} /> Save
+//                     </button>
+//                     <button
+//                       className="cancel-btn"
+//                       onClick={() => {
+//                         setEditing(false);
+//                         setEditedText(comment.content);
+//                       }}
+//                     >
+//                       <XCircle size={16} style={{ marginRight: 6 }} /> Cancel
+//                     </button>
+//                   </div>
+//                 </div>
+//               )}
+//             </div>
+
+//             <div style={{ marginLeft: 8, position: "relative" }} ref={menuRef}>
+//               <button
+//                 className="menu-trigger-btn"
+//                 onClick={() => setMenuOpen((s) => !s)}
+//                 aria-haspopup="true"
+//                 aria-expanded={menuOpen}
+//               >
+//                 <MoreHorizontal size={18} />
+//               </button>
+
+//               {menuOpen && (
+//                 <div className="linked-dropdown" role="menu">
+//                   <button className="menu-item-btn" onClick={copyLink}>
+//                     <LinkIcon size={16} />
+//                     <span>Copy link to comment</span>
+//                   </button>
+
+//                   {comment.is_owner ? (
+//                     <>
+//                       <button
+//                         className="menu-item-btn"
+//                         onClick={() => {
+//                           setEditing(true);
+//                           setMenuOpen(false);
+//                         }}
+//                       >
+//                         <Edit size={16} />
+//                         <span>Edit</span>
+//                       </button>
+
+//                       {!deleteConfirm ? (
+//                         <button
+//                           className="menu-item-btn delete"
+//                           onClick={() => setDeleteConfirm(true)}
+//                         >
+//                           <Trash2 size={16} />
+//                           <span>Delete</span>
+//                         </button>
+//                       ) : (
+//                         <div style={{ padding: 6 }}>
+//                           <div style={{ display: "flex", gap: 6 }}>
+//                             <button
+//                               className="delete-confirm-btn"
+//                               onClick={confirmDelete}
+//                             >
+//                               <Trash2 size={14} /> Yes, delete
+//                             </button>
+//                             <button
+//                               className="delete-cancel-btn"
+//                               onClick={() => setDeleteConfirm(false)}
+//                             >
+//                               Cancel
+//                             </button>
+//                           </div>
+//                         </div>
+//                       )}
+
+//                       <button
+//                         className="menu-item-btn"
+//                         onClick={() => {
+//                           setMenuOpen(false);
+//                           toast.addToast("Who can see this — not implemented", {
+//                             type: "info",
+//                           });
+//                         }}
+//                       >
+//                         <Eye size={16} />
+//                         <span>Who can see this</span>
+//                       </button>
+//                     </>
+//                   ) : (
+//                     <>
+//                       <button
+//                         className="menu-item-btn"
+//                         onClick={toggleFollow}
+//                         disabled={processingFollow}
+//                       >
+//                         <UserPlus size={16} />
+//                         <span>
+//                           {isFollowing
+//                             ? `Unfollow ${comment.user_name}`
+//                             : `Follow ${comment.user_name}`}
+//                         </span>
+//                       </button>
+
+//                       <button className="menu-item-btn" onClick={reportComment}>
+//                         <Flag size={16} />
+//                         <span>Report</span>
+//                       </button>
+
+//                       <button
+//                         className="menu-item-btn"
+//                         onClick={() => {
+//                           setMenuOpen(false);
+//                           toast.addToast("Hide comment — not implemented", {
+//                             type: "info",
+//                           });
+//                         }}
+//                       >
+//                         <EyeOff size={16} />
+//                         <span>I don’t want to see this</span>
+//                       </button>
+//                     </>
+//                   )}
+//                 </div>
+//               )}
+//             </div>
+//           </div>
+
+//           <div className="comment-meta-row">
 //             <button
-//               ref={menuBtnRef}
-//               className="action-btn"
-//               onClick={(e) => {
-//                 e.stopPropagation();
-//                 // close other menus globally first
-//                 window.dispatchEvent(new CustomEvent("closeCommentMenus"));
-//                 setMenuOpen((s) => !s);
-//               }}
-//               aria-haspopup="true"
-//               aria-expanded={menuOpen}
+//               onClick={toggleLike}
+//               className="meta-btn"
+//               style={{ color: liked ? "#0a66c2" : undefined }}
+//               aria-pressed={liked}
 //             >
-//               <MoreHorizontal size={16} />
+//               <ThumbsUp
+//                 size={15}
+//                 style={{ color: liked ? "#0a66c2" : undefined }}
+//               />
+//               <span>{likeCount > 0 ? likeCount : "Like"}</span>
 //             </button>
 
-//             {menuOpen && (
-//               <CommentMenu
-//                 isOwner={comment.is_owner}
-//                 onEdit={handleEdit}
-//                 onDelete={handleDelete}
-//                 onWhoCanSee={handleWhoCanSee}
-//                 onReport={handleReport}
-//                 onDontWantToSee={handleDontWantToSee}
-//                 onFollow={handleFollow}
-//                 username={comment.user_name}
-//               />
-//             )}
-//           </div>
+//             <button onClick={toggleReply} className="meta-btn">
+//               <CornerDownLeft size={15} /> Reply
+//             </button>
 
-//           <div className="comment-card-top">
-//             <div className="comment-author">{comment.user_name}</div>
-//           </div>
-
-//           {!editing && <div className="comment-text">{comment.content}</div>}
-
-//           {editing && (
-//             <div style={{ marginTop: 8 }}>
-//               <textarea
-//                 value={editedText}
-//                 onChange={(e) => setEditedText(e.target.value)}
-//                 style={{ width: "100%", minHeight: 80 }}
-//               />
-//               <div style={{ marginTop: 6, display: "flex", gap: 8 }}>
-//                 <button
-//                   className="comment-post-btn"
-//                   onClick={() => submitEdit()}
-//                 >
-//                   Save
-//                 </button>
-//                 <button
-//                   className="action-btn"
-//                   onClick={() => {
-//                     setEditing(false);
-//                     setEditedText(comment.content);
-//                   }}
-//                 >
-//                   Cancel
-//                 </button>
-//               </div>
-//             </div>
-//           )}
-//         </div>
-
-//         {/* Actions row */}
-//         <div className="comment-actions-row">
-//           <button
-//             className={`action-btn like-btn ${liked ? "liked" : ""}`}
-//             onClick={toggleLike}
-//             disabled={likeLoading}
-//             aria-pressed={liked}
-//           >
-//             <ThumbsUp size={14} />
-//             <span className="action-text">
-//               {likeCount > 0 ? likeCount : "Like"}
-//             </span>
-//           </button>
-
-//           <button className="action-btn reply-btn" onClick={onReplyClick}>
-//             <CornerDownLeft size={14} />
-//             <span className="action-text">Reply</span>
-//           </button>
-
-//           <div className="action-meta">
-//             <span className="comment-time">
+//             <span className="date-text">
 //               {new Date(comment.created_at).toLocaleString()}
 //             </span>
-//             {typeof comment.reply_count === "number" &&
-//               comment.reply_count > 0 && (
-//                 <button
-//                   className="action-btn replies-count-btn"
-//                   onClick={onReplyClick}
-//                 >
-//                   {comment.reply_count}{" "}
-//                   {comment.reply_count === 1 ? "reply" : "replies"}
-//                 </button>
-//               )}
+
+//             {comment.reply_count > 0 && (
+//               <button onClick={toggleReply} className="meta-btn muted-btn">
+//                 {comment.reply_count}{" "}
+//                 {comment.reply_count === 1 ? "reply" : "replies"}
+//               </button>
+//             )}
 //           </div>
 //         </div>
 
-//         {/* Reply input & replies */}
+//         {/* Reply input for this comment */}
 //         {isOpen && (
-//           <div className="comment-replies-area">
+//           <div style={{ marginLeft: 48 }}>
 //             <CommentInput
 //               API_BASE={API_BASE}
-//               postId={comment.post_id || comment.postId || null}
+//               postId={comment.post_id}
 //               currentUser={currentUser}
 //               parentId={comment.id}
 //               mentionName={comment.user_name}
 //               onPosted={() => {
+//                 // reload and keep this thread open
 //                 if (onReplyAdded) onReplyAdded();
+//                 setOpenReplyFor(comment.id);
 //               }}
 //             />
+//           </div>
+//         )}
 
-//             <div className="replies-list">
-//               {comment.replies &&
-//                 comment.replies.map((r) => (
-//                   <ReplyItem
-//                     key={r.id}
-//                     reply={r}
-//                     API_BASE={API_BASE}
-//                     currentUser={currentUser}
-//                     onReplyLike={onToggleLike}
-//                   />
-//                 ))}
-//             </div>
+//         {/* Replies (pass openReplyFor so nested replies can open their own input) */}
+//         {comment.replies && comment.replies.length > 0 && (
+//           <div style={{ marginLeft: 48, marginTop: 8 }}>
+//             {comment.replies.map((r) => (
+//               <ReplyItem
+//                 key={r.id}
+//                 reply={r}
+//                 API_BASE={API_BASE}
+//                 currentUser={currentUser}
+//                 onReplyLike={onToggleLike}
+//                 openReplyFor={openReplyFor}
+//                 setOpenReplyFor={setOpenReplyFor}
+//                 onReplyAdded={() => {
+//                   if (onReplyAdded) onReplyAdded();
+//                   setOpenReplyFor(r.id); // keep nested thread open after post
+//                 }}
+//               />
+//             ))}
 //           </div>
 //         )}
 //       </div>
@@ -321,7 +427,7 @@
 // }
 
 // src/Components/CommentItem.js
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   ThumbsUp,
   CornerDownLeft,
@@ -340,6 +446,8 @@ import {
 import ReplyItem from "./ReplyItem";
 import CommentInput from "./CommentInput";
 import "./Comment.css";
+import useClickOutside from "../Hooks/useClickOutside";
+import { useToast } from "../Contexts/ToastContext";
 
 export default function CommentItem({
   comment,
@@ -350,6 +458,7 @@ export default function CommentItem({
   onReplyAdded,
   onToggleLike,
 }) {
+  const toast = useToast();
   const [likeLoading, setLikeLoading] = useState(false);
   const [liked, setLiked] = useState(Boolean(comment.liked_by_me));
   const [likeCount, setLikeCount] = useState(Number(comment.like_count || 0));
@@ -359,10 +468,25 @@ export default function CommentItem({
   const [processingFollow, setProcessingFollow] = useState(false);
   const [isFollowing, setIsFollowing] = useState(Boolean(comment.is_following));
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const menuRef = useRef(null);
+  useClickOutside(menuRef, () => setMenuOpen(false));
 
   const isOpen = openReplyFor === comment.id;
 
-  // toggle comment like
+  // Close menu on Escape
+  useEffect(() => {
+    function onKey(e) {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  // -----------------------------------
+  // LIKE COMMENT
+  // -----------------------------------
   async function toggleLike() {
     if (likeLoading) return;
     setLikeLoading(true);
@@ -376,28 +500,38 @@ export default function CommentItem({
         setLiked(Boolean(b.liked));
         setLikeCount(Number(b.count || 0));
         if (onToggleLike) onToggleLike();
+      } else {
+        toast.addToast("Failed to toggle like", { type: "error" });
       }
     } catch (err) {
       console.error(err);
+      toast.addToast("Network error while liking", { type: "error" });
     }
     setLikeLoading(false);
   }
 
+  // -----------------------------------
+  // TOGGLE REPLY THREAD (ONLY Reply button triggers this)
+  // -----------------------------------
   function toggleReply() {
     setOpenReplyFor((cur) => (cur === comment.id ? null : comment.id));
   }
 
+  // -----------------------------------
+  // COPY LINK
+  // -----------------------------------
   function copyLink() {
     const link = `${window.location.origin}/post/${comment.post_id}#comment-${comment.id}`;
-    navigator.clipboard.writeText(link).then(() => {
-      // small feedback
-      // you could show a toast here; using alert minimal
-      alert("Comment link copied");
-    });
+    navigator.clipboard
+      .writeText(link)
+      .then(() => toast.addToast("Comment link copied", { type: "success" }))
+      .catch(() => toast.addToast("Failed to copy link", { type: "error" }));
     setMenuOpen(false);
   }
 
-  // follow/unfollow toggle (POST toggles)
+  // -----------------------------------
+  // FOLLOW / UNFOLLOW
+  // -----------------------------------
   async function toggleFollow() {
     if (processingFollow) return;
     setProcessingFollow(true);
@@ -406,59 +540,82 @@ export default function CommentItem({
         method: "POST",
         credentials: "include",
       });
+
       if (r.ok) {
         const body = await r.json();
         setIsFollowing(Boolean(body.following));
+        toast.addToast(
+          body.following
+            ? `Following ${comment.user_name}`
+            : `Unfollowed ${comment.user_name}`,
+          { type: "success" }
+        );
       } else {
-        console.warn("Follow toggle failed");
+        toast.addToast("Failed to toggle follow", { type: "error" });
       }
     } catch (err) {
       console.error(err);
+      toast.addToast("Network error", { type: "error" });
+    } finally {
+      setProcessingFollow(false);
+      setMenuOpen(false);
     }
-    setProcessingFollow(false);
-    setMenuOpen(false);
   }
 
-  // report
+  // -----------------------------------
+  // REPORT COMMENT
+  // -----------------------------------
   async function reportComment() {
     try {
-      await fetch(`${API_BASE}/api/comments/${comment.id}/report`, {
+      const r = await fetch(`${API_BASE}/api/comments/${comment.id}/report`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason: "Reported from UI" }),
       });
-      alert("Reported — thank you");
+      if (r.ok) toast.addToast("Reported — thank you", { type: "success" });
+      else toast.addToast("Failed to report", { type: "error" });
     } catch (err) {
       console.error(err);
+      toast.addToast("Network error", { type: "error" });
     }
     setMenuOpen(false);
   }
 
-  // delete (no window.confirm) - confirmation shown inside menu
+  // -----------------------------------
+  // DELETE CONFIRMATION
+  // -----------------------------------
   async function confirmDelete() {
     try {
       const r = await fetch(`${API_BASE}/api/comments/${comment.id}`, {
         method: "DELETE",
         credentials: "include",
       });
+
       if (r.ok) {
+        toast.addToast("Comment deleted", { type: "success" });
         if (onReplyAdded) onReplyAdded();
       } else {
         const b = await r.json().catch(() => ({}));
-        alert(b.error || "Failed to delete");
+        toast.addToast(b.error || "Failed to delete", { type: "error" });
       }
     } catch (err) {
       console.error(err);
+      toast.addToast("Network error", { type: "error" });
     } finally {
       setMenuOpen(false);
       setDeleteConfirm(false);
     }
   }
 
-  // edit
+  // -----------------------------------
+  // SUBMIT EDIT
+  // -----------------------------------
   async function submitEdit() {
-    if (!editedText.trim()) return alert("Content required");
+    if (!editedText.trim()) {
+      toast.addToast("Content required", { type: "error" });
+      return;
+    }
     try {
       const r = await fetch(`${API_BASE}/api/comments/${comment.id}`, {
         method: "PUT",
@@ -466,16 +623,19 @@ export default function CommentItem({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: editedText }),
       });
+
       if (r.ok) {
+        toast.addToast("Comment updated", { type: "success" });
         setEditing(false);
         setMenuOpen(false);
         if (onReplyAdded) onReplyAdded();
       } else {
         const b = await r.json().catch(() => ({}));
-        alert(b.error || "Failed to edit");
+        toast.addToast(b.error || "Failed to edit", { type: "error" });
       }
     } catch (err) {
       console.error(err);
+      toast.addToast("Network error", { type: "error" });
     }
   }
 
@@ -493,6 +653,7 @@ export default function CommentItem({
 
       <div style={{ flex: 1 }}>
         <div className="comment-body" style={{ position: "relative" }}>
+          {/* Header row */}
           <div
             style={{
               display: "flex",
@@ -536,7 +697,8 @@ export default function CommentItem({
               )}
             </div>
 
-            <div style={{ marginLeft: 8, position: "relative" }}>
+            {/* Menu button */}
+            <div style={{ marginLeft: 8, position: "relative" }} ref={menuRef}>
               <button
                 className="menu-trigger-btn"
                 onClick={() => setMenuOpen((s) => !s)}
@@ -546,19 +708,16 @@ export default function CommentItem({
                 <MoreHorizontal size={18} />
               </button>
 
+              {/* Dropdown menu */}
               {menuOpen && (
                 <div className="linked-dropdown" role="menu">
-                  {/* Copy Link */}
-                  <button
-                    className="menu-item-btn"
-                    onClick={copyLink}
-                    role="menuitem"
-                  >
+                  {/* Copy link */}
+                  <button className="menu-item-btn" onClick={copyLink}>
                     <LinkIcon size={16} />
                     <span>Copy link to comment</span>
                   </button>
 
-                  {/* Follow / Unfollow OR Owner options */}
+                  {/* Owner menu */}
                   {comment.is_owner ? (
                     <>
                       <button
@@ -572,16 +731,16 @@ export default function CommentItem({
                         <span>Edit</span>
                       </button>
 
-                      <div style={{ padding: "6px" }}>
-                        {!deleteConfirm ? (
-                          <button
-                            className="menu-item-btn delete"
-                            onClick={() => setDeleteConfirm(true)}
-                          >
-                            <Trash2 size={16} />
-                            <span>Delete</span>
-                          </button>
-                        ) : (
+                      {!deleteConfirm ? (
+                        <button
+                          className="menu-item-btn delete"
+                          onClick={() => setDeleteConfirm(true)}
+                        >
+                          <Trash2 size={16} />
+                          <span>Delete</span>
+                        </button>
+                      ) : (
+                        <div style={{ padding: 6 }}>
                           <div style={{ display: "flex", gap: 6 }}>
                             <button
                               className="delete-confirm-btn"
@@ -596,14 +755,16 @@ export default function CommentItem({
                               Cancel
                             </button>
                           </div>
-                        )}
-                      </div>
+                        </div>
+                      )}
 
                       <button
                         className="menu-item-btn"
                         onClick={() => {
                           setMenuOpen(false);
-                          alert("Who can see this — not implemented");
+                          toast.addToast("Who can see this — not implemented", {
+                            type: "info",
+                          });
                         }}
                       >
                         <Eye size={16} />
@@ -612,10 +773,9 @@ export default function CommentItem({
                     </>
                   ) : (
                     <>
-                      {/* Follow/Unfollow toggle */}
                       <button
                         className="menu-item-btn"
-                        onClick={() => toggleFollow()}
+                        onClick={toggleFollow}
                         disabled={processingFollow}
                       >
                         <UserPlus size={16} />
@@ -635,7 +795,9 @@ export default function CommentItem({
                         className="menu-item-btn"
                         onClick={() => {
                           setMenuOpen(false);
-                          alert("I don't want to see this — implement hide");
+                          toast.addToast("Hide comment — not implemented", {
+                            type: "info",
+                          });
                         }}
                       >
                         <EyeOff size={16} />
@@ -650,8 +812,17 @@ export default function CommentItem({
 
           {/* Meta row */}
           <div className="comment-meta-row">
-            <button onClick={toggleLike} className="meta-btn">
-              <ThumbsUp size={15} /> {likeCount > 0 ? likeCount : "Like"}
+            <button
+              onClick={toggleLike}
+              className="meta-btn"
+              style={{ color: liked ? "#0a66c2" : undefined }}
+              aria-pressed={liked}
+            >
+              <ThumbsUp
+                size={15}
+                style={{ color: liked ? "#0a66c2" : undefined }}
+              />
+              <span>{likeCount > 0 ? likeCount : "Like"}</span>
             </button>
 
             <button onClick={toggleReply} className="meta-btn">
@@ -662,15 +833,19 @@ export default function CommentItem({
               {new Date(comment.created_at).toLocaleString()}
             </span>
 
+            {/* ✅ Reply count is NOT clickable anymore */}
             {comment.reply_count > 0 && (
-              <button onClick={toggleReply} className="meta-btn muted-btn">
-                {comment.reply_count} replies
-              </button>
+              <span className="reply-count-text muted-btn">
+                {comment.reply_count}{" "}
+                {comment.reply_count === 1 ? "reply" : "replies"}
+              </span>
             )}
           </div>
         </div>
 
-        {/* Reply input */}
+        {/* --------------------------------------------------------------- */}
+        {/* REPLY INPUT (only when Reply button toggled) */}
+        {/* --------------------------------------------------------------- */}
         {isOpen && (
           <div style={{ marginLeft: 48 }}>
             <CommentInput
@@ -679,24 +854,36 @@ export default function CommentItem({
               currentUser={currentUser}
               parentId={comment.id}
               mentionName={comment.user_name}
-              onPosted={() => onReplyAdded()}
+              onPosted={() => {
+                if (onReplyAdded) onReplyAdded();
+                setOpenReplyFor(comment.id);
+              }}
             />
           </div>
         )}
 
-        {/* Replies */}
-        {isOpen &&
-          comment.replies?.length > 0 &&
-          comment.replies.map((reply) => (
-            <div key={reply.id} style={{ marginLeft: 48 }}>
+        {/* --------------------------------------------------------------- */}
+        {/* EXISTING REPLIES (only visible if thread is OPEN) */}
+        {/* --------------------------------------------------------------- */}
+        {isOpen && comment.replies && comment.replies.length > 0 && (
+          <div style={{ marginLeft: 48, marginTop: 8 }}>
+            {comment.replies.map((r) => (
               <ReplyItem
-                reply={reply}
+                key={r.id}
+                reply={r}
                 API_BASE={API_BASE}
                 currentUser={currentUser}
                 onReplyLike={onToggleLike}
+                openReplyFor={openReplyFor}
+                setOpenReplyFor={setOpenReplyFor}
+                onReplyAdded={() => {
+                  if (onReplyAdded) onReplyAdded();
+                  setOpenReplyFor(r.id);
+                }}
               />
-            </div>
-          ))}
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
