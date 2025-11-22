@@ -21,6 +21,7 @@
 //   );
 // }
 
+//src/Components/Comment.js
 import React from "react";
 import CommentList from "./CommentList";
 import "./Comment.css";
