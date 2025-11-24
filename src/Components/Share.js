@@ -1,43 +1,97 @@
-// src/Components/Send.js
+// src/Components/Share.js
+// import React, { useState } from "react";
+// import { Send } from "lucide-react";
+// import ShareModal from "./ShareModal";
+// import { useToast } from "../Contexts/ToastContext";
+
+// export default function Share({
+//   API_BASE = "",
+//   postId,
+//   onShared,
+//   posterName = "Post",
+// }) {
+//   const [modalOpen, setModalOpen] = useState(false);
+//   const toast = useToast();
+
+//   function handleSent(newCount) {
+//     if (typeof onShared === "function") onShared(newCount);
+//     toast.addToast("Post sent successfully.", { type: "success" });
+//   }
+
+//   return (
+//     <>
+//       <button
+//         className="action-btn send-btn"
+//         onClick={() => setModalOpen(true)}
+//         style={{ minWidth: 90 }}
+//       >
+//         <Send size={18} className="icon" />
+//         <span>Share</span>
+//       </button>
+
+//       <ShareModal
+//         open={modalOpen}
+//         onClose={() => setModalOpen(false)}
+//         postId={postId}
+//         API_BASE={API_BASE}
+//         posterName={posterName}
+//         onSent={(count) => {
+//           try {
+//             handleSent(count);
+//           } finally {
+//             setModalOpen(false);
+//           }
+//         }}
+//       />
+//     </>
+//   );
+// }
+
+// src/Components/Share.js
 import React, { useState } from "react";
 import { Send } from "lucide-react";
+import ShareModal from "./ShareModal";
+import { useToast } from "../Contexts/ToastContext";
 
-export default function Share({ API_BASE = "", postId, onShared }) {
-  const [loading, setLoading] = useState(false);
-  const [sharedCount, setSharedCount] = useState(null);
+export default function Share({
+  API_BASE = "",
+  postId,
+  onShared,
+  posterName = "Post",
+}) {
+  const [modalOpen, setModalOpen] = useState(false);
+  const toast = useToast();
 
-  async function handleShare() {
-    if (loading) return;
-    setLoading(true);
-    try {
-      const r = await fetch(`${API_BASE}/api/posts/${postId}/share`, {
-        method: "POST",
-        credentials: "include",
-      });
-      if (r.ok) {
-        const body = await r.json(); // { count: number }
-        setSharedCount(body.count);
-        if (onShared) onShared(body.count);
-        alert("Post shared.");
-      } else {
-        alert("Share failed");
-      }
-    } catch (err) {
-      console.error("Share error", err);
-      alert("Network error");
-    }
-    setLoading(false);
+  function handleSent(newCount) {
+    if (typeof onShared === "function") onShared(newCount);
+    toast.addToast("Post sent successfully.", { type: "success" });
   }
 
   return (
-    <button
-      className="action-btn send-btn"
-      onClick={handleShare}
-      disabled={loading}
-      style={{ minWidth: 90 }}
-    >
-      <Send size={18} className="icon" />
-      <span>Share</span>
-    </button>
+    <>
+      <button
+        className="action-btn send-btn"
+        onClick={() => setModalOpen(true)}
+        style={{ minWidth: 90 }}
+      >
+        <Send size={18} className="icon" />
+        <span>Share</span>
+      </button>
+
+      <ShareModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        postId={postId}
+        API_BASE={API_BASE}
+        posterName={posterName}
+        onSent={(count) => {
+          try {
+            handleSent(count);
+          } finally {
+            setModalOpen(false);
+          }
+        }}
+      />
+    </>
   );
 }

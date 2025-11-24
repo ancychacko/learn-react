@@ -1,0 +1,144 @@
+/* Share modal basic
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,15,15,0.35);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 16px;
+  z-index: 6000;
+}
+
+.share-modal {
+  width: 640px;
+  max-width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.3);
+}
+
+.share-modal-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.icon-btn { background: transparent; border: none; cursor: pointer; padding: 6px; }
+
+.share-search {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+}
+
+.share-list-item {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+}
+.share-list-item:hover { background: #fafafa; } */
+
+
+/* Share.css - updated with animations and improved LinkedIn-like styles */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,15,15,0.35);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 48px 16px;
+  z-index: 6000;
+  -webkit-font-smoothing: antialiased;
+}
+
+.share-modal {
+  width: 640px;
+  max-width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.3);
+  transform-origin: top center;
+}
+
+/* small pop/fade animation */
+.animate-pop {
+  animation: popIn 220ms cubic-bezier(.2,.8,.2,1);
+}
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(-8px) scale(.995); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.share-modal-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.icon-btn { background: transparent; border: none; cursor: pointer; padding: 6px; }
+
+.share-search {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e6e6e6;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.share-list {
+  max-height: 320px;
+  overflow: auto;
+}
+
+.share-list-item {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  transition: background .12s;
+}
+.share-list-item:hover { background: #fafafa; }
+
+.share-list-item img { box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+
+/* checkbox alignment is default — you can replace with a custom square if desired */
+.cancel-btn {
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid #e6e6e6;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.save-btn {
+  background: #0a66c2;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.save-btn[disabled] { opacity: 0.6; cursor: not-allowed; }
+
+/* small muted text */
+.muted { color: #6b7280; padding: 8px; font-size: 13px; }
+
+/* footer share to feed label */
+.share-list-item .title { font-weight: 600; }

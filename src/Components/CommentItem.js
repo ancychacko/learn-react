@@ -19,7 +19,7 @@
 // import CommentInput from "./CommentInput";
 // import "./Comment.css";
 // import useClickOutside from "../Hooks/useClickOutside";
-// import { useToast } from "../ontexts/ToastContext";
+// import { useToast } from "../Contexts/ToastContext";
 
 // export default function CommentItem({
 //   comment,
@@ -45,8 +45,8 @@
 
 //   const isOpen = openReplyFor === comment.id;
 
+//   // Close menu on Escape
 //   useEffect(() => {
-//     // close menu on Escape
 //     function onKey(e) {
 //       if (e.key === "Escape") {
 //         setMenuOpen(false);
@@ -56,6 +56,9 @@
 //     return () => window.removeEventListener("keydown", onKey);
 //   }, []);
 
+//   // -----------------------------------
+//   // LIKE COMMENT
+//   // -----------------------------------
 //   async function toggleLike() {
 //     if (likeLoading) return;
 //     setLikeLoading(true);
@@ -79,10 +82,16 @@
 //     setLikeLoading(false);
 //   }
 
+//   // -----------------------------------
+//   // TOGGLE REPLY THREAD (ONLY Reply button triggers this)
+//   // -----------------------------------
 //   function toggleReply() {
 //     setOpenReplyFor((cur) => (cur === comment.id ? null : comment.id));
 //   }
 
+//   // -----------------------------------
+//   // COPY LINK
+//   // -----------------------------------
 //   function copyLink() {
 //     const link = `${window.location.origin}/post/${comment.post_id}#comment-${comment.id}`;
 //     navigator.clipboard
@@ -92,6 +101,9 @@
 //     setMenuOpen(false);
 //   }
 
+//   // -----------------------------------
+//   // FOLLOW / UNFOLLOW
+//   // -----------------------------------
 //   async function toggleFollow() {
 //     if (processingFollow) return;
 //     setProcessingFollow(true);
@@ -100,6 +112,7 @@
 //         method: "POST",
 //         credentials: "include",
 //       });
+
 //       if (r.ok) {
 //         const body = await r.json();
 //         setIsFollowing(Boolean(body.following));
@@ -121,6 +134,9 @@
 //     }
 //   }
 
+//   // -----------------------------------
+//   // REPORT COMMENT
+//   // -----------------------------------
 //   async function reportComment() {
 //     try {
 //       const r = await fetch(`${API_BASE}/api/comments/${comment.id}/report`, {
@@ -138,12 +154,16 @@
 //     setMenuOpen(false);
 //   }
 
+//   // -----------------------------------
+//   // DELETE CONFIRMATION
+//   // -----------------------------------
 //   async function confirmDelete() {
 //     try {
 //       const r = await fetch(`${API_BASE}/api/comments/${comment.id}`, {
 //         method: "DELETE",
 //         credentials: "include",
 //       });
+
 //       if (r.ok) {
 //         toast.addToast("Comment deleted", { type: "success" });
 //         if (onReplyAdded) onReplyAdded();
@@ -160,6 +180,9 @@
 //     }
 //   }
 
+//   // -----------------------------------
+//   // SUBMIT EDIT
+//   // -----------------------------------
 //   async function submitEdit() {
 //     if (!editedText.trim()) {
 //       toast.addToast("Content required", { type: "error" });
@@ -172,6 +195,7 @@
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({ content: editedText }),
 //       });
+
 //       if (r.ok) {
 //         toast.addToast("Comment updated", { type: "success" });
 //         setEditing(false);
@@ -198,8 +222,10 @@
 //         className="comment-avatar"
 //         alt={comment.user_name}
 //       />
+
 //       <div style={{ flex: 1 }}>
 //         <div className="comment-body" style={{ position: "relative" }}>
+//           {/* Header row */}
 //           <div
 //             style={{
 //               display: "flex",
@@ -243,6 +269,7 @@
 //               )}
 //             </div>
 
+//             {/* Menu button */}
 //             <div style={{ marginLeft: 8, position: "relative" }} ref={menuRef}>
 //               <button
 //                 className="menu-trigger-btn"
@@ -253,13 +280,16 @@
 //                 <MoreHorizontal size={18} />
 //               </button>
 
+//               {/* Dropdown menu */}
 //               {menuOpen && (
 //                 <div className="linked-dropdown" role="menu">
+//                   {/* Copy link */}
 //                   <button className="menu-item-btn" onClick={copyLink}>
 //                     <LinkIcon size={16} />
 //                     <span>Copy link to comment</span>
 //                   </button>
 
+//                   {/* Owner menu */}
 //                   {comment.is_owner ? (
 //                     <>
 //                       <button
@@ -352,6 +382,7 @@
 //             </div>
 //           </div>
 
+//           {/* Meta row */}
 //           <div className="comment-meta-row">
 //             <button
 //               onClick={toggleLike}
@@ -374,16 +405,19 @@
 //               {new Date(comment.created_at).toLocaleString()}
 //             </span>
 
+//             {/* ✅ Reply count is NOT clickable anymore */}
 //             {comment.reply_count > 0 && (
-//               <button onClick={toggleReply} className="meta-btn muted-btn">
+//               <span className="reply-count-text muted-btn">
 //                 {comment.reply_count}{" "}
 //                 {comment.reply_count === 1 ? "reply" : "replies"}
-//               </button>
+//               </span>
 //             )}
 //           </div>
 //         </div>
 
-//         {/* Reply input for this comment */}
+//         {/* --------------------------------------------------------------- */}
+//         {/* REPLY INPUT (only when Reply button toggled) */}
+//         {/* --------------------------------------------------------------- */}
 //         {isOpen && (
 //           <div style={{ marginLeft: 48 }}>
 //             <CommentInput
@@ -393,7 +427,6 @@
 //               parentId={comment.id}
 //               mentionName={comment.user_name}
 //               onPosted={() => {
-//                 // reload and keep this thread open
 //                 if (onReplyAdded) onReplyAdded();
 //                 setOpenReplyFor(comment.id);
 //               }}
@@ -401,8 +434,10 @@
 //           </div>
 //         )}
 
-//         {/* Replies (pass openReplyFor so nested replies can open their own input) */}
-//         {comment.replies && comment.replies.length > 0 && (
+//         {/* --------------------------------------------------------------- */}
+//         {/* EXISTING REPLIES (only visible if thread is OPEN) */}
+//         {/* --------------------------------------------------------------- */}
+//         {isOpen && comment.replies && comment.replies.length > 0 && (
 //           <div style={{ marginLeft: 48, marginTop: 8 }}>
 //             {comment.replies.map((r) => (
 //               <ReplyItem
@@ -415,7 +450,7 @@
 //                 setOpenReplyFor={setOpenReplyFor}
 //                 onReplyAdded={() => {
 //                   if (onReplyAdded) onReplyAdded();
-//                   setOpenReplyFor(r.id); // keep nested thread open after post
+//                   setOpenReplyFor(r.id);
 //                 }}
 //               />
 //             ))}
@@ -453,6 +488,9 @@ export default function CommentItem({
   comment,
   API_BASE = "",
   currentUser,
+  rootId, // top-level root id (for nested replies cohesion)
+  openThreadFor,
+  setOpenThreadFor,
   openReplyFor,
   setOpenReplyFor,
   onReplyAdded,
@@ -471,22 +509,17 @@ export default function CommentItem({
   const menuRef = useRef(null);
   useClickOutside(menuRef, () => setMenuOpen(false));
 
-  const isOpen = openReplyFor === comment.id;
+  // whether this top-level thread's replies are visible
+  const threadOpen = openThreadFor === rootId;
 
-  // Close menu on Escape
   useEffect(() => {
     function onKey(e) {
-      if (e.key === "Escape") {
-        setMenuOpen(false);
-      }
+      if (e.key === "Escape") setMenuOpen(false);
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // -----------------------------------
-  // LIKE COMMENT
-  // -----------------------------------
   async function toggleLike() {
     if (likeLoading) return;
     setLikeLoading(true);
@@ -510,16 +543,12 @@ export default function CommentItem({
     setLikeLoading(false);
   }
 
-  // -----------------------------------
-  // TOGGLE REPLY THREAD (ONLY Reply button triggers this)
-  // -----------------------------------
+  // toggle reply editor for this comment - ensure its top-level thread opens
   function toggleReply() {
-    setOpenReplyFor((cur) => (cur === comment.id ? null : comment.id));
+    setOpenThreadFor((cur) => (cur === rootId ? null : rootId)); // open this root
+    setOpenReplyFor((cur) => (cur === comment.id ? null : comment.id)); // toggle editor for this id
   }
 
-  // -----------------------------------
-  // COPY LINK
-  // -----------------------------------
   function copyLink() {
     const link = `${window.location.origin}/post/${comment.post_id}#comment-${comment.id}`;
     navigator.clipboard
@@ -529,9 +558,6 @@ export default function CommentItem({
     setMenuOpen(false);
   }
 
-  // -----------------------------------
-  // FOLLOW / UNFOLLOW
-  // -----------------------------------
   async function toggleFollow() {
     if (processingFollow) return;
     setProcessingFollow(true);
@@ -540,7 +566,6 @@ export default function CommentItem({
         method: "POST",
         credentials: "include",
       });
-
       if (r.ok) {
         const body = await r.json();
         setIsFollowing(Boolean(body.following));
@@ -562,9 +587,6 @@ export default function CommentItem({
     }
   }
 
-  // -----------------------------------
-  // REPORT COMMENT
-  // -----------------------------------
   async function reportComment() {
     try {
       const r = await fetch(`${API_BASE}/api/comments/${comment.id}/report`, {
@@ -582,19 +604,15 @@ export default function CommentItem({
     setMenuOpen(false);
   }
 
-  // -----------------------------------
-  // DELETE CONFIRMATION
-  // -----------------------------------
   async function confirmDelete() {
     try {
       const r = await fetch(`${API_BASE}/api/comments/${comment.id}`, {
         method: "DELETE",
         credentials: "include",
       });
-
       if (r.ok) {
         toast.addToast("Comment deleted", { type: "success" });
-        if (onReplyAdded) onReplyAdded();
+        if (onReplyAdded) onReplyAdded(rootId, null);
       } else {
         const b = await r.json().catch(() => ({}));
         toast.addToast(b.error || "Failed to delete", { type: "error" });
@@ -608,9 +626,6 @@ export default function CommentItem({
     }
   }
 
-  // -----------------------------------
-  // SUBMIT EDIT
-  // -----------------------------------
   async function submitEdit() {
     if (!editedText.trim()) {
       toast.addToast("Content required", { type: "error" });
@@ -623,12 +638,11 @@ export default function CommentItem({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: editedText }),
       });
-
       if (r.ok) {
         toast.addToast("Comment updated", { type: "success" });
         setEditing(false);
         setMenuOpen(false);
-        if (onReplyAdded) onReplyAdded();
+        if (onReplyAdded) onReplyAdded(rootId, comment.id);
       } else {
         const b = await r.json().catch(() => ({}));
         toast.addToast(b.error || "Failed to edit", { type: "error" });
@@ -653,7 +667,6 @@ export default function CommentItem({
 
       <div style={{ flex: 1 }}>
         <div className="comment-body" style={{ position: "relative" }}>
-          {/* Header row */}
           <div
             style={{
               display: "flex",
@@ -697,7 +710,6 @@ export default function CommentItem({
               )}
             </div>
 
-            {/* Menu button */}
             <div style={{ marginLeft: 8, position: "relative" }} ref={menuRef}>
               <button
                 className="menu-trigger-btn"
@@ -708,16 +720,18 @@ export default function CommentItem({
                 <MoreHorizontal size={18} />
               </button>
 
-              {/* Dropdown menu */}
               {menuOpen && (
                 <div className="linked-dropdown" role="menu">
-                  {/* Copy link */}
-                  <button className="menu-item-btn" onClick={copyLink}>
+                  <button
+                    className="menu-item-btn"
+                    onClick={() => {
+                      copyLink();
+                    }}
+                  >
                     <LinkIcon size={16} />
                     <span>Copy link to comment</span>
                   </button>
 
-                  {/* Owner menu */}
                   {comment.is_owner ? (
                     <>
                       <button
@@ -810,7 +824,6 @@ export default function CommentItem({
             </div>
           </div>
 
-          {/* Meta row */}
           <div className="comment-meta-row">
             <button
               onClick={toggleLike}
@@ -833,7 +846,6 @@ export default function CommentItem({
               {new Date(comment.created_at).toLocaleString()}
             </span>
 
-            {/* ✅ Reply count is NOT clickable anymore */}
             {comment.reply_count > 0 && (
               <span className="reply-count-text muted-btn">
                 {comment.reply_count}{" "}
@@ -843,10 +855,8 @@ export default function CommentItem({
           </div>
         </div>
 
-        {/* --------------------------------------------------------------- */}
-        {/* REPLY INPUT (only when Reply button toggled) */}
-        {/* --------------------------------------------------------------- */}
-        {isOpen && (
+        {/* Reply input (only when a reply editor open inside this thread AND threadOpen) */}
+        {threadOpen && openReplyFor === comment.id && (
           <div style={{ marginLeft: 48 }}>
             <CommentInput
               API_BASE={API_BASE}
@@ -854,18 +864,19 @@ export default function CommentItem({
               currentUser={currentUser}
               parentId={comment.id}
               mentionName={comment.user_name}
-              onPosted={() => {
-                if (onReplyAdded) onReplyAdded();
-                setOpenReplyFor(comment.id);
+              onPosted={(created) => {
+                // reload and keep thread + the newly posted reply's editor closed
+                if (onReplyAdded) onReplyAdded(rootId, null);
+                // Keep thread open (rootId) but do not leave reply editor open
+                setOpenThreadFor(rootId);
+                setOpenReplyFor(null);
               }}
             />
           </div>
         )}
 
-        {/* --------------------------------------------------------------- */}
-        {/* EXISTING REPLIES (only visible if thread is OPEN) */}
-        {/* --------------------------------------------------------------- */}
-        {isOpen && comment.replies && comment.replies.length > 0 && (
+        {/* Replies list shown only when threadOpen */}
+        {threadOpen && comment.replies && comment.replies.length > 0 && (
           <div style={{ marginLeft: 48, marginTop: 8 }}>
             {comment.replies.map((r) => (
               <ReplyItem
@@ -873,12 +884,14 @@ export default function CommentItem({
                 reply={r}
                 API_BASE={API_BASE}
                 currentUser={currentUser}
-                onReplyLike={onToggleLike}
+                onReplyLike={() => {
+                  if (onToggleLike) onToggleLike();
+                }}
                 openReplyFor={openReplyFor}
                 setOpenReplyFor={setOpenReplyFor}
-                onReplyAdded={() => {
-                  if (onReplyAdded) onReplyAdded();
-                  setOpenReplyFor(r.id);
+                rootId={rootId}
+                onReplyAdded={(keepRootId = rootId, keepReplyId = null) => {
+                  if (onReplyAdded) onReplyAdded(keepRootId, keepReplyId);
                 }}
               />
             ))}
