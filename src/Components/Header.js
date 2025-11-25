@@ -1,3 +1,4 @@
+// src/Components/Header.js
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar } from "@mui/material";

@@ -64,7 +64,7 @@ export default function PostFieldModal({
                 value={visibility}
                 onChange={(e) => setVisibility(e.target.value)}
               >
-                <option value="Anyone">Post to Everyone</option>
+                <option value="Anyone">Everyone</option>
                 <option value="Connections">Connections only</option>
                 <option value="Private">Private</option>
               </select>
