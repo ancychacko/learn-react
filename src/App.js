@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
 import Welcome from "./Components/Welcome";
-import Notifications from "./Components/NotificationsPanel";
 import MainLayout from "./Layout/MainLayout";
 import NotificationPage from "./Components/NotificationPage";
 

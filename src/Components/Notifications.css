@@ -1,4 +1,4 @@
-.notifications-container {
+/* .notifications-container {
   max-width: 720px;
   margin: 90px auto;
   padding: 0 16px;
@@ -81,4 +81,134 @@
   font-size: 12px;
   color: #6b7280;
   margin-top: 4px;
+} */
+
+/* --- MAIN PAGE LAYOUT --- */
+.ln-notifications-page {
+  display: flex;
+  max-width: 1120px;
+  margin: 90px auto;
+  padding: 0 20px;
+  gap: 28px;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* LEFT SIDEBAR */
+.ln-left {
+  width: 280px;
+  position: sticky;
+  top: 90px;
+  height: fit-content;
+}
+
+/* RIGHT SECTION */
+.ln-right {
+  flex: 1;
+}
+
+.ln-title {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* --- FILTER BUTTONS (LinkedIn style) --- */
+.ln-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.ln-filters button {
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 1px solid #d0d7de;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  color: #444;
+}
+
+.ln-filters button:hover {
+  background: #eef3f8;
+}
+
+.ln-filters .active {
+  background: #0a66c2;
+  color: #fff;
+  border-color: #0a66c2;
+}
+
+/* --- MARK ALL BUTTON --- */
+.ln-mark-all {
+  background: transparent;
+  border: none;
+  color: #0a66c2;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 12px;
+  padding-left: 4px;
+}
+
+/* --- NOTIFICATION LIST --- */
+.ln-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* --- SINGLE NOTIFICATION CARD (LinkedIn style) --- */
+.ln-card {
+  background: #fff;
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ln-card.unread {
+  background: #f3faff;
+}
+
+.ln-card:hover {
+  background: #eef6ff;
+}
+
+/* ICON */
+.ln-card-icon {
+  padding: 10px;
+  background: #eef3f8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* TEXT */
+.ln-card-body {
+  flex: 1;
+}
+
+.ln-card-text {
+  font-size: 14.5px;
+  font-weight: 500;
+}
+
+.ln-card-time {
+  font-size: 12px;
+  color: #69727a;
+  margin-top: 4px;
+}
+
+/* EMPTY & LOADING */
+.ln-loading,
+.ln-no-items {
+  padding: 20px;
+  text-align: center;
+  color: #6b7280;
 }

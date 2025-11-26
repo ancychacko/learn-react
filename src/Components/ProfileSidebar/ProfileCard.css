@@ -1,12 +1,13 @@
+/* ---------------------------------------------------------
+   Base Card Container (used for all 4 sidebar cards)
+--------------------------------------------------------- */
 .profilecard-container {
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  text-align: center;
   font-family: "Segoe UI", sans-serif;
-  position: relative;
-  cursor: default;
+  margin-bottom: 16px;   /* <-- spacing between cards */
   transition: 0.2s ease;
 }
 
@@ -14,13 +15,14 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
-/* Cover background */
+/* ---------------------------------------------------------
+   Profile Header Card (Cover + Avatar + Name + About)
+--------------------------------------------------------- */
 .profilecard-cover {
   height: 60px;
   background: linear-gradient(135deg, #0a66c2, #004182);
 }
 
-/* Avatar image */
 .profilecard-avatar {
   position: relative;
   top: -30px;
@@ -37,12 +39,12 @@
   object-fit: cover;
 }
 
-/* Name & Title */
 .profilecard-name {
   margin-top: -15px;
   font-weight: 700;
   font-size: 16px;
   cursor: pointer;
+  text-align: center;
 }
 
 .profilecard-title {
@@ -50,19 +52,21 @@
   color: #555;
   padding: 4px 12px;
   cursor: pointer;
+  text-align: center;
 }
 
-/* Meta info */
+/* Location + company */
 .profilecard-meta {
   font-size: 12px;
   color: #777;
-  margin-top: 4px;
+  margin: 4px 0 10px;
+  text-align: center;
 }
 
 .profilecard-org {
   font-size: 12px;
   color: #0a66c2;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .dot {
@@ -74,9 +78,10 @@
   margin-right: 6px;
 }
 
-/* Stats section */
+/* ---------------------------------------------------------
+   Analytics Card
+--------------------------------------------------------- */
 .profilecard-stats {
-  margin-top: 10px;
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
 }
@@ -84,7 +89,7 @@
 .profilecard-stat {
   display: flex;
   justify-content: space-between;
-  padding: 8px 16px;
+  padding: 10px 16px;
   font-size: 13px;
   color: #555;
   cursor: pointer;
@@ -94,27 +99,33 @@
   background: #f3f2ef;
 }
 
-/* Premium section */
+/* ---------------------------------------------------------
+   Premium Card
+--------------------------------------------------------- */
 .profilecard-premium {
-  padding: 10px 16px;
+  padding: 12px 16px;
   border-bottom: 1px solid #eee;
+  text-align: left;
+  font-size: 13px;
+  color: #555;
 }
 
 .premium-btn {
   background: none;
   border: none;
   color: #0a66c2;
-  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  margin-top: 4px;
 }
 
-/* Bottom links */
+/* ---------------------------------------------------------
+   Links Card
+--------------------------------------------------------- */
 .profilecard-links {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  padding: 8px 16px 12px;
+  padding: 12px 16px;
 }
 
 .profilecard-links button {
@@ -125,10 +136,16 @@
   text-align: left;
   padding: 6px 0;
   cursor: pointer;
-  width: 100%;
 }
 
 .profilecard-links button:hover {
   color: #0a66c2;
   text-decoration: underline;
+}
+
+/* ---------------------------------------------------------
+   General spacing fixes
+--------------------------------------------------------- */
+.profilecard-container p {
+  margin: 0;
 }

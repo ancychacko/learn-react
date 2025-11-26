@@ -20,7 +20,7 @@ export default function MainLayout({ children, API_BASE }) {
   const location = useLocation();
 
   // Pages that SHOULD NOT show the header
-  const hideHeaderPaths = ["/Login", "/Register", "/Home"];
+  const hideHeaderPaths = ["/Login", "/Register", "/", "/Home"];
 
   const shouldHideHeader = hideHeaderPaths.includes(
     location.pathname.split("?")[0]

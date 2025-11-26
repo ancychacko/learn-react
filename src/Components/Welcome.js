@@ -1,10 +1,13 @@
 // src/Components/Welcome.js
 import React, { useEffect, useState } from "react";
 import Header from "./Header";
-import ProfileCard from "./ProfileCard";
 import PostField from "./PostField";
 import RightSidebar from "./RightSidebar";
 import "./Welcome.css";
+import ProfileHeaderCard from "./ProfileSidebar/ProfileHeaderCard";
+import AnalyticsCard from "./ProfileSidebar/AnalyticsCard";
+import LinksCard from "./ProfileSidebar/LinksCard";
+import PremiumCard from "./ProfileSidebar/PremiumCard";
 
 export default function Welcome() {
   const API_BASE =
@@ -53,11 +56,14 @@ export default function Welcome() {
 
       <div className="home-grid">
         <aside className="left-col">
-          <ProfileCard
+          <ProfileHeaderCard
             user={user}
             API_BASE={API_BASE}
             onUpdate={handleProfileUpdate}
           />
+          <AnalyticsCard />
+          <PremiumCard />
+          <LinksCard />
         </aside>
 
         <main className="center-col">
