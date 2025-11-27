@@ -1,90 +1,131 @@
-// src/Components/NotificationItem.js
-// import React from "react";
-// import { MessageSquare, ThumbsUp, Send, User } from "lucide-react";
+//src/Components/NotificationItem.js
+import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { MoreHorizontal, Bell, Trash2, ThumbsDown } from "lucide-react";
+import useClickOutside from "../Hooks/useClickOutside";
+import "./Notifications.css";
 
-// export default function NotificationItem({ note, API_BASE, onRead }) {
-//   function icon() {
-//     switch (note.type) {
-//       case "comment":
-//         return <MessageSquare size={20} color="#0a66c2" />;
-//       case "like":
-//         return <ThumbsUp size={20} color="#0a66c2" />;
-//       case "share":
-//         return <Send size={20} color="#0a66c2" />;
-//       default:
-//         return <User size={20} color="#0a66c2" />;
-//     }
-//   }
+export default function NotificationItem({
+  note,
+  API_BASE,
+  onRead,
+  onDelete,
+  onMute,
+}) {
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef();
 
-//   function formatTime(ts) {
-//     const date = new Date(ts);
-//     return date.toLocaleString();
-//   }
+  useClickOutside(menuRef, () => setMenuOpen(false));
 
-//   async function markRead() {
-//     await fetch(`${API_BASE}/api/notifications/${note.id}/read`, {
-//       method: "POST",
-//       credentials: "include",
-//     });
-//     onRead(note.id);
-//   }
+  const avatar = note.actor_avatar
+    ? `${window.location.protocol}//${window.location.hostname}:4000${note.actor_avatar}`
+    : "https://cdn-icons-png.flaticon.com/512/149/149071.png";
 
-//   return (
-//     <div
-//       className={`notification-item ${note.is_read ? "read" : "unread"}`}
-//       onClick={markRead}
-//     >
-//       <div className="note-icon">{icon()}</div>
-
-//       <div className="note-body">
-//         <div className="note-text">{note.message}</div>
-//         <div className="note-time">{formatTime(note.created_at)}</div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// src/Components/NotificationItem.js
-import React from "react";
-import { MessageSquare, ThumbsUp, Send, User } from "lucide-react";
-
-export default function NotificationItem({ note, API_BASE, onRead }) {
-  function icon() {
+  function getActionText() {
     switch (note.type) {
-      case "comment":
-        return <MessageSquare size={20} color="#0a66c2" />;
       case "like":
-        return <ThumbsUp size={20} color="#0a66c2" />;
+        return "liked your post";
+      case "comment":
+        return "commented on your post";
       case "share":
-        return <Send size={20} color="#0a66c2" />;
+        return "shared your post";
       default:
-        return <User size={20} color="#0a66c2" />;
+        return "interacted with your post";
     }
   }
 
-  function formatTime(ts) {
-    return new Date(ts).toLocaleString();
-  }
-
-  async function markRead() {
+  async function goToPost() {
     await fetch(`${API_BASE}/api/notifications/${note.id}/read`, {
       method: "POST",
       credentials: "include",
     });
+
     onRead(note.id);
+
+    if (note.comment_id)
+      navigate(`/Post/${note.post_id}?comment=${note.comment_id}`);
+    else navigate(`/Post/${note.post_id}`);
+  }
+
+  async function deleteNotification() {
+    await fetch(`${API_BASE}/api/notifications/${note.id}/delete`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    setMenuOpen(false);
+    onDelete(note.id);
+  }
+
+  async function mutePerson() {
+    await fetch(`${API_BASE}/api/notifications/mute/${note.actor_id}`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    setMenuOpen(false);
+    onMute(note.actor_id);
   }
 
   return (
     <div
-      className={`ln-card ${note.is_read ? "read" : "unread"}`}
-      onClick={markRead}
+      className={`ln-card ${note.is_read ? "" : "unread"}`}
+      onClick={(e) => {
+        if (!menuOpen) goToPost();
+      }}
     >
-      <div className="ln-card-icon">{icon()}</div>
+      <img src={avatar} className="ln-avatar" />
 
       <div className="ln-card-body">
-        <div className="ln-card-text">{note.message}</div>
-        <div className="ln-card-time">{formatTime(note.created_at)}</div>
+        <div className="ln-card-text">
+          <strong>{note.actor_name}</strong> {getActionText()}
+          {note.post_content && (
+            <span className="ln-preview">
+              {" "}
+              — {note.post_content.slice(0, 60)}…
+            </span>
+          )}
+        </div>
+
+        {note.comment_content && (
+          <div className="ln-comment-preview">
+            “{note.comment_content.slice(0, 80)}…”
+          </div>
+        )}
+
+        <div className="ln-card-time">
+          {new Date(note.created_at).toLocaleString()}
+        </div>
+      </div>
+
+      {/* Menu */}
+      <div
+        className="ln-card-menu"
+        ref={menuRef}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button className="dots-btn" onClick={() => setMenuOpen((p) => !p)}>
+          <MoreHorizontal size={18} />
+        </button>
+
+        {menuOpen && (
+          <div className="ln-menu-dropdown">
+            <div className="ln-menu-item">
+              <Bell size={16} /> Change notification preferences
+            </div>
+
+            <div className="ln-menu-item" onClick={deleteNotification}>
+              <Trash2 size={16} /> Delete notification
+            </div>
+
+            <div className="ln-menu-item" onClick={mutePerson}>
+              <ThumbsDown size={16} /> Show less like this (Mute)
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
+

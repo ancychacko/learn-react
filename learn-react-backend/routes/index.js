@@ -27,6 +27,7 @@ router.post("/Profile", upload.single("avatar"), auth.updateProfile);
 // ------------------------------
 router.post("/CreatePost", upload.single("media"), posts.createPost);
 router.get("/Posts", posts.getPosts);
+router.get("/posts/:id", posts.getSinglePost);
 router.post("/Posts/:id/like", posts.toggleLike);
 router.put("/posts/:id", upload.single("media"), posts.editPost);
 router.delete("/posts/:id", posts.deletePost);
@@ -56,5 +57,8 @@ router.get("/following", following.getFollowing);
 router.get("/notifications", notifications.getNotifications);
 router.post("/notifications/:id/read", notifications.markRead);
 router.get("/notifications/unread_count", notifications.unreadCount);
+router.delete("/notifications/:id/delete", notifications.deleteNotification);
+router.post("/notifications/mute/:actorId", notifications.muteActor);
+router.delete("/notifications/mute/:actorId", notifications.unmuteActor);
 
 module.exports = router;

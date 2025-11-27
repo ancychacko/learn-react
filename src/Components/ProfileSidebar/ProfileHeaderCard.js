@@ -1,7 +1,7 @@
 // src/Components/ProfileSidebar/ProfileHeaderCard.js
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "../ProfileSidebar/ProfileCard.css";
+import "./ProfileCard.css";
 
 export default function ProfileHeaderCard({ user }) {
   const navigate = useNavigate();

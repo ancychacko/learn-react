@@ -1,93 +1,8 @@
-/* .notifications-container {
-  max-width: 720px;
-  margin: 90px auto;
-  padding: 0 16px;
-}
-
-.notifications-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.mark-all-btn {
-  background: #0a66c2;
-  color: white;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-.notifications-filters {
-  margin: 16px 0;
-  display: flex;
-  gap: 10px;
-}
-
-.notifications-filters button {
-  border: 1px solid #ddd;
-  padding: 6px 14px;
-  border-radius: 20px;
-  background: white;
-  cursor: pointer;
-  
-}
-
-.notifications-filters .active {
-  background: #0a66c2;
-  color: white;
-  border-color: #0a66c2;
-}
-
-.notifications-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.notification-item {
-  padding: 14px;
-  display: flex;
-  gap: 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  align-items: center;
-  background: white;
-  transition: background 0.2s;
-}
-
-.notification-item.unread {
-  background: #eef5ff;
-}
-
-.notification-item:hover {
-  background: #e6f0ff;
-}
-
-.note-icon {
-  padding: 10px;
-  background: white;
-  border-radius: 50%;
-  display: flex;
-}
-
-.note-text {
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.note-time {
-  font-size: 12px;
-  color: #6b7280;
-  margin-top: 4px;
-} */
-
-/* --- MAIN PAGE LAYOUT --- */
+/* PAGE LAYOUT */
 .ln-notifications-page {
   display: flex;
   max-width: 1120px;
-  margin: 90px auto;
+  margin: 90px auto 40px;
   padding: 0 20px;
   gap: 28px;
   font-family: "Segoe UI", Arial, sans-serif;
@@ -101,7 +16,7 @@
   height: fit-content;
 }
 
-/* RIGHT SECTION */
+/* RIGHT CONTENT */
 .ln-right {
   flex: 1;
 }
@@ -112,7 +27,7 @@
   margin-bottom: 12px;
 }
 
-/* --- FILTER BUTTONS (LinkedIn style) --- */
+/* FILTER BUTTONS */
 .ln-filters {
   display: flex;
   gap: 10px;
@@ -127,8 +42,8 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  transition: all 0.2s ease;
   color: #444;
+  transition: 0.2s;
 }
 
 .ln-filters button:hover {
@@ -141,34 +56,23 @@
   border-color: #0a66c2;
 }
 
-/* --- MARK ALL BUTTON --- */
-.ln-mark-all {
-  background: transparent;
-  border: none;
-  color: #0a66c2;
-  cursor: pointer;
-  font-size: 14px;
-  margin-bottom: 12px;
-  padding-left: 4px;
-}
-
-/* --- NOTIFICATION LIST --- */
+/* FEED */
 .ln-feed {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
-/* --- SINGLE NOTIFICATION CARD (LinkedIn style) --- */
+/* NOTIFICATION CARD */
 .ln-card {
-  background: #fff;
-  padding: 16px;
   display: flex;
   gap: 14px;
+  padding: 16px;
+  background: #fff;
   border-radius: 12px;
   border: 1px solid #e5e7eb;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: 0.15s ease;
 }
 
 .ln-card.unread {
@@ -184,31 +88,107 @@
   padding: 10px;
   background: #eef3f8;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  height: fit-content;
 }
 
-/* TEXT */
+/* AVATAR */
+.ln-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* TEXT BODY */
 .ln-card-body {
   flex: 1;
 }
 
 .ln-card-text {
-  font-size: 14.5px;
+  font-size: 14px;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ln-preview {
+  color: #555;
+  font-weight: 400;
+}
+
+.ln-comment-preview {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #444;
+  background: #f2f3f5;
+  padding: 6px 10px;
+  border-radius: 8px;
+  width: fit-content;
 }
 
 .ln-card-time {
   font-size: 12px;
-  color: #69727a;
+  color: #6b7280;
   margin-top: 4px;
 }
 
-/* EMPTY & LOADING */
+/* MENU DOTS */
+.ln-card-menu {
+  display: flex;
+  align-items: start;
+  padding-top: 4px;
+  color: #777;
+}
+
+/* EMPTY / LOADING */
 .ln-loading,
 .ln-no-items {
   padding: 20px;
   text-align: center;
   color: #6b7280;
+}
+
+.dots-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  color: #000;
+}
+/* --- 3 DOT MENU DROPDOWN --- */
+.ln-menu-dropdown {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  width: 230px;
+  z-index: 20;
+  padding: 6px 0;
+}
+
+.ln-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  gap: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #333;
+}
+
+.ln-menu-item:hover {
+  background: #f3f6f8;
+}
+
+.ln-card-menu {
+  position: relative;
 }

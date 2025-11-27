@@ -1,4 +1,4 @@
-// src/hooks/useClickOutside.js
+// src/Hooks/useClickOutside.js
 import { useEffect } from "react";
 
 export default function useClickOutside(ref, handler) {

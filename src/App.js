@@ -5,6 +5,7 @@ import Login from "./Components/Login";
 import Welcome from "./Components/Welcome";
 import MainLayout from "./Layout/MainLayout";
 import NotificationPage from "./Components/NotificationPage";
+import PostView from "./Components/PostView";
 
 export default function App() {
   const API_BASE =
@@ -22,6 +23,7 @@ export default function App() {
           path="/Notifications"
           element={<NotificationPage API_BASE={API_BASE} />}
         />
+        <Route path="/Post/:id" element={<PostView API_BASE={API_BASE} />} />
       </Routes>
     </BrowserRouter>
   );
