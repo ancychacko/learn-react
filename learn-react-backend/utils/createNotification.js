@@ -1,11 +1,45 @@
 // utils/createNotification.js
+// const pool = require("../Database/pool");
+
+// module.exports = async function createNotification({
+//   recipientId,
+//   actorId = null,
+//   type,
+//   postId = null,
+//   commentId = null,
+//   shareId = null,
+//   data = {},
+// }) {
+//   try {
+//     await pool.query(
+//       `
+//       INSERT INTO notifications
+//       (recipient_id, actor_id, type, post_id, comment_id, share_id, data)
+//       VALUES ($1, $2, $3, $4, $5, $6, $7)
+//       `,
+//       [
+//         recipientId,
+//         actorId,
+//         type,
+//         postId,
+//         commentId,
+//         shareId,
+//         JSON.stringify(data),
+//       ]
+//     );
+//   } catch (err) {
+//     console.error("createNotification() failed:", err);
+//   }
+// };
+
+// utils/createNotification.js
 const pool = require("../Database/pool");
 
 module.exports = async function createNotification({
   recipientId,
   actorId = null,
   type,
-  postId = null,
+  postId = null, // <- Original post ID MUST be passed here for share
   commentId = null,
   shareId = null,
   data = {},
@@ -21,7 +55,7 @@ module.exports = async function createNotification({
         recipientId,
         actorId,
         type,
-        postId,
+        postId, // MUST CONTAIN original_post_id for shares
         commentId,
         shareId,
         JSON.stringify(data),

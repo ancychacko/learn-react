@@ -1,22 +1,19 @@
 //Controllers/notifications.js
-// const pool = require("../Database/pool");
+const pool = require("../Database/pool");
 
-// /**
-//  * ===========================================================
-//  *  GET /api/notifications
-//  *  Returns LinkedIn-style enriched notifications:
-//  *  - actor_name
-//  *  - actor_avatar
-//  *  - post_content (for preview)
-//  *  - comment_content (for preview)
-//  *  - Fully supports: like, comment, share, reshare
-//  * ===========================================================
-//  */
+/**
+ * ===========================================================
+ *  GET /api/notifications
+ *  Returns LinkedIn-style notifications + hides muted actors
+ * ===========================================================
+ */
 // async function getNotifications(req, res) {
 //   if (!req.session.userId)
 //     return res.status(401).json({ error: "Not authenticated" });
 
 //   try {
+//     const userId = req.session.userId;
+
 //     const sql = `
 //       SELECT
 //         n.id,
@@ -44,93 +41,32 @@
 //       LEFT JOIN users u ON u.id = n.actor_id
 //       LEFT JOIN posts p ON p.id = n.post_id
 //       LEFT JOIN comments c ON c.id = n.comment_id
+
 //       WHERE n.recipient_id = $1
+//       AND NOT EXISTS (
+//         SELECT 1 FROM muted_notifications m
+//         WHERE m.user_id = $1 AND m.actor_id = n.actor_id
+//       )
+
 //       ORDER BY n.created_at DESC
 //       LIMIT 200;
 //     `;
 
-//     const result = await pool.query(sql, [req.session.userId]);
+//     const result = await pool.query(sql, [userId]);
 //     res.json(result.rows);
-
 //   } catch (err) {
 //     console.error("GET /api/notifications error", err);
 //     res.status(500).json({ error: "Server error" });
 //   }
 // }
 
-// /**
-//  * ===========================================================
-//  *  POST /api/notifications/:id/read
-//  * ===========================================================
-//  */
-// async function markRead(req, res) {
-//   if (!req.session.userId)
-//     return res.status(401).json({ error: "Not authenticated" });
-
-//   const nid = parseInt(req.params.id, 10);
-
-//   try {
-//     await pool.query(
-//       "UPDATE notifications SET is_read = true WHERE id=$1 AND recipient_id=$2",
-//       [nid, req.session.userId]
-//     );
-
-//     res.json({ ok: true });
-
-//   } catch (err) {
-//     console.error("mark notification read err", err);
-//     res.status(500).json({ error: "Server error" });
-//   }
-// }
-
-// /**
-//  * ===========================================================
-//  *  GET /api/notifications/unread_count
-//  *  Used for the RED dot badge on the bell icon
-//  * ===========================================================
-//  */
-// async function unreadCount(req, res) {
-//   if (!req.session.userId)
-//     return res.status(401).json({ error: "Not authenticated" });
-
-//   try {
-//     const r = await pool.query(
-//       "SELECT COUNT(*)::int AS count FROM notifications WHERE recipient_id=$1 AND is_read=false",
-//       [req.session.userId]
-//     );
-
-//     res.json({ count: r.rows[0].count });
-
-//   } catch (err) {
-//     console.error("GET unread count error", err);
-//     res.status(500).json({ error: "Server error" });
-//   }
-// }
-
-// module.exports = {
-//   getNotifications,
-//   markRead,
-//   unreadCount,
-// };
-
-// Controllers/notifications.js
-
-
-const pool = require("../Database/pool");
-
-/**
- * ===========================================================
- *  GET /api/notifications
- *  Returns LinkedIn-style notifications + hides muted actors
- * ===========================================================
- */
 async function getNotifications(req, res) {
   if (!req.session.userId)
     return res.status(401).json({ error: "Not authenticated" });
 
-  try {
-    const userId = req.session.userId;
+  const userId = req.session.userId;
 
+  try {
     const sql = `
       SELECT 
         n.id,
@@ -143,30 +79,39 @@ async function getNotifications(req, res) {
         n.is_read,
         n.created_at,
 
-        -- Actor Info
+        -- actor (who performed like/comment/share)
         u.name AS actor_name,
         u.avatar_url AS actor_avatar,
 
-        -- Post preview
+        -- post (normal post or original shared post)
+        p.id AS post_id_resolved,
         p.content AS post_content,
         p.media_url AS post_media,
+        p.media_type AS post_media_type,
 
-        -- Comment preview
-        c.content AS comment_content
+        -- original shared post owner
+        ou.name AS original_owner_name,
+        ou.avatar_url AS original_owner_avatar
 
       FROM notifications n
+
+      -- actor info
       LEFT JOIN users u ON u.id = n.actor_id
+
+      -- post info (n.post_id ALWAYS contains original_post_id for shares)
       LEFT JOIN posts p ON p.id = n.post_id
-      LEFT JOIN comments c ON c.id = n.comment_id
+
+      -- original owner of the post
+      LEFT JOIN users ou ON ou.id = p.user_id
 
       WHERE n.recipient_id = $1
       AND NOT EXISTS (
         SELECT 1 FROM muted_notifications m
         WHERE m.user_id = $1 AND m.actor_id = n.actor_id
       )
-
+      
       ORDER BY n.created_at DESC
-      LIMIT 200;
+      LIMIT 50;
     `;
 
     const result = await pool.query(sql, [userId]);
@@ -176,7 +121,6 @@ async function getNotifications(req, res) {
     res.status(500).json({ error: "Server error" });
   }
 }
-
 /**
  * ===========================================================
  *  POST /api/notifications/:id/read
@@ -212,7 +156,7 @@ async function deleteNotification(req, res) {
 
   try {
     await pool.query(
-      `DELETE FROM notifications 
+      `DELETE FROM notifications
        WHERE id = $1 AND recipient_id = $2`,
       [req.params.id, req.session.userId]
     );
@@ -293,7 +237,7 @@ async function unreadCount(req, res) {
       `
       SELECT COUNT(*)::int AS count
       FROM notifications n
-      WHERE n.recipient_id = $1 
+      WHERE n.recipient_id = $1
       AND n.is_read = false
       AND NOT EXISTS (
         SELECT 1 FROM muted_notifications m

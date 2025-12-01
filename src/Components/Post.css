@@ -172,3 +172,77 @@
   gap: 4px;
 }
 
+
+/* ===============================
+   SHARED POST (NEW)
+================================ */
+
+.post-shared-container {
+  background: #f8faff;
+  border: 1px solid #e6eef8;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.post-shared-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.post-shared-inner {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+/* INNER POST CARD (ORIGINAL POST) */
+.post-inner-card {
+  display: block;
+}
+
+.post-inner-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.post-inner-body p {
+  margin: 8px 0;
+  white-space: pre-wrap;
+}
+
+/* SHARED POST UI */
+.shared-wrapper {
+  background: #f7f9fb;
+  border: 1px solid #dce6f1;
+  border-radius: 10px;
+  padding: 14px;
+  margin: 10px 0;
+}
+
+.shared-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.shared-author {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.shared-date {
+  font-size: 12px;
+  color: #777;
+}
+
+.shared-body p {
+  margin: 8px 0;
+  white-space: pre-wrap;
+}
