@@ -1,64 +1,331 @@
-// controllers/shares.js
+// //Controllers/shares.js
+// const pool = require("../Database/pool");
+// const createNotification = require("../utils/createNotification");
+
+// /**
+//  * POST /api/posts/:id/share
+//  * body:
+//  * {
+//  *   recipients: [],
+//  *   share_to_feed: boolean,
+//  *   comment: "reshare thoughts"
+//  * }
+//  */
+// async function sharePost(req, res) {
+//   if (!req.session.userId)
+//     return res.status(401).json({ error: "Not authenticated" });
+
+//   const userId = req.session.userId;
+//   const postId = Number(req.params.id);
+
+//   const {
+//     recipients = [],
+//     share_to_feed = false,
+//     comment = "",
+//   } = req.body || {};
+
+//   try {
+//     // -----------------------------
+//     // 1) CREATE SHARE ROW
+//     // -----------------------------
+//     const shareInsert = await pool.query(
+//       `INSERT INTO shares (post_id, user_id)
+//        VALUES ($1, $2)
+//        RETURNING id, created_at`,
+//       [postId, userId]
+//     );
+//     const shareId = shareInsert.rows[0].id;
+
+//     // -----------------------------
+//     // 2) SAVE SHARE RECIPIENTS
+//     // -----------------------------
+//     const validRecipients = Array.from(
+//       new Set((recipients || []).map((r) => Number(r)).filter(Boolean))
+//     );
+
+//     if (validRecipients.length > 0) {
+//       await Promise.all(
+//         validRecipients.map((rid) =>
+//           pool.query(
+//             `INSERT INTO shares_recipients (share_id, recipient_id)
+//              VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+//             [shareId, rid]
+//           )
+//         )
+//       );
+
+//       // Notify recipients
+//       await Promise.all(
+//         validRecipients.map((rid) =>
+//           createNotification({
+//             recipientId: rid,
+//             actorId: userId,
+//             type: "sent",
+//             postId,
+//             shareId,
+//             data: { comment },
+//           })
+//         )
+//       );
+//     }
+
+//     // -----------------------------
+//     // 3) Notify ORIGINAL owner
+//     // -----------------------------
+//     const ownerRes = await pool.query(`SELECT user_id FROM posts WHERE id=$1`, [
+//       postId,
+//     ]);
+//     if (ownerRes.rows.length) {
+//       const ownerId = ownerRes.rows[0].user_id;
+
+//       if (ownerId !== userId) {
+//         await createNotification({
+//           recipientId: ownerId,
+//           actorId: userId,
+//           type: "share",
+//           postId,
+//           shareId,
+//           data: { comment },
+//         });
+//       }
+//     }
+
+//     // -----------------------------
+//     // 4) SHARE TO FEED (LinkedIn style)
+//     // -----------------------------
+//     if (share_to_feed) {
+//       const originalRes = await pool.query(
+//         `SELECT id, content, media_url, media_type, visibility
+//          FROM posts WHERE id=$1`,
+//         [postId]
+//       );
+
+//       if (!originalRes.rows.length)
+//         return res.status(400).json({ error: "Original post not found" });
+
+//       // Create a real post
+//       await pool.query(
+//         `INSERT INTO posts (
+//             user_id,
+//             content,
+//             media_url,
+//             media_type,
+//             visibility,
+//             is_share,
+//             original_post_id
+//         )
+//         VALUES ($1, $2, $3, $4, $5, true, $6)`,
+//         [
+//           userId,
+//           comment || "", // sharer thoughts
+//           originalRes.rows[0].media_url,
+//           originalRes.rows[0].media_type,
+//           originalRes.rows[0].visibility || "Anyone",
+//           postId, // links to original post
+//         ]
+//       );
+//     }
+
+//     // -----------------------------
+//     // 5) RETURN NEW SHARE COUNT
+//     // -----------------------------
+//     const countRes = await pool.query(
+//       `SELECT COUNT(*)::int AS count FROM shares WHERE post_id=$1`,
+//       [postId]
+//     );
+
+//     return res.json({
+//       ok: true,
+//       share_id: shareId,
+//       count: countRes.rows[0].count,
+//     });
+//   } catch (err) {
+//     console.error("share error", err);
+//     return res.status(500).json({ error: "Server error" });
+//   }
+// }
+
+// module.exports = { sharePost };
+
+// Controllers/shares.js (FINAL UPDATED VERSION)
 const pool = require("../Database/pool");
 const createNotification = require("../utils/createNotification");
 
 /**
  * POST /api/posts/:id/share
- * body: { recipients: [ids], share_to_feed: boolean, comment: optional text (reshare with thoughts) }
+ * body:
+ * {
+ *   recipients: [],
+ *   share_to_feed: boolean,
+ *   comment: "reshare thoughts"
+ * }
  */
+// async function sharePost(req, res) {
+//   if (!req.session.userId)
+//     return res.status(401).json({ error: "Not authenticated" });
+
+//   const userId = req.session.userId;
+//   const postId = Number(req.params.id);
+
+//   const {
+//     recipients = [],
+//     share_to_feed = false,
+//     comment = "",
+//   } = req.body || {};
+
+//   try {
+//     // 1) CREATE SHARE RECORD
+//     const shareInsert = await pool.query(
+//       `INSERT INTO shares (post_id, user_id)
+//        VALUES ($1, $2)
+//        RETURNING id, created_at`,
+//       [postId, userId]
+//     );
+//     const shareId = shareInsert.rows[0].id;
+
+//     // 2) SAVE SHARE RECIPIENTS
+//     const validRecipients = Array.from(
+//       new Set((recipients || []).map((r) => Number(r)).filter(Boolean))
+//     );
+
+//     if (validRecipients.length > 0) {
+//       await Promise.all(
+//         validRecipients.map((rid) =>
+//           pool.query(
+//             `INSERT INTO shares_recipients (share_id, recipient_id)
+//              VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+//             [shareId, rid]
+//           )
+//         )
+//       );
+
+//       // Notify recipients
+//       await Promise.all(
+//         validRecipients.map((rid) =>
+//           createNotification({
+//             recipientId: rid,
+//             actorId: userId,
+//             type: "sent",
+//             postId,
+//             shareId,
+//             data: { comment },
+//           })
+//         )
+//       );
+//     }
+
+//     // 3) Notify ORIGINAL post owner
+//     const ownerRes = await pool.query(`SELECT user_id FROM posts WHERE id=$1`, [
+//       postId,
+//     ]);
+
+//     if (ownerRes.rows.length) {
+//       const ownerId = ownerRes.rows[0].user_id;
+//       if (ownerId !== userId) {
+//         await createNotification({
+//           recipientId: ownerId,
+//           actorId: userId,
+//           type: "share",
+//           postId,
+//           shareId,
+//           data: { comment },
+//         });
+//       }
+//     }
+
+//     // 4) SHARE TO FEED — LinkedIn style
+//     if (share_to_feed) {
+//       // DO NOT copy original media
+//       await pool.query(
+//         `INSERT INTO posts (
+//            user_id,
+//            content,
+//            media_url,
+//            media_type,
+//            visibility,
+//            is_share,
+//            original_post_id
+//          )
+//          VALUES ($1, $2, NULL, NULL, 'Anyone', true, $3)`,
+//         [
+//           userId,
+//           comment || "",
+//           postId, // link to original
+//         ]
+//       );
+//     }
+
+//     // 5) Return share count
+//     const countRes = await pool.query(
+//       `SELECT COUNT(*)::int AS count FROM shares WHERE post_id=$1`,
+//       [postId]
+//     );
+
+//     return res.json({
+//       ok: true,
+//       share_id: shareId,
+//       count: countRes.rows[0].count,
+//     });
+//   } catch (err) {
+//     console.error("share error", err);
+//     return res.status(500).json({ error: "Server error" });
+//   }
+// }
 async function sharePost(req, res) {
   if (!req.session.userId)
     return res.status(401).json({ error: "Not authenticated" });
+
   const userId = req.session.userId;
-  const postId = parseInt(req.params.id, 10);
-  const {
-    recipients = [],
-    share_to_feed = false,
-    comment = null,
-  } = req.body || {};
+  const postId = Number(req.params.id);
+
+  const { recipients = [], share_to_feed = false, comment = "" } = req.body;
 
   try {
-    // create share row
-    const insert = await pool.query(
-      "INSERT INTO shares (post_id, user_id) VALUES ($1, $2) RETURNING id, created_at",
+    const shareInsert = await pool.query(
+      `INSERT INTO shares (post_id, user_id)
+       VALUES ($1, $2)
+       RETURNING id`,
       [postId, userId]
     );
-    const shareId = insert.rows[0].id;
 
-    // save recipients mapping
-    if (Array.isArray(recipients) && recipients.length) {
-      const uniq = Array.from(
-        new Set(recipients.map((r) => parseInt(r, 10)).filter(Boolean))
-      );
-      const vals = uniq.map((rid) =>
-        pool.query(
-          "INSERT INTO shares_recipients (share_id, recipient_id) VALUES ($1, $2) ON CONFLICT DO NOTHING",
-          [shareId, rid]
+    const shareId = shareInsert.rows[0].id;
+
+    const validRecipients = Array.from(
+      new Set(recipients.map((r) => Number(r)).filter(Boolean))
+    );
+
+    if (validRecipients.length > 0) {
+      await Promise.all(
+        validRecipients.map((rid) =>
+          pool.query(
+            `INSERT INTO shares_recipients (share_id, recipient_id)
+             VALUES ($1, $2)
+             ON CONFLICT DO NOTHING`,
+            [shareId, rid]
+          )
         )
       );
-      await Promise.all(vals);
 
-      // create notification rows for recipients
-      const notifPromises = uniq.map((rid) =>
-        createNotification({
-          recipientId: rid,
-          actorId: userId,
-          type: "sent",
-          postId,
-          shareId,
-          data: { comment },
-        })
+      await Promise.all(
+        validRecipients.map((rid) =>
+          createNotification({
+            recipientId: rid,
+            actorId: userId,
+            type: "sent",
+            postId,
+            shareId,
+            data: { comment },
+          })
+        )
       );
-      await Promise.all(notifPromises);
     }
 
-    // notify post owner (if not same)
-    const postOwnerRes = await pool.query(
-      "SELECT user_id FROM posts WHERE id=$1",
-      [postId]
-    );
-    if (postOwnerRes.rows.length) {
-      const ownerId = postOwnerRes.rows[0].user_id;
+    const ownerRes = await pool.query("SELECT user_id FROM posts WHERE id=$1", [
+      postId,
+    ]);
+
+    if (ownerRes.rows.length) {
+      const ownerId = ownerRes.rows[0].user_id;
       if (ownerId !== userId) {
         await createNotification({
           recipientId: ownerId,
@@ -71,38 +338,24 @@ async function sharePost(req, res) {
       }
     }
 
-    // optionally reshare to feed (create a new post from original + optional comment)
     if (share_to_feed) {
-      const original = await pool.query(
-        "SELECT content, media_url, media_type, visibility FROM posts WHERE id=$1",
-        [postId]
+      // const contentText = (comment || "").trim();
+
+      await pool.query(
+        `INSERT INTO posts (user_id, content, media_url, media_type, visibility, is_share, original_post_id)
+         VALUES ($1, $2, NULL, NULL, 'Anyone', true, $3)`,
+        [userId, comment, postId]
       );
-      if (original.rows.length) {
-        const orig = original.rows[0];
-        const newContent = comment
-          ? `${comment}\n\nShared: ${orig.content || ""}`
-          : `Shared: ${orig.content || ""}`;
-        await pool.query(
-          "INSERT INTO posts (user_id, content, media_url, media_type, visibility) VALUES ($1, $2, $3, $4, $5)",
-          [
-            userId,
-            newContent,
-            orig.media_url,
-            orig.media_type,
-            orig.visibility || "Anyone",
-          ]
-        );
-      }
     }
 
-    // recalc share count
     const countRes = await pool.query(
-      "SELECT COUNT(*)::int AS count FROM shares WHERE post_id=$1",
+      `SELECT COUNT(*)::int AS count FROM shares WHERE post_id=$1`,
       [postId]
     );
-    res.json({ ok: true, count: countRes.rows[0].count, share_id: shareId });
+
+    res.json({ ok: true, share_id: shareId, count: countRes.rows[0].count });
   } catch (err) {
-    console.error("share err", err);
+    console.error("share error", err);
     res.status(500).json({ error: "Server error" });
   }
 }

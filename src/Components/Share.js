@@ -1,53 +1,4 @@
 // src/Components/Share.js
-// import React, { useState } from "react";
-// import { Send } from "lucide-react";
-// import ShareModal from "./ShareModal";
-// import { useToast } from "../Contexts/ToastContext";
-
-// export default function Share({
-//   API_BASE = "",
-//   postId,
-//   onShared,
-//   posterName = "Post",
-// }) {
-//   const [modalOpen, setModalOpen] = useState(false);
-//   const toast = useToast();
-
-//   function handleSent(newCount) {
-//     if (typeof onShared === "function") onShared(newCount);
-//     toast.addToast("Post sent successfully.", { type: "success" });
-//   }
-
-//   return (
-//     <>
-//       <button
-//         className="action-btn send-btn"
-//         onClick={() => setModalOpen(true)}
-//         style={{ minWidth: 90 }}
-//       >
-//         <Send size={18} className="icon" />
-//         <span>Share</span>
-//       </button>
-
-//       <ShareModal
-//         open={modalOpen}
-//         onClose={() => setModalOpen(false)}
-//         postId={postId}
-//         API_BASE={API_BASE}
-//         posterName={posterName}
-//         onSent={(count) => {
-//           try {
-//             handleSent(count);
-//           } finally {
-//             setModalOpen(false);
-//           }
-//         }}
-//       />
-//     </>
-//   );
-// }
-
-// src/Components/Share.js
 import React, { useState } from "react";
 import { Send } from "lucide-react";
 import ShareModal from "./ShareModal";
@@ -75,7 +26,7 @@ export default function Share({
         style={{ minWidth: 90 }}
       >
         <Send size={18} className="icon" />
-        <span>Share</span>
+        <span>Send</span>
       </button>
 
       <ShareModal
