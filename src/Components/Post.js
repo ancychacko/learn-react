@@ -13,6 +13,7 @@
 //   BookMarked,
 //   ThumbsUp,
 //   MessageCircle,
+//   CornerUpRight,
 // } from "lucide-react";
 
 // import Like from "./Like";
@@ -99,9 +100,9 @@
 
 //   return (
 //     <article className="post-card">
-//       {/* -----------------------------------
-//            HEADER (SHARER INFO)
-//       ----------------------------------- */}
+//       {/* =====================================
+//           POST HEADER
+//       ====================================== */}
 //       <div className="post-header">
 //         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
 //           <img
@@ -122,7 +123,7 @@
 //           </div>
 //         </div>
 
-//         {/* MENU */}
+//         {/* POST MENU */}
 //         <div ref={menuRef} style={{ position: "relative" }}>
 //           <button className="dots-btn" onClick={() => setMenuOpen(!menuOpen)}>
 //             <Ellipsis size={20} />
@@ -168,23 +169,28 @@
 //         </div>
 //       </div>
 
-//       {/* -----------------------------------
-//             SHARER COMMENT (LinkedIn style)
-//       ----------------------------------- */}
+//       {/* =====================================
+//           SHARER'S THOUGHT COMMENT
+//       ====================================== */}
 //       {isShared && post.share_comment && (
 //         <div className="post-body">
 //           <p>{post.share_comment}</p>
 //         </div>
 //       )}
 
-//       {/* -----------------------------------
-//            ORIGINAL POST (INNER CARD)
-//       ----------------------------------- */}
-//       {isShared && <SharedPost original={post.original_post} />}
+//       {/* =====================================
+//           SHARED ORIGINAL POST (LINKEDIN STYLE)
+//       ====================================== */}
+//       {isShared && (
+//         <SharedPost
+//           original={post.original_post}
+//           missing={post.original_missing}
+//         />
+//       )}
 
-//       {/* -----------------------------------
-//            NORMAL POST (Not shared)
-//       ----------------------------------- */}
+//       {/* =====================================
+//           NORMAL POST
+//       ====================================== */}
 //       {!isShared && (
 //         <div className="post-body">
 //           <p>{post.content}</p>
@@ -201,7 +207,7 @@
 //         </div>
 //       )}
 
-//       {/* STATS */}
+//       {/* POST STATS */}
 //       <div className="post-stats">
 //         <span className="stats-item">
 //           <ThumbsUp size={14} /> {likeCount}
@@ -214,7 +220,7 @@
 //         </span>
 //       </div>
 
-//       {/* ACTIONS */}
+//       {/* ACTION BAR */}
 //       <div className="post-actions">
 //         <Like
 //           API_BASE={API_BASE}
@@ -232,6 +238,10 @@
 //           onClick={() => setOpenComment(!openComment)}
 //         >
 //           <MessageCircle size={18} /> Comment
+//         </button>
+
+//         <button className="action-btn">
+//           <CornerUpRight size={18} /> Repost
 //         </button>
 
 //         <Share
@@ -282,14 +292,16 @@ import {
   BookMarked,
   ThumbsUp,
   MessageCircle,
-  CornerUpRight,
+  Edit3,
+  Repeat2,
 } from "lucide-react";
-
 import Like from "./Like";
 import Comment from "./Comment";
 import Share from "./Share";
 import EditPostModal from "./EditPostModal";
 import SharedPost from "./SharedPost";
+import useClickOutside from "../Hooks/useClickOutside";
+import RepostModal from "./RepostModal";
 import "./Post.css";
 
 export default function Post({
@@ -300,6 +312,9 @@ export default function Post({
   currentUser,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const [repostMenuOpen, setRepostMenuOpen] = useState(false);
+
   const [showEditModal, setShowEditModal] = useState(false);
 
   const [likeCount, setLikeCount] = useState(Number(post.like_count || 0));
@@ -309,8 +324,10 @@ export default function Post({
     Number(post.comment_count || 0)
   );
   const [openComment, setOpenComment] = useState(false);
+  const [openRepostModal, setOpenRepostModal] = useState(false);
 
   const menuRef = useRef();
+  const repostRef = useRef();
 
   const isShared = post.is_share === true && post.original_post;
 
@@ -319,6 +336,7 @@ export default function Post({
     return `${window.location.protocol}//${window.location.hostname}:4000${path}`;
   }
 
+  /* CLOSE 3-DOTS MENU ON OUTSIDE CLICK */
   useEffect(() => {
     function handleOutside(e) {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -328,6 +346,9 @@ export default function Post({
     document.addEventListener("mousedown", handleOutside);
     return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
+
+  /* CLOSE REPOST MENU ON OUTSIDE CLICK USING HOOK */
+  useClickOutside(repostRef, () => setRepostMenuOpen(false));
 
   const isMyPost =
     post.user_name?.trim().toLowerCase() ===
@@ -369,9 +390,7 @@ export default function Post({
 
   return (
     <article className="post-card">
-      {/* =====================================
-          POST HEADER
-      ====================================== */}
+      {/* POST HEADER */}
       <div className="post-header">
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
           <img
@@ -438,18 +457,14 @@ export default function Post({
         </div>
       </div>
 
-      {/* =====================================
-          SHARER'S THOUGHT COMMENT
-      ====================================== */}
+      {/* SHARED COMMENT */}
       {isShared && post.share_comment && (
         <div className="post-body">
           <p>{post.share_comment}</p>
         </div>
       )}
 
-      {/* =====================================
-          SHARED ORIGINAL POST (LINKEDIN STYLE)
-      ====================================== */}
+      {/* SHARED ORIGINAL POST */}
       {isShared && (
         <SharedPost
           original={post.original_post}
@@ -457,9 +472,7 @@ export default function Post({
         />
       )}
 
-      {/* =====================================
-          NORMAL POST
-      ====================================== */}
+      {/* NORMAL POST */}
       {!isShared && (
         <div className="post-body">
           <p>{post.content}</p>
@@ -508,9 +521,38 @@ export default function Post({
         >
           <MessageCircle size={18} /> Comment
         </button>
-        <button className="action-btn">
-          <CornerUpRight size={18} /> Repost
-        </button>
+
+        {/* ============================
+            REPOST BUTTON + MENU
+        ============================ */}
+        <div className="repost-wrapper" ref={repostRef}>
+          <button
+            className="action-btn"
+            onClick={() => setRepostMenuOpen(!repostMenuOpen)}
+          >
+            <Repeat2 size={18} /> Repost
+          </button>
+
+          {repostMenuOpen && (
+            <div className="repost-menu">
+              <button
+                onClick={() => {
+                  setRepostMenuOpen(false);
+                  setOpenRepostModal(true);
+                }}
+              >
+                <Edit3 size={17} />
+                Repost with your thoughts
+              </button>
+
+              <button>
+                <Repeat2 size={17} />
+                Repost instantly
+              </button>
+            </div>
+          )}
+        </div>
+
         <Share
           API_BASE={API_BASE}
           postId={post.id}
@@ -540,6 +582,17 @@ export default function Post({
           currentUser={{ name: post.user_name, avatar_url: post.avatar_url }}
         />
       )}
+
+      <RepostModal
+        open={openRepostModal}
+        onClose={() => setOpenRepostModal(false)}
+        currentUser={currentUser}
+        originalPost={post.is_share ? post.original_post : post} // ← FIXED
+        API_BASE={API_BASE}
+        onSuccess={() => {
+          if (typeof refresh === "function") refresh();
+        }}
+      />
     </article>
   );
 }

@@ -527,3 +527,45 @@
 .shared-body {
   margin-top: 4px;
 }
+
+/* ============================
+   REPOST MENU DROPDOWN
+============================ */
+
+.repost-wrapper {
+  position: relative;
+}
+
+.repost-menu {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 18px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  min-width: 210px;
+  z-index: 30;
+  padding: 8px 0;
+}
+
+.repost-menu button {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #222;
+  border-radius: 6px;
+  width: 100%;
+  text-align: left;
+}
+
+.repost-menu button:hover {
+  background: #f2f6fb;
+  color: #0a66c2;
+}
