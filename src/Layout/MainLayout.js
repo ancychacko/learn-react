@@ -1,16 +1,3 @@
-// // src/MainLayout.js
-// import React from "react";
-// import Header from "../Components/Header";
-
-// export default function MainLayout({ children, API_BASE, user }) {
-//   return (
-//     <div>
-//       <Header API_BASE={API_BASE} user={user} />
-//       <div style={{ paddingTop: 70 }}>{children}</div>
-//     </div>
-//   );
-// }
-
 // src/Layout/MainLayout.js
 import React from "react";
 import { useLocation } from "react-router-dom";

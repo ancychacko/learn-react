@@ -12,6 +12,7 @@ const comments = require("../Controllers/comments");
 const shares = require("../Controllers/shares");
 const notifications = require("../Controllers/notifications");
 const following = require("../Controllers/following");
+const messages = require("../Controllers/messages");
 
 // ------------------------------
 // AUTH
@@ -60,5 +61,22 @@ router.get("/notifications/unread_count", notifications.unreadCount);
 router.delete("/notifications/:id/delete", notifications.deleteNotification);
 router.post("/notifications/mute/:actorId", notifications.muteActor);
 router.delete("/notifications/mute/:actorId", notifications.unmuteActor);
+
+// ------------------------------
+// MESSAGING  ⭐ NEW ⭐
+// ------------------------------
+
+// Send message (text + file + post attachment)
+router.post(
+  "/messages/send",
+  messages.upload.single("attachment"),
+  messages.sendMessage
+);
+
+// Get user conversations
+router.get("/messages/conversations", messages.getConversations);
+
+// Get chat messages between me & another user
+router.get("/messages/:userId", messages.getChat);
 
 module.exports = router;

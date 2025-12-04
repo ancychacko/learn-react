@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
@@ -6,14 +6,37 @@ import Welcome from "./Components/Welcome";
 import MainLayout from "./Layout/MainLayout";
 import NotificationPage from "./Components/NotificationPage";
 import PostView from "./Components/PostView";
+import Messaging from "./Pages/Messaging";
 
 export default function App() {
   const API_BASE =
     process.env.REACT_APP_API_BASE ||
     `${window.location.protocol}//${window.location.hostname}:4000`;
+
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // ⭐ Fetch logged-in user details
+  useEffect(() => {
+    async function loadMe() {
+      try {
+        const res = await fetch(`${API_BASE}/api/me`, {
+          credentials: "include",
+        });
+
+        if (res.ok) {
+          const user = await res.json();
+          setCurrentUser(user);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user:", err);
+      }
+    }
+
+    loadMe();
+  }, [API_BASE]);
   return (
     <BrowserRouter>
-      <MainLayout API_BASE={API_BASE}></MainLayout>
+      <MainLayout API_BASE={API_BASE} user={currentUser}></MainLayout>
       <Routes>
         <Route path="/" element={<Register />} />
         <Route path="/Register" element={<Register />} />
@@ -24,6 +47,10 @@ export default function App() {
           element={<NotificationPage API_BASE={API_BASE} />}
         />
         <Route path="/Post/:id" element={<PostView API_BASE={API_BASE} />} />
+        <Route
+          path="/Messaging"
+          element={<Messaging API_BASE={API_BASE} currentUser={currentUser} />}
+        />
       </Routes>
     </BrowserRouter>
   );

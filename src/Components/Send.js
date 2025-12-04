@@ -1,10 +1,10 @@
-// src/Components/Share.js
+// src/Components/Send.js
 import React, { useState } from "react";
-import { Send } from "lucide-react";
+import { Send as SendIcon } from "lucide-react";
 import ShareModal from "./ShareModal";
 import { useToast } from "../Contexts/ToastContext";
 
-export default function Share({
+export default function Send({
   API_BASE = "",
   postId,
   onShared,
@@ -25,7 +25,7 @@ export default function Share({
         onClick={() => setModalOpen(true)}
         style={{ minWidth: 90 }}
       >
-        <Send size={18} className="icon" />
+        <SendIcon size={18} className="icon" />
         <span>Send</span>
       </button>
 

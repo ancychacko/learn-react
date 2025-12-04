@@ -1,0 +1,557 @@
+/* FULL PAGE WRAPPER (whole page never scrolls) */
+.messaging-page-wrapper {
+  height: calc(100vh - 70px);
+  overflow: hidden;
+  background: #f3f2ef;
+  display: flex;
+  flex-direction: column;
+}
+
+/* CENTERING THE MAIN MESSAGE CARD LIKE LINKEDIN */
+.messaging-outer-center {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  overflow: hidden;
+  padding-top: 10px;
+}
+
+/* The messaging-container now acts as a fixed-width messaging card */
+.messaging-container {
+  width: 1080px;          /* LinkedIn exact width */
+  height: 100%;
+  display: flex;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  overflow: hidden;
+}
+
+
+
+
+
+/* /* ============================
+   MAIN LAYOUT
+============================ */
+
+.messaging-container {
+  display: flex;
+  height: calc(100vh - 70px);
+  background: #f5f6f8;
+  overflow: hidden;
+  font-family: system-ui, sans-serif;
+}
+
+/* ============================
+   LEFT SIDEBAR
+============================ */
+
+.conversation-list {
+  width: 320px;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  overflow-y: auto;
+  padding-top: 8px;
+}
+
+.conversation-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background 0.15s;
+}
+
+.conversation-item:hover {
+  background: #f3f6f9;
+}
+
+.conversation-item.active {
+  background: #e8f3fd;
+  border-left: 4px solid #0a66c2;
+}
+
+.conversation-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.conversation-meta {
+  flex: 1;
+}
+
+.conversation-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1d1d1d;
+}
+
+.conversation-last {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* No conversation text */
+.muted {
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+/* ============================
+   RIGHT PANEL
+============================ */
+
+.messaging-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f9fafb;
+}
+
+/* Empty message panel */
+.empty-thread {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 18px;
+}
+
+/* ============================
+   MESSAGE THREAD
+============================ */
+
+.message-thread {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f4f6f8;
+}
+
+/* ============================
+   MESSAGE BUBBLES
+============================ */
+
+.bubble-wrapper {
+  max-width: 60%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.4;
+  position: relative;
+  word-wrap: break-word;
+}
+
+.bubble-wrapper.mine {
+  align-self: flex-end;
+  background: #0a66c2;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.bubble-wrapper.theirs {
+  align-self: flex-start;
+  background: #ffffff;
+  color: #111;
+  border: 1px solid #e5e7eb;
+  border-bottom-left-radius: 4px;
+}
+
+.bubble-text {
+  white-space: pre-wrap;
+}
+
+/* ============================
+   ATTACHMENT BUBBLE
+============================ */
+
+.bubble-attachment img,
+.bubble-image {
+  max-width: 260px;
+  border-radius: 10px;
+  margin-top: 8px;
+}
+
+.bubble-video {
+  max-width: 260px;
+  border-radius: 10px;
+  margin-top: 8px;
+}
+
+.bubble-attachment a {
+  display: inline-block;
+  margin-top: 8px;
+  color: #0a66c2;
+  font-weight: 500;
+}
+
+/* ============================
+   SHARED POST PREVIEW CARD
+============================ */
+
+.bubble-post-card {
+  margin-top: 10px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.bubble-post-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #111;
+}
+
+.bubble-post-link {
+  display: inline-block;
+  margin-top: 6px;
+  color: #0a66c2;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.bubble-post-link:hover {
+  text-decoration: underline;
+}
+
+/* ============================
+   MESSAGE INPUT
+============================ */
+
+.message-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.message-input input[type="text"] {
+  flex: 1;
+  padding: 12px 14px;
+  border-radius: 25px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  outline: none;
+  transition: 0.15s;
+}
+
+.message-input input[type="text"]:focus {
+  border-color: #0a66c2;
+}
+
+.message-input-icons {
+  display: flex;
+  align-items: center;
+}
+
+.file-icon {
+  cursor: pointer;
+  color: #6b7280;
+  padding: 6px;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+
+.file-icon:hover {
+  background: #eef3f8;
+}
+ */
+
+
+ /* =====================================================
+   FULL LINKEDIN-STYLE MESSAGING PAGE
+===================================================== */
+
+/* ---------- MAIN WRAPPER ---------- */
+.messaging-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 70px); /* Below main header */
+  background: #f3f2ef;
+  font-family: system-ui, sans-serif;
+}
+
+/* =====================================================
+   TOP HEADER BAR
+===================================================== */
+
+.messaging-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #ddd;
+}
+
+.messaging-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.messaging-header-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111;
+}
+
+.messaging-search-box {
+  width: 260px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #f3f6f9;
+  font-size: 14px;
+}
+
+/* HEADER RIGHT ICONS */
+.messaging-header-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.header-icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.header-icon-btn:hover {
+  background: #eef3f8;
+}
+
+/* =====================================================
+   FILTER BAR (Focused | Jobs | Unread | ...)
+===================================================== */
+
+.messaging-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #ddd;
+}
+
+.filter-pill {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  background: #f3f6f9;
+  color: #4a4a4a;
+  cursor: pointer;
+  transition: 0.2s;
+  border: 1px solid transparent;
+}
+
+.filter-pill:hover {
+  background: #e8f3ff;
+}
+
+.filter-pill.active {
+  background: #0a66c2;
+  color: white;
+}
+
+/* =====================================================
+   TWO-PANEL LAYOUT
+===================================================== */
+
+.messaging-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  background: #f3f2ef;
+}
+
+/* ---------- LEFT SIDEBAR ---------- */
+
+.conversation-list {
+  width: 330px;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+  padding-top: 10px;
+}
+
+.conversation-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f7f7f7;
+  transition: 0.15s;
+}
+
+.conversation-item:hover {
+  background: #f3f6f9;
+}
+
+.conversation-item.active {
+  background: #eef3ff;
+  border-left: 4px solid #0a66c2;
+  padding-left: 12px;
+}
+
+.conversation-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.conversation-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.conversation-last {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.muted {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+}
+
+/* =====================================================
+   RIGHT CHAT PANEL
+===================================================== */
+
+.messaging-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+
+/* Empty state */
+.empty-thread {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  color: #9ca3af;
+}
+
+/* =====================================================
+   MESSAGE THREAD
+===================================================== */
+
+.message-thread {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 26px;
+  background: #eef3f8;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Message rows */
+.message-row {
+  display: flex;
+}
+
+.message-row.me {
+  justify-content: flex-end;
+}
+
+.message-row.them {
+  justify-content: flex-start;
+}
+
+/* Bubbles */
+.message-bubble {
+  max-width: 60%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: #fff;
+  font-size: 14px;
+  line-height: 1.4;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+}
+
+.message-row.me .message-bubble {
+  background: #0a66c2;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.message-row.them .message-bubble {
+  background: #fff;
+  color: #111;
+}
+
+/* Attachments */
+.msg-image {
+  max-width: 240px;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+
+/* =====================================================
+   INPUT BAR
+===================================================== */
+
+.message-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-top: 1px solid #ddd;
+  background: #fff;
+}
+
+.message-input input[type="text"] {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 24px;
+  border: 1px solid #ccc;
+  background: #f7f7f7;
+  font-size: 15px;
+}
+
+.message-input .send-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  cursor: pointer;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #5f6368;
+  min-width: 110px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.message-input .send-btn:hover {
+  background: #f2f6fb;
+  color: #0a66c2;
+}
