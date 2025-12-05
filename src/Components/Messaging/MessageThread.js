@@ -1,6 +1,6 @@
+// src/Components/Messaging/MessageThread.js
 import React, { useEffect, useRef } from "react";
 import MessageBubble from "./MessageBubble";
-
 
 export default function MessageThread({ messages, currentUser }) {
   const bottomRef = useRef();

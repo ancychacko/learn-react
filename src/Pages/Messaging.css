@@ -1,101 +1,176 @@
-/* FULL PAGE WRAPPER (whole page never scrolls) */
+/* Messaging.css
+   Centered LinkedIn-style messaging card.
+   Header+filters remain visible. Only left list + right thread scroll.
+*/
+
+/* PAGE WRAPPER - full height under your global site header (70px) */
 .messaging-page-wrapper {
   height: calc(100vh - 70px);
-  overflow: hidden;
+  overflow: hidden; /* page itself doesn't scroll; internal panels do */
   background: #f3f2ef;
   display: flex;
-  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10px; /* small gap from site header */
+  box-sizing: border-box;
 }
 
-/* CENTERING THE MAIN MESSAGE CARD LIKE LINKEDIN */
+/* Outer center just holds the card and keeps it centered */
 .messaging-outer-center {
+  width: 100%;
   display: flex;
   justify-content: center;
-  flex: 1;
-  overflow: hidden;
-  padding-top: 10px;
 }
 
-/* The messaging-container now acts as a fixed-width messaging card */
+/* THE CARD: exact linkedin width, full available height inside wrapper */
 .messaging-container {
-  width: 1080px;          /* LinkedIn exact width */
-  height: 100%;
-  display: flex;
-  background: white;
+  width: 1080px;
+  height: calc(100vh - 70px - 20px); /* wrapper height minus padding */
+  background: #fff;
   border-radius: 8px;
   border: 1px solid #ddd;
-  overflow: hidden;
-}
-
-
-
-
-
-/* /* ============================
-   MAIN LAYOUT
-============================ */
-
-.messaging-container {
   display: flex;
-  height: calc(100vh - 70px);
-  background: #f5f6f8;
+  flex-direction: column;
   overflow: hidden;
-  font-family: system-ui, sans-serif;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.03);
 }
 
-/* ============================
-   LEFT SIDEBAR
-============================ */
+/* -------------------------
+   TOP HEADER (inside card)
+   ------------------------- */
+.messaging-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #ececec;
+  flex: 0 0 auto;
+}
 
-.conversation-list {
+.messaging-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.messaging-header-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111;
+}
+
+.messaging-search-box {
   width: 320px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid #e0e6ea;
+  background: #f3f6f9;
+  font-size: 14px;
+}
+
+/* header right icons */
+.messaging-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+}
+.header-icon-btn:hover { background: #f2f6fb; }
+
+/* -------------------------
+   FILTER BAR (below header)
+   ------------------------- */
+.messaging-filter-bar {
+  display: flex;
+  gap: 12px;
+  padding: 12px 20px;
+  background: #fff;
+  border-bottom: 1px solid #ececec;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.filter-pill {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  background: #f3f6f9;
+  color: #444;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.filter-pill.active {
+  background: #0a66c2;
+  color: #fff;
+}
+
+/* -------------------------
+   MAIN BODY: two panels
+   ------------------------- */
+.messaging-body {
+  display: flex;
+  flex: 1 1 auto;
+  overflow: hidden; /* prevent page scroll, inner panels will scroll */
+  background: #f3f2ef;
+}
+
+/* LEFT SIDEBAR container */
+.sidebar {
+  width: 330px;
+  border-right: 1px solid #e6e6e6;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* conversation list area — make it take full height and scroll */
+.conversation-list {
+  /* flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-top: 8px;
+  box-sizing: border-box; */
+  width: 100%;
   background: #ffffff;
   border-right: 1px solid #e5e7eb;
   overflow-y: auto;
   padding-top: 8px;
 }
 
+/* small helper class used in JSX for scrollable area */
+.scroll-y { height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+/* conversation item styles (keep your existing look) */
 .conversation-item {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
   cursor: pointer;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f7f7f7;
   transition: background 0.15s;
 }
+.conversation-item:hover { background:#f3f6f9; }
+.conversation-item.active { background: #eef6ff; border-left: 4px solid #0a66c2; padding-left: 12px; }
 
-.conversation-item:hover {
-  background: #f3f6f9;
-}
-
-.conversation-item.active {
-  background: #e8f3fd;
-  border-left: 4px solid #0a66c2;
-}
-
-.conversation-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-}
+.conversation-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+.conversation-name { font-size: 15px; font-weight: 600; color: #1d1d1d;}
+.conversation-last { font-size: 13px; color: #6b7280; margin-top: 2px;}
 
 .conversation-meta {
   flex: 1;
 }
 
-.conversation-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: #1d1d1d;
-}
-
-.conversation-last {
-  font-size: 13px;
-  color: #6b7280;
-  margin-top: 2px;
-}
 
 /* No conversation text */
 .muted {
@@ -105,20 +180,31 @@
   color: #9ca3af;
 }
 
-/* ============================
-   RIGHT PANEL
-============================ */
 
-.messaging-right {
+/* -------------------------
+   RIGHT CHAT PANEL
+   ------------------------- */
+.chat-panel {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: #f9fafb;
+  background: #ffffff;
+
 }
 
-/* Empty message panel */
+/* Thread area: scrollable and fills available space between filters+input */
+.thread {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #eef3f8;
+  padding: 18px 22px;
+  box-sizing: border-box;
+}
+
+/* empty state centered */
 .empty-thread {
-  flex: 1;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -126,23 +212,24 @@
   font-size: 18px;
 }
 
-/* ============================
-   MESSAGE THREAD
-============================ */
+/* message bubble styles (reuse your existing rules) */
+.message-row { display: flex; }
+.message-row.me { justify-content: flex-end; }
+.message-row.them { justify-content: flex-start; }
 
-.message-thread {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px 26px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  background: #f4f6f8;
+.message-bubble { max-width: 60%; padding: 12px 16px; border-radius: 14px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.message-row.me .message-bubble { background: #0a66c2; color: #fff; }
+
+/* -------------------------
+   BOTTOM: fixed input wrapper inside card (not page)
+   ------------------------- */
+.message-input-wrapper {
+  flex: 0 0 auto;
+  border-top: 1px solid #e6e6e6;
+  background: #fff;
+  padding: 12px 18px;
+  box-sizing: border-box;
 }
-
-/* ============================
-   MESSAGE BUBBLES
-============================ */
 
 .bubble-wrapper {
   max-width: 60%;
@@ -227,297 +314,9 @@
   text-decoration: underline;
 }
 
-/* ============================
-   MESSAGE INPUT
-============================ */
-
-.message-input {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 18px;
-  border-top: 1px solid #e5e7eb;
-  background: #ffffff;
-}
-
-.message-input input[type="text"] {
-  flex: 1;
-  padding: 12px 14px;
-  border-radius: 25px;
-  border: 1px solid #d1d5db;
-  font-size: 14px;
-  outline: none;
-  transition: 0.15s;
-}
-
-.message-input input[type="text"]:focus {
-  border-color: #0a66c2;
-}
-
-.message-input-icons {
-  display: flex;
-  align-items: center;
-}
-
-.file-icon {
-  cursor: pointer;
-  color: #6b7280;
-  padding: 6px;
-  border-radius: 50%;
-  transition: background 0.15s;
-}
-
-.file-icon:hover {
-  background: #eef3f8;
-}
- */
 
 
- /* =====================================================
-   FULL LINKEDIN-STYLE MESSAGING PAGE
-===================================================== */
-
-/* ---------- MAIN WRAPPER ---------- */
-.messaging-container {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 70px); /* Below main header */
-  background: #f3f2ef;
-  font-family: system-ui, sans-serif;
-}
-
-/* =====================================================
-   TOP HEADER BAR
-===================================================== */
-
-.messaging-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  background: #ffffff;
-  border-bottom: 1px solid #ddd;
-}
-
-.messaging-header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.messaging-header-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: #111;
-}
-
-.messaging-search-box {
-  width: 260px;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background: #f3f6f9;
-  font-size: 14px;
-}
-
-/* HEADER RIGHT ICONS */
-.messaging-header-right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.header-icon-btn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 6px;
-  transition: background 0.15s;
-}
-
-.header-icon-btn:hover {
-  background: #eef3f8;
-}
-
-/* =====================================================
-   FILTER BAR (Focused | Jobs | Unread | ...)
-===================================================== */
-
-.messaging-filter-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 20px;
-  background: #ffffff;
-  border-bottom: 1px solid #ddd;
-}
-
-.filter-pill {
-  padding: 6px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  background: #f3f6f9;
-  color: #4a4a4a;
-  cursor: pointer;
-  transition: 0.2s;
-  border: 1px solid transparent;
-}
-
-.filter-pill:hover {
-  background: #e8f3ff;
-}
-
-.filter-pill.active {
-  background: #0a66c2;
-  color: white;
-}
-
-/* =====================================================
-   TWO-PANEL LAYOUT
-===================================================== */
-
-.messaging-body {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-  background: #f3f2ef;
-}
-
-/* ---------- LEFT SIDEBAR ---------- */
-
-.conversation-list {
-  width: 330px;
-  background: #fff;
-  border-right: 1px solid #ddd;
-  overflow-y: auto;
-  padding-top: 10px;
-}
-
-.conversation-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  cursor: pointer;
-  border-bottom: 1px solid #f7f7f7;
-  transition: 0.15s;
-}
-
-.conversation-item:hover {
-  background: #f3f6f9;
-}
-
-.conversation-item.active {
-  background: #eef3ff;
-  border-left: 4px solid #0a66c2;
-  padding-left: 12px;
-}
-
-.conversation-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.conversation-name {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.conversation-last {
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.muted {
-  text-align: center;
-  padding: 20px;
-  color: #888;
-}
-
-/* =====================================================
-   RIGHT CHAT PANEL
-===================================================== */
-
-.messaging-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: #ffffff;
-}
-
-/* Empty state */
-.empty-thread {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 18px;
-  color: #9ca3af;
-}
-
-/* =====================================================
-   MESSAGE THREAD
-===================================================== */
-
-.message-thread {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px 26px;
-  background: #eef3f8;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* Message rows */
-.message-row {
-  display: flex;
-}
-
-.message-row.me {
-  justify-content: flex-end;
-}
-
-.message-row.them {
-  justify-content: flex-start;
-}
-
-/* Bubbles */
-.message-bubble {
-  max-width: 60%;
-  padding: 12px 16px;
-  border-radius: 14px;
-  background: #fff;
-  font-size: 14px;
-  line-height: 1.4;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
-}
-
-.message-row.me .message-bubble {
-  background: #0a66c2;
-  color: #fff;
-  border-bottom-right-radius: 4px;
-}
-
-.message-row.them .message-bubble {
-  background: #fff;
-  color: #111;
-}
-
-/* Attachments */
-.msg-image {
-  max-width: 240px;
-  margin-top: 10px;
-  border-radius: 10px;
-}
-
-/* =====================================================
-   INPUT BAR
-===================================================== */
-
+/* Keep your MessageInput layout intact — adapt small spacing so it fits */
 .message-input {
   display: flex;
   align-items: center;
@@ -525,8 +324,8 @@
   padding: 14px 18px;
   border-top: 1px solid #ddd;
   background: #fff;
-}
 
+}
 .message-input input[type="text"] {
   flex: 1;
   padding: 12px 16px;
@@ -534,24 +333,54 @@
   border: 1px solid #ccc;
   background: #f7f7f7;
   font-size: 15px;
+  transition: 0.15s;
+  outline: none;
+}
+
+.message-input input[type="text"]:focus {
+  border-color: #0a66c2;
+}
+
+
+/* file icon + send button */
+.file-icon {
+  cursor: pointer;
+  color: #072053;
+  padding: 6px;
+  border-radius: 50%;
+  transition: background 0.15s;
+}
+
+.file-icon:hover {
+  background: #b6cbe0;
 }
 
 .message-input .send-btn {
+   background: transparent; 
+   border: none; 
+   cursor: pointer; 
+   padding: 8px; 
+   border-radius: 6px; 
+  }
+
+.message-input-icons {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
-  background: transparent;
-  cursor: pointer;
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #5f6368;
-  min-width: 110px;
-  transition: background 0.15s, color 0.15s;
 }
 
-.message-input .send-btn:hover {
-  background: #f2f6fb;
-  color: #0a66c2;
+/* small responsive safety */
+@media (max-width: 1100px) {
+  .messaging-container { width: calc(100% - 40px); margin: 0 20px; }
+  .messaging-search-box { width: 220px; }
+}
+
+
+.message-thread {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f4f6f8;
 }

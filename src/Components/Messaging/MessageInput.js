@@ -1,5 +1,6 @@
+// src/Components/Messaging/MessageInput.js
 import React, { useState } from "react";
-import { Send, Image as ImageIcon, Paperclip } from "lucide-react";
+import { Send, Paperclip } from "lucide-react";
 
 export default function MessageInput({ onSend }) {
   const [text, setText] = useState("");
