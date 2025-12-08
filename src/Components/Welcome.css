@@ -37,7 +37,7 @@ body {
   grid-template-columns: 280px 1fr 300px;
   gap: 20px;
   max-width: 1200px;
-  margin: 90px auto 40px;
+  margin: 20 auto 40px;
   padding: 0 16px;
 }
 
@@ -501,37 +501,6 @@ body {
   border-radius: 20px;
   border: none;
   cursor: pointer;
-}
-
-/* --- Post Dropdown --- 
-.post-menu {
-  position: absolute;
-  top: 25px;
-  right: 0;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  min-width: 150px;
-}
-
-.post-menu button {
-  background: none;
-  border: none;
-  padding: 8px 12px;
-  text-align: left;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-}
-
-.post-menu button:hover {
-  background: #f3f3f3;
 }
 
 /* --- General Post Layout --- */
@@ -1033,7 +1002,7 @@ body {
   grid-template-columns: 280px 1fr 300px;
   gap: 20px;
   max-width: 1200px;
-  margin: 90px auto 40px;
+  margin: 0 auto 40px;
   padding: 0 16px;
 }
 

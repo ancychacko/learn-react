@@ -1,5 +1,5 @@
 // src/Components/PostFieldModal.js
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { Image, Video, FileText, X, Globe2 } from "lucide-react";
 import "./PostField.css";
@@ -21,6 +21,18 @@ export default function PostFieldModal({
   setMedia,
   setPreviewUrl,
 }) {
+  // 🔒 LOCK BODY SCROLL WHEN MODAL IS OPEN
+  useEffect(() => {
+    const { overflow } = document.body.style;
+
+    // lock scroll
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      // restore original scroll
+      document.body.style.overflow = overflow;
+    };
+  }, []);
   // Remove preview (reset media)
   const closeButtonForPreview = () => {
     setMedia(null);

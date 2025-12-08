@@ -1,9 +1,9 @@
-// src/Components/ShareModal.js
+// src/Components/SendModal.js
 import React, { useEffect, useState } from "react";
 import "./Send.css";
 import { X } from "lucide-react";
 
-export default function ShareModal({
+export default function SendModal({
   open,
   onClose,
   postId,
@@ -22,6 +22,24 @@ export default function ShareModal({
   // ⭐ NEW: Thoughts for sharing
   const [thoughts, setThoughts] = useState("");
 
+  /* ============================================================
+       ⭐ SCROLL LOCK WHEN MODAL IS OPEN
+     ============================================================ */
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden"; // Lock scroll
+    } else {
+      document.body.style.overflow = ""; // Restore scroll
+    }
+
+    return () => {
+      document.body.style.overflow = ""; // Cleanup always
+    };
+  }, [open]);
+
+  /* ============================================================
+       LOAD FOLLOWERS WHEN MODAL OPENS
+     ============================================================ */
   useEffect(() => {
     if (!open) return;
 
@@ -65,36 +83,6 @@ export default function ShareModal({
     `${f.name || ""}`.toLowerCase().includes(query.toLowerCase())
   );
 
-  // async function handleSend() {
-  //   if (sending) return;
-  //   setSending(true);
-
-  //   try {
-  //     const r = await fetch(`${API_BASE}/api/posts/${postId}/share`, {
-  //       method: "POST",
-  //       credentials: "include",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         recipients: Array.from(selected),
-  //         share_to_feed: Boolean(shareToFeed),
-  //         comment: thoughts.trim() || null, // ⭐ NEW: sending comment to backend
-  //       }),
-  //     });
-
-  //     if (r.ok) {
-  //       const body = await r.json();
-  //       if (typeof onSent === "function") onSent(body.count);
-  //       onClose();
-  //     } else {
-  //       const b = await r.json().catch(() => ({}));
-  //       console.error("share error", b);
-  //     }
-  //   } catch (err) {
-  //     console.error("share network", err);
-  //   } finally {
-  //     setSending(false);
-  //   }
-  // }
   async function handleSend() {
     if (sending) return;
     setSending(true);

@@ -1,6 +1,5 @@
 // src/Components/Welcome.js
 import React, { useEffect, useState } from "react";
-import Header from "./Header";
 import PostField from "./PostField";
 import RightSidebar from "./RightSidebar";
 import "./Welcome.css";
@@ -8,6 +7,7 @@ import ProfileHeaderCard from "./ProfileSidebar/ProfileHeaderCard";
 import AnalyticsCard from "./ProfileSidebar/AnalyticsCard";
 import LinksCard from "./ProfileSidebar/LinksCard";
 import PremiumCard from "./ProfileSidebar/PremiumCard";
+//import Header from "./Header";
 
 export default function Welcome() {
   const API_BASE =
@@ -52,7 +52,7 @@ export default function Welcome() {
   return (
     <>
       {/* pass user so Header can show avatar immediately */}
-      <Header API_BASE={API_BASE} user={user} />
+      {/* <Header API_BASE={API_BASE} user={user} /> */}
 
       <div className="home-grid">
         <aside className="left-col">

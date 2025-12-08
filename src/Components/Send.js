@@ -1,7 +1,7 @@
 // src/Components/Send.js
 import React, { useState } from "react";
 import { Send as SendIcon } from "lucide-react";
-import ShareModal from "./ShareModal";
+import SendModal from "./SendModal";
 import { useToast } from "../Contexts/ToastContext";
 
 export default function Send({
@@ -15,7 +15,7 @@ export default function Send({
 
   function handleSent(newCount) {
     if (typeof onShared === "function") onShared(newCount);
-    toast.addToast("Post sent successfully.", { type: "success" });
+    toast.addToast("Message sent successfully.", { type: "success" });
   }
 
   return (
@@ -29,7 +29,7 @@ export default function Send({
         <span>Send</span>
       </button>
 
-      <ShareModal
+      <SendModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         postId={postId}

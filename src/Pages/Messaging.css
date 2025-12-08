@@ -9,6 +9,7 @@
   overflow: hidden; /* page itself doesn't scroll; internal panels do */
   background: #f3f2ef;
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
   justify-content: center;
   padding-top: 10px; /* small gap from site header */

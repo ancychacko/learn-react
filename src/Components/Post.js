@@ -25,7 +25,6 @@ import useClickOutside from "../Hooks/useClickOutside";
 import RepostModal from "./RepostModal";
 import "./Post.css";
 
-
 export default function Post({
   post,
   API_BASE = "",

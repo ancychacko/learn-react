@@ -7,7 +7,7 @@ export default function MainLayout({ children, API_BASE }) {
   const location = useLocation();
 
   // Pages that SHOULD NOT show the header
-  const hideHeaderPaths = ["/Login", "/Register", "/", "/Home"];
+  const hideHeaderPaths = ["/Login", "/Register", "/"];
 
   const shouldHideHeader = hideHeaderPaths.includes(
     location.pathname.split("?")[0]
@@ -19,7 +19,7 @@ export default function MainLayout({ children, API_BASE }) {
       {!shouldHideHeader && <Header API_BASE={API_BASE} />}
 
       {/* Actual page content */}
-      <div style={{ marginTop: shouldHideHeader ? 0 : "75px" }}>{children}</div>
+      <div style={{ marginTop: shouldHideHeader ? 0 : "60px" }}>{children}</div>
     </div>
   );
 }
