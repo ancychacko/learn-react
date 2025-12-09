@@ -23,6 +23,7 @@ import EditPostModal from "./EditPostModal";
 import SharedPost from "./SharedPost";
 import useClickOutside from "../Hooks/useClickOutside";
 import RepostModal from "./RepostModal";
+import ImagePreviewModal from "./ImagePreviewModal";
 import "./Post.css";
 
 export default function Post({
@@ -46,6 +47,8 @@ export default function Post({
   );
   const [openComment, setOpenComment] = useState(false);
   const [openRepostModal, setOpenRepostModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [modalImageUrl, setModalImageUrl] = useState(null);
 
   const menuRef = useRef();
   const repostRef = useRef();
@@ -198,8 +201,21 @@ export default function Post({
         <div className="post-body">
           <p>{post.content}</p>
 
-          {post.media_url && post.media_type === "image" && (
+          {/* {post.media_url && post.media_type === "image" && (
             <img className="post-media" src={mediaUrl(post.media_url)} alt="" />
+          )} */}
+
+          {post.media_url && post.media_type === "image" && (
+            <img
+              className="post-media"
+              src={mediaUrl(post.media_url)}
+              alt=""
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setModalImageUrl(mediaUrl(post.media_url));
+                setShowImageModal(true);
+              }}
+            />
           )}
 
           {post.media_url && post.media_type === "video" && (
@@ -312,6 +328,26 @@ export default function Post({
         API_BASE={API_BASE}
         onSuccess={() => {
           if (typeof refresh === "function") refresh();
+        }}
+      />
+
+      <ImagePreviewModal
+        open={showImageModal}
+        onClose={() => setShowImageModal(false)}
+        post={post}
+        API_BASE={API_BASE}
+        currentUser={currentUser}
+        onLike={() => document.querySelector(`#like-${post.id}`)?.click()}
+        onCommentClick={() => {
+          setOpenComment(true);
+          setShowImageModal(false);
+        }}
+        onRepostClick={() => {
+          setShowImageModal(false);
+          setOpenRepostModal(true);
+        }}
+        onSendClick={() => {
+          document.querySelector(`#send-${post.id}`)?.click();
         }}
       />
     </article>

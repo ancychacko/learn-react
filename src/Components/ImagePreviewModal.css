@@ -1,0 +1,232 @@
+/* BACKDROP */
+.img-modal-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* MODAL WRAPPER */
+.img-modal {
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  max-width: 1400px;
+  max-height: 900px;
+  background: white;
+  border-radius: 8px;
+  display: flex;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+}
+
+/* LEFT IMAGE AREA */
+.img-left {
+  flex: 0 0 55%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+  min-width: 420px;
+  height: 100%;
+}
+
+.img-preview {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* RIGHT SIDE PANEL */
+.img-right {
+  flex: 0 0 45%;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #e6e6e6;
+  height: 100%;
+  background: #fff;
+}
+
+/* HEADER */
+.img-right-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid #ddd;
+  background: white;
+  position: sticky;
+  top: 0;
+  z-index: 12;
+}
+
+.img-header-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.img-header-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.img-header-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.img-header-meta {
+  font-size: 12px;
+  color: #777;
+}
+
+.img-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* SCROLLABLE CONTENT AREA */
+.img-right-body {
+  padding: 18px;
+  overflow-y: auto;
+  flex-grow: 0;      /* <-- IMPORTANT */
+  max-height: calc(100% - 130px); /* header + action bar */
+}
+
+/* POST TEXT */
+.img-post-content p {
+  margin: 8px 0;
+  line-height: 1.6;
+  font-size: 15px;
+  color: #111;
+}
+
+/* COMMENT SECTION */
+.img-comment-section {
+  margin-top: 12px;
+}
+
+/* ACTION BAR — BASE STYLE */
+.img-right-actions-fixed {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: white;
+  border-top: 1px solid #e6e6e6;
+  gap: 12px;
+}
+
+/* ACTION BAR — STICKY WHEN CONTENT IS LONG */
+.img-right-actions-fixed.stick {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+}
+
+/* ACTION BAR — NORMAL FLOW WHEN CONTENT IS SHORT */
+.img-right-actions-fixed.no-stick {
+  position: relative;
+}
+
+/* ACTION BUTTON */
+.action-btn {
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  color: #555;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.action-btn:hover {
+  color: #0a66c2;
+  background: rgba(10,102,194,0.06);
+}
+
+/* LIKE WRAPPER */
+.img-like-wrapper {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* REPOST MENU */
+.repost-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.repost-menu {
+  position: absolute;
+  bottom: 56px;
+  left: 0;
+  width: 220px;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+  padding: 8px;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.repost-menu button {
+  background: transparent;
+  border: none;
+  padding: 8px 10px;
+  text-align: left;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.repost-menu button:hover {
+  background: rgba(10,102,194,0.04);
+}
+
+/* MOBILE RESPONSIVE MODE */
+@media (max-width: 980px) {
+  .img-modal {
+    flex-direction: column;
+    width: calc(100% - 24px);
+    height: calc(100% - 24px);
+    max-width: none;
+    max-height: none;
+  }
+
+  .img-left {
+    height: 50vh;
+    min-width: 0;
+  }
+
+  .img-right {
+    flex: 1;
+    border-left: none;
+    border-top: 1px solid #e6e6e6;
+  }
+
+  .img-right-actions-fixed.stick {
+    position: sticky;
+    bottom: 0;
+  }
+}
