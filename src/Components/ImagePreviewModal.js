@@ -1,282 +1,4 @@
-// src/Components/ImagePreviewModal.js
-// import React, { useEffect, useState, useRef } from "react";
-// import ReactDOM from "react-dom";
-// import "./ImagePreviewModal.css";
-// import {
-//   X,
-//   MessageCircle,
-//   Repeat2,
-//   Send as SendIcon,
-//   Edit3,
-// } from "lucide-react";
-
-// import Like from "./Like";
-// import Comment from "./Comment";
-// import SendModal from "./SendModal";
-// import RepostModal from "./RepostModal";
-// import useClickOutside from "../Hooks/useClickOutside";
-
-// export default function ImagePreviewModal({
-//   open,
-//   onClose,
-//   post,
-//   API_BASE = "",
-//   currentUser,
-//   refresh,
-// }) {
-//   const [likeCount, setLikeCount] = useState(post?.like_count || 0);
-//   const [likedByMe, setLikedByMe] = useState(post?.liked_by_me || false);
-//   const [commentCount, setCommentCount] = useState(post?.comment_count || 0);
-
-//   const [openComment, setOpenComment] = useState(false);
-//   const [openRepostModal, setOpenRepostModal] = useState(false);
-//   const [openSendModal, setOpenSendModal] = useState(false);
-//   const [repostMenuOpen, setRepostMenuOpen] = useState(false);
-
-//   const modalRef = useRef();
-//   const contentRef = useRef();
-
-//   const [shouldStickActionBar, setShouldStickActionBar] = useState(false);
-
-//   /** Close modal on outside click */
-//   useClickOutside(modalRef, () => {
-//     if (open) onClose();
-//   });
-
-//   /** Sync counts with parent */
-//   useEffect(() => {
-//     setLikeCount(post?.like_count ?? 0);
-//     setLikedByMe(post?.liked_by_me ?? false);
-//     setCommentCount(post?.comment_count ?? 0);
-//   }, [post]);
-
-//   /** Lock page scroll */
-//   useEffect(() => {
-//     if (!open) return;
-//     const scrollY = window.scrollY;
-
-//     document.body.style.position = "fixed";
-//     document.body.style.top = `-${scrollY}px`;
-
-//     return () => {
-//       const y = Math.abs(parseInt(document.body.style.top || "0"));
-//       document.body.style.position = "";
-//       document.body.style.top = "";
-//       window.scrollTo(0, y);
-//     };
-//   }, [open]);
-
-//   /** Determine sticky bar behavior */
-//   useEffect(() => {
-//     if (!contentRef.current) return;
-
-//     const contentHeight = contentRef.current.scrollHeight;
-//     const visibleHeight = contentRef.current.clientHeight;
-
-//     setShouldStickActionBar(contentHeight > visibleHeight + 20);
-//   }, [post, openComment]);
-
-//   if (!open) return null;
-
-//   const stop = (e) => e.stopPropagation();
-
-//   const mediaUrl = (path) =>
-//     path
-//       ? `${window.location.protocol}//${window.location.hostname}:4000${path}`
-//       : null;
-
-//   return ReactDOM.createPortal(
-//     <div className="img-modal-overlay" onClick={onClose}>
-//       <div className="img-modal" ref={modalRef} onClick={stop}>
-//         {/* LEFT IMAGE */}
-//         <div className="img-left">
-//           <img
-//             src={mediaUrl(post.media_url)}
-//             className="img-preview"
-//             draggable={false}
-//             alt=""
-//           />
-//         </div>
-
-//         {/* RIGHT SIDE */}
-//         <div className="img-right">
-//           {/* HEADER */}
-//           <div className="img-right-header">
-//             <div className="img-header-user">
-//               <img
-//                 src={
-//                   post.avatar_url
-//                     ? mediaUrl(post.avatar_url)
-//                     : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-//                 }
-//                 className="img-header-avatar"
-//                 alt=""
-//               />
-//               <div>
-//                 <div className="img-header-name">{post.user_name}</div>
-//                 <div className="img-header-meta">
-//                   {new Date(post.created_at).toLocaleString()}
-//                 </div>
-//               </div>
-//             </div>
-
-//             <button
-//               className="img-close-btn"
-//               style={{ width: "50px" }}
-//               onClick={onClose}
-//             >
-//               <X size={26} color="black" />
-//             </button>
-//           </div>
-
-//           {/* CONTENT */}
-//           <div className="img-right-body" ref={contentRef}>
-//             <div className="img-post-content">
-//               {(post.content || "").split("\n").map((line, i) => (
-//                 <p key={i}>{line}</p>
-//               ))}
-//             </div>
-//           </div>
-
-//           {/* COMMENT SECTION — always directly above action bar */}
-//           {openComment && (
-//             <div className="img-comment-container">
-//               <Comment
-//                 API_BASE={API_BASE}
-//                 postId={post.id}
-//                 currentUser={currentUser}
-//                 onCountChange={(count) => {
-//                   setCommentCount(count);
-//                   refresh?.();
-//                 }}
-//               />
-//             </div>
-//           )}
-
-//           {/* ACTION BAR */}
-//           <div
-//             className={
-//               shouldStickActionBar
-//                 ? "img-right-actions-fixed stick"
-//                 : "img-right-actions-fixed no-stick"
-//             }
-//           >
-//             <Like
-//               API_BASE={API_BASE}
-//               postId={post.id}
-//               initialLiked={likedByMe}
-//               initialCount={likeCount}
-//               onToggle={(liked, count) => {
-//                 setLikedByMe(liked);
-//                 setLikeCount(count);
-//                 refresh?.();
-//               }}
-//             />
-
-//             <button
-//               className="action-btn"
-//               onClick={() => setOpenComment((s) => !s)}
-//             >
-//               <MessageCircle size={18} />
-//               Comment
-//             </button>
-
-//             {/* REPOST */}
-//             <div className="repost-wrapper">
-//               <button
-//                 className="action-btn"
-//                 onClick={() => setRepostMenuOpen((s) => !s)}
-//               >
-//                 <Repeat2 size={18} />
-//                 Repost
-//               </button>
-
-//               {repostMenuOpen && (
-//                 <div className="repost-menu">
-//                   <button
-//                     onClick={() => {
-//                       setRepostMenuOpen(false);
-//                       setOpenRepostModal(true);
-//                     }}
-//                   >
-//                     <Edit3 size={17} /> Repost with thoughts
-//                   </button>
-
-//                   <button
-//                     onClick={async () => {
-//                       setRepostMenuOpen(false);
-//                       try {
-//                         const r = await fetch(
-//                           `${API_BASE}/api/posts/${post.id}/share`,
-//                           {
-//                             method: "POST",
-//                             credentials: "include",
-//                             headers: { "Content-Type": "application/json" },
-//                             body: JSON.stringify({
-//                               recipients: [],
-//                               share_to_feed: true,
-//                               comment: null,
-//                               visibility: "Anyone",
-//                             }),
-//                           }
-//                         );
-
-//                         if (r.ok) refresh?.();
-//                       } catch (err) {}
-//                     }}
-//                   >
-//                     <Repeat2 size={17} /> Repost instantly
-//                   </button>
-//                 </div>
-//               )}
-//             </div>
-
-//             <button
-//               className="action-btn"
-//               onClick={() => setOpenSendModal(true)}
-//             >
-//               <SendIcon size={20} /> Send
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* REPOST MODAL */}
-//       {openRepostModal && (
-//         <div onClick={stop}>
-//           <RepostModal
-//             open={openRepostModal}
-//             onClose={() => setOpenRepostModal(false)}
-//             currentUser={currentUser}
-//             originalPost={post}
-//             API_BASE={API_BASE}
-//             onSuccess={() => {
-//               setOpenRepostModal(false);
-//               refresh?.();
-//             }}
-//           />
-//         </div>
-//       )}
-
-//       {/* SEND MODAL */}
-//       {openSendModal && (
-//         <div onClick={stop}>
-//           <SendModal
-//             open={openSendModal}
-//             onClose={() => setOpenSendModal(false)}
-//             postId={post.id}
-//             API_BASE={API_BASE}
-//             posterName={post.user_name}
-//             onSent={() => setOpenSendModal(false)}
-//           />
-//         </div>
-//       )}
-//     </div>,
-//     document.body
-//   );
-// }
-
-// src/Components/ImagePreviewModal.js
+//src/Components/ImagePreviewModal.js
 import React, { useEffect, useState, useRef, useLayoutEffect } from "react";
 import ReactDOM from "react-dom";
 import "./ImagePreviewModal.css";
@@ -312,15 +34,12 @@ export default function ImagePreviewModal({
   const [repostMenuOpen, setRepostMenuOpen] = useState(false);
 
   const modalRef = useRef(null);
-  const contentRef = useRef(null); // content block (not scroll container)
-  const rightPanelRef = useRef(null); // the right panel that scrolls
-  const repostBtnRef = useRef(null);
-  const commentContainerRef = useRef(null);
+  const rightPanelRef = useRef(null);
+  const repostBtnRef = useRef();
+  const actionBarRef = useRef(null);
 
-  const [shouldStickActionBar, setShouldStickActionBar] = useState(false);
-
-  // Portal menu position
-  const [menuPos, setMenuPos] = useState(null); // { top, left }
+  const [menuPos, setMenuPos] = useState(null);
+  const [actionBarSticky, setActionBarSticky] = useState(false);
 
   // Close modal on outside click
   useClickOutside(modalRef, () => {
@@ -355,28 +74,28 @@ export default function ImagePreviewModal({
     };
   }, [open]);
 
-  // detect long content for sticky action bar:
-  useLayoutEffect(() => {
-    // measure using the visible area of right panel (not whole modal)
+  // Detect if action bar should be sticky
+  useEffect(() => {
     const rightPanel = rightPanelRef.current;
-    const contentBlock = contentRef.current;
-    if (!rightPanel || !contentBlock) return;
+    const actionBar = actionBarRef.current;
+    if (!rightPanel || !actionBar) return;
 
-    // available height inside right panel excluding header & potential action area
-    const headerEl = rightPanel.querySelector(".img-right-header");
-    const actionBarEl = rightPanel.querySelector(".img-right-actions-fixed");
-    const headerH = headerEl ? headerEl.getBoundingClientRect().height : 0;
-    const actionH = actionBarEl
-      ? actionBarEl.getBoundingClientRect().height
-      : 90;
+    const handleScroll = () => {
+      const actionBarRect = actionBar.getBoundingClientRect();
+      const rightPanelRect = rightPanel.getBoundingClientRect();
 
-    const available = rightPanel.clientHeight - headerH - actionH;
-    const contentHeight = contentBlock.scrollHeight;
+      // Check if action bar would scroll out of view at bottom
+      const shouldBeSticky = actionBarRect.bottom > rightPanelRect.bottom;
+      setActionBarSticky(shouldBeSticky);
+    };
 
-    setShouldStickActionBar(contentHeight > available + 20);
-  }, [post, openComment, open, repostMenuOpen]);
+    rightPanel.addEventListener("scroll", handleScroll);
+    handleScroll(); // Initial check
 
-  // compute repost menu position (portal) whenever it opens
+    return () => rightPanel.removeEventListener("scroll", handleScroll);
+  }, [post, openComment]);
+
+  // compute repost menu position
   useLayoutEffect(() => {
     if (!repostMenuOpen) {
       setMenuPos(null);
@@ -386,61 +105,27 @@ export default function ImagePreviewModal({
     if (!btn) return;
 
     const rect = btn.getBoundingClientRect();
+    const menuW = 260;
+    const menuH = 100;
 
-    // default put menu below button
-    const defaultTop = rect.top + rect.height + 6; // small gap
-    const left = Math.max(8, rect.left); // keep inside left edge
+    // Position menu above the button
+    let top = rect.top - menuH - 8;
+    let left = rect.left;
 
-    // clamp to viewport so menu stays visible
     const vw = window.innerWidth;
     const vh = window.innerHeight;
 
-    // approximate menu height & width (we can adjust after render but simple clamp is ok)
-    const menuW = 260;
-    const menuH = 180;
-
-    let top = defaultTop;
-    // if menu would overflow bottom, position above button
-    if (top + menuH > vh - 8) {
-      top = rect.top - menuH - 6;
+    // If menu would go off top, position below button instead
+    if (top < 8) {
+      top = rect.bottom + 8;
     }
-    // clamp top to viewport
+
+    // Clamp to viewport
     top = Math.max(8, Math.min(top, vh - menuH - 8));
+    left = Math.max(8, Math.min(left, vw - menuW - 8));
 
-    // clamp left so menu not overflow right
-    let leftClamped = left;
-    if (leftClamped + menuW > vw - 8) {
-      leftClamped = Math.max(8, vw - menuW - 8);
-    }
-
-    setMenuPos({ top: Math.round(top), left: Math.round(leftClamped) });
+    setMenuPos({ top: Math.round(top), left: Math.round(left) });
   }, [repostMenuOpen]);
-
-  // When comment opens, scroll rightPanel to ensure comment container is visible just above action bar
-  useEffect(() => {
-    if (!openComment) return;
-    const rightPanel = rightPanelRef.current;
-    const commentEl = commentContainerRef.current;
-    if (!rightPanel || !commentEl) return;
-
-    // compute desired scrollTop so comment is visible and sits above action bar
-    const headerEl = rightPanel.querySelector(".img-right-header");
-    const headerH = headerEl ? headerEl.getBoundingClientRect().height : 0;
-    const actionBarEl = rightPanel.querySelector(".img-right-actions-fixed");
-    const actionH = actionBarEl
-      ? actionBarEl.getBoundingClientRect().height
-      : 90;
-
-    // commentEl.offsetTop is relative to rightPanel's content flow
-    // we want scrollTop so that commentEl's bottom is visible above the action bar
-    const commentBottom = commentEl.offsetTop + commentEl.offsetHeight;
-    const targetScroll = Math.max(
-      0,
-      commentBottom - (rightPanel.clientHeight - actionH - 8)
-    );
-
-    rightPanel.scrollTo({ top: targetScroll, behavior: "smooth" });
-  }, [openComment]);
 
   if (!open) return null;
 
@@ -451,7 +136,6 @@ export default function ImagePreviewModal({
     return `${window.location.protocol}//${window.location.hostname}:4000${path}`;
   }
 
-  // helper to render repost menu into portal (fixed positioned)
   const RepostMenuPortal = ({ children }) => {
     if (!menuPos) return null;
     return ReactDOM.createPortal(
@@ -508,7 +192,6 @@ export default function ImagePreviewModal({
 
             <button
               className="img-close-btn"
-              style={{ width: "50px" }}
               onClick={onClose}
               aria-label="Close preview"
             >
@@ -516,158 +199,162 @@ export default function ImagePreviewModal({
             </button>
           </div>
 
-          {/* CONTENT block (not the scroll container) */}
-          <div className="img-right-body" ref={contentRef}>
+          {/* SCROLLABLE CONTENT AREA */}
+          <div className="img-right-scrollable">
+            {/* POST CONTENT */}
             <div className="img-post-content">
               {(post.content || "").split("\n").map((line, i) => (
                 <p key={i}>{line}</p>
               ))}
             </div>
-          </div>
 
-          {/* Comment container - sits above action bar so toggling comment will show here */}
-          {openComment && (
-            <div
-              className="img-comment-container"
-              ref={commentContainerRef}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Comment
-                API_BASE={API_BASE}
-                postId={post.id}
-                currentUser={currentUser}
-                onCountChange={(count) => {
-                  setCommentCount(count);
-                  refresh?.();
-                }}
-              />
+            {/* ACTION BAR (positioned right below content, becomes sticky when scrolling) */}
+            <div className="action-div">
+              <div
+                ref={actionBarRef}
+                className={`img-right-actions ${
+                  actionBarSticky ? "sticky" : ""
+                }`}
+              >
+                <Like
+                  API_BASE={API_BASE}
+                  postId={post.id}
+                  initialLiked={likedByMe}
+                  initialCount={likeCount}
+                  onToggle={(liked, count) => {
+                    setLikedByMe(liked);
+                    setLikeCount(count);
+                    refresh?.();
+                  }}
+                />
+
+                <button
+                  className="action-btn"
+                  onClick={() => setOpenComment((s) => !s)}
+                  aria-expanded={openComment}
+                >
+                  <MessageCircle size={18} /> Comment
+                </button>
+
+                {/* REPOST BUTTON */}
+                <div style={{ position: "relative" }}>
+                  <button
+                    ref={repostBtnRef}
+                    className="action-btn"
+                    onClick={() => {
+                      setRepostMenuOpen((s) => !s);
+                    }}
+                    aria-expanded={repostMenuOpen}
+                  >
+                    <Repeat2 size={18} /> Repost
+                  </button>
+
+                  {/* REPOST MENU VIA PORTAL */}
+                  {repostMenuOpen && (
+                      <div className="repost-menu">
+                        <button
+                          className="repost-menu-item"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setRepostMenuOpen(false);
+                            setOpenRepostModal(true);
+                          }}
+                        >
+                          <Edit3 size={17} />
+                          <span>Repost with thoughts</span>
+                        </button>
+
+                        <button
+                          className="repost-menu-item"
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            setRepostMenuOpen(false);
+                            try {
+                              const r = await fetch(
+                                `${API_BASE}/api/posts/${post.id}/share`,
+                                {
+                                  method: "POST",
+                                  credentials: "include",
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                  },
+                                  body: JSON.stringify({
+                                    recipients: [],
+                                    share_to_feed: true,
+                                    comment: null,
+                                    visibility: "Anyone",
+                                  }),
+                                }
+                              );
+                              if (r.ok) refresh?.();
+                            } catch (err) {
+                              console.error(err);
+                            }
+                          }}
+                        >
+                          <Repeat2 size={17} />
+                          <span>Repost instantly</span>
+                        </button>
+                      </div>
+                  )}
+                </div>
+
+                <button
+                  className="action-btn"
+                  onClick={() => setOpenSendModal(true)}
+                >
+                  <SendIcon size={20} /> Send
+                </button>
+              </div>
+
+              {/* COMMENT SECTION (below action bar) */}
+              {openComment && (
+                <div className="img-comment-container" onClick={stop}>
+                  <Comment
+                    API_BASE={API_BASE}
+                    postId={post.id}
+                    currentUser={currentUser}
+                    onCountChange={(count) => {
+                      setCommentCount(count);
+                      refresh?.();
+                    }}
+                  />
+                </div>
+              )}
             </div>
-          )}
+          </div>
+        </div>
 
-          {/* ACTION BAR */}
-          <div
-            className={
-              shouldStickActionBar
-                ? "img-right-actions-fixed stick"
-                : "img-right-actions-fixed no-stick"
-            }
-          >
-            <Like
+        {/* CHILD MODALS */}
+        {openRepostModal && (
+          <div ref={repostBtnRef} onClick={stop}>
+            <RepostModal
+              open={openRepostModal}
+              onClose={() => setOpenRepostModal((S) => !S)}
+              currentUser={currentUser}
+              originalPost={post}
               API_BASE={API_BASE}
-              postId={post.id}
-              initialLiked={likedByMe}
-              initialCount={likeCount}
-              onToggle={(liked, count) => {
-                setLikedByMe(liked);
-                setLikeCount(count);
+              onSuccess={() => {
+                setOpenRepostModal(false);
                 refresh?.();
               }}
             />
-
-            <button
-              className="action-btn"
-              onClick={() => setOpenComment((s) => !s)}
-              aria-expanded={openComment}
-            >
-              <MessageCircle size={18} /> Comment
-            </button>
-
-            {/* REPOST BUTTON (we measure this btn and show menu with portal) */}
-            <div className="repost-wrapper" style={{ position: "relative" }}>
-              <button
-                ref={repostBtnRef}
-                className="action-btn"
-                onClick={(e) => {
-                  setRepostMenuOpen((s) => !s);
-                }}
-                aria-expanded={repostMenuOpen}
-              >
-                <Repeat2 size={18} /> Repost
-              </button>
-
-              {/* Portal-mounted repost menu (fixed) */}
-              {repostMenuOpen && (
-                <RepostMenuPortal>
-                  <div className="repost-menu" role="menu">
-                    <button
-                      onClick={() => {
-                        setRepostMenuOpen(false);
-                        setOpenRepostModal(true);
-                      }}
-                    >
-                      <Edit3 size={17} /> Repost with thoughts
-                    </button>
-
-                    <button
-                      onClick={async () => {
-                        setRepostMenuOpen(false);
-                        try {
-                          const r = await fetch(
-                            `${API_BASE}/api/posts/${post.id}/share`,
-                            {
-                              method: "POST",
-                              credentials: "include",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({
-                                recipients: [],
-                                share_to_feed: true,
-                                comment: null,
-                                visibility: "Anyone",
-                              }),
-                            }
-                          );
-                          if (r.ok) refresh?.();
-                        } catch (err) {
-                          console.error(err);
-                        }
-                      }}
-                    >
-                      <Repeat2 size={17} /> Repost instantly
-                    </button>
-                  </div>
-                </RepostMenuPortal>
-              )}
-            </div>
-
-            <button
-              className="action-btn"
-              onClick={() => setOpenSendModal(true)}
-            >
-              <SendIcon size={20} /> Send
-            </button>
           </div>
-        </div>
+        )}
+
+        {openSendModal && (
+          <div onClick={stop}>
+            <SendModal
+              open={openSendModal}
+              onClose={() => setOpenSendModal(false)}
+              postId={post.id}
+              API_BASE={API_BASE}
+              posterName={post.user_name}
+              onSent={() => setOpenSendModal(false)}
+            />
+          </div>
+        )}
       </div>
-
-      {/* Child modals: RepostModal & SendModal */}
-      {openRepostModal && (
-        <div onClick={stop}>
-          <RepostModal
-            open={openRepostModal}
-            onClose={() => setOpenRepostModal(false)}
-            currentUser={currentUser}
-            originalPost={post}
-            API_BASE={API_BASE}
-            onSuccess={() => {
-              setOpenRepostModal(false);
-              refresh?.();
-            }}
-          />
-        </div>
-      )}
-
-      {openSendModal && (
-        <div onClick={stop}>
-          <SendModal
-            open={openSendModal}
-            onClose={() => setOpenSendModal(false)}
-            postId={post.id}
-            API_BASE={API_BASE}
-            posterName={post.user_name}
-            onSent={() => setOpenSendModal(false)}
-          />
-        </div>
-      )}
     </div>,
     document.body
   );

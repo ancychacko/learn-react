@@ -46,6 +46,39 @@
   gap: 4px;
 }
 
+
+.post-content-clamp {
+  /* default: clamp to 3 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.post-content-clamp.expanded {
+  /* expanded: show everything */
+  display: block;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: unset;
+  overflow: visible;
+}
+
+/* more link (LinkedIn-style: subtle grey) */
+.more-link {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 0;
+  margin: 0;
+  text-decoration: none;
+  display: inline-block;
+}
+.more-link:hover {
+  text-decoration: underline;
+  color: #0a66c2;
+}
 .post-body p {
   margin: 10px 0;
   white-space: pre-wrap;
