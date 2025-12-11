@@ -34,9 +34,7 @@
 //   currentUser,
 // }) {
 //   const [menuOpen, setMenuOpen] = useState(false);
-
 //   const [repostMenuOpen, setRepostMenuOpen] = useState(false);
-
 //   const [showEditModal, setShowEditModal] = useState(false);
 
 //   const [likeCount, setLikeCount] = useState(Number(post.like_count || 0));
@@ -49,6 +47,10 @@
 //   const [openRepostModal, setOpenRepostModal] = useState(false);
 //   const [showImageModal, setShowImageModal] = useState(false);
 //   const [modalImageUrl, setModalImageUrl] = useState(null);
+
+//   const contentRef = useRef(null);
+//   const [showMoreLink, setShowMoreLink] = useState(false);
+//   const [expandedInFeed, setExpandedInFeed] = useState(false);
 
 //   const menuRef = useRef();
 //   const repostRef = useRef();
@@ -111,6 +113,14 @@
 //         );
 //     }
 //   }
+
+//   /* --- Truncation detection for feed (3 lines) --- */
+//   useEffect(() => {
+//     const el = contentRef.current;
+//     if (!el) return;
+//     const isOverflowing = el.scrollHeight > el.clientHeight + 1;
+//     setShowMoreLink(isOverflowing);
+//   }, [post.content]);
 
 //   return (
 //     <article className="post-card">
@@ -199,11 +209,25 @@
 //       {/* NORMAL POST */}
 //       {!isShared && (
 //         <div className="post-body">
-//           <p>{post.content}</p>
-
-//           {/* {post.media_url && post.media_type === "image" && (
-//             <img className="post-media" src={mediaUrl(post.media_url)} alt="" />
-//           )} */}
+//           {/* CONTENT: clamp to 3 lines unless expandedInFeed */}
+//           <div
+//             ref={contentRef}
+//             className={`post-content-clamp ${expandedInFeed ? "expanded" : ""}`}
+//             aria-expanded={expandedInFeed}
+//           >
+//             <p>
+//               {post.content}
+//               {/* Inline "more..." link */}
+//               {showMoreLink && !expandedInFeed && (
+//                 <button
+//                   className="more-link-inline"
+//                   onClick={() => setExpandedInFeed(true)}
+//                 >
+//                   ...more
+//                 </button>
+//               )}
+//             </p>
+//           </div>
 
 //           {post.media_url && post.media_type === "image" && (
 //             <img
@@ -259,9 +283,7 @@
 //           <MessageCircle size={18} /> Comment
 //         </button>
 
-//         {/* ============================
-//             REPOST BUTTON + MENU
-//         ============================ */}
+//         {/* REPOST */}
 //         <div className="repost-wrapper" ref={repostRef}>
 //           <button
 //             className="action-btn"
@@ -282,7 +304,33 @@
 //                 Repost with your thoughts
 //               </button>
 
-//               <button>
+//               <button
+//                 onClick={async () => {
+//                   setRepostMenuOpen(false);
+//                   try {
+//                     const r = await fetch(
+//                       `${API_BASE}/api/posts/${post.id}/share`,
+//                       {
+//                         method: "POST",
+//                         credentials: "include",
+//                         headers: { "Content-Type": "application/json" },
+//                         body: JSON.stringify({
+//                           recipients: [],
+//                           share_to_feed: true,
+//                           comment: null,
+//                           visibility: "Anyone",
+//                         }),
+//                       }
+//                     );
+//                     if (r.ok) {
+//                       setShareCount((s) => s + 1);
+//                       refresh?.();
+//                     }
+//                   } catch (err) {
+//                     console.error(err);
+//                   }
+//                 }}
+//               >
 //                 <Repeat2 size={17} />
 //                 Repost instantly
 //               </button>
@@ -324,7 +372,7 @@
 //         open={openRepostModal}
 //         onClose={() => setOpenRepostModal(false)}
 //         currentUser={currentUser}
-//         originalPost={post.is_share ? post.original_post : post} // ← FIXED
+//         originalPost={post.is_share ? post.original_post : post}
 //         API_BASE={API_BASE}
 //         onSuccess={() => {
 //           if (typeof refresh === "function") refresh();
@@ -337,18 +385,7 @@
 //         post={post}
 //         API_BASE={API_BASE}
 //         currentUser={currentUser}
-//         onLike={() => document.querySelector(`#like-${post.id}`)?.click()}
-//         onCommentClick={() => {
-//           setOpenComment(true);
-//           setShowImageModal(false);
-//         }}
-//         onRepostClick={() => {
-//           setShowImageModal(false);
-//           setOpenRepostModal(true);
-//         }}
-//         onSendClick={() => {
-//           document.querySelector(`#send-${post.id}`)?.click();
-//         }}
+//         refresh={refresh}
 //       />
 //     </article>
 //   );
@@ -404,7 +441,7 @@ export default function Post({
   const [showImageModal, setShowImageModal] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState(null);
 
-  // NEW: truncation states for feed
+  // truncation refs / state for feed (3 lines)
   const contentRef = useRef(null);
   const [showMoreLink, setShowMoreLink] = useState(false);
   const [expandedInFeed, setExpandedInFeed] = useState(false);
@@ -475,10 +512,11 @@ export default function Post({
   useEffect(() => {
     const el = contentRef.current;
     if (!el) return;
-    // apply a temporary clamp so we can check overflow reliably
-    // but simpler: compare scrollHeight to clientHeight after clamping in CSS
-    const isOverflowing = el.scrollHeight > el.clientHeight + 1;
-    setShowMoreLink(isOverflowing);
+
+    // compute whether the text inside the clamp overflows the visible 3-line area
+    // Because CSS clamps to 3 lines, compare scrollHeight to clientHeight
+    const overflowing = el.scrollHeight > el.clientHeight + 1;
+    setShowMoreLink(overflowing);
   }, [post.content]);
 
   return (
@@ -568,26 +606,30 @@ export default function Post({
       {/* NORMAL POST */}
       {!isShared && (
         <div className="post-body">
-          {/* CONTENT: clamp to 3 lines unless expandedInFeed */}
-          <div
-            ref={contentRef}
-            className={`post-content-clamp ${expandedInFeed ? "expanded" : ""}`}
-            aria-expanded={expandedInFeed}
-          >
-            <p>{post.content}</p>
-          </div>
-
-          {/* show ...more when needed and not expanded */}
-          {showMoreLink && !expandedInFeed && (
-            <button
-              className="more-link"
-              onClick={() => {
-                setExpandedInFeed(true);
-              }}
+          {/* CONTENT WRAPPER with inline "more" */}
+          <div className="post-content-wrapper">
+            <div
+              ref={contentRef}
+              className={`post-content-clamp ${
+                expandedInFeed ? "expanded" : ""
+              }`}
+              aria-expanded={expandedInFeed}
             >
-              ...more
-            </button>
-          )}
+              {/* IMPORTANT: keep paragraph markup so SharedPost and other code works */}
+              <p>{post.content}</p>
+            </div>
+
+            {/* Inline "more..." link positioned immediately after the clipped text */}
+            {showMoreLink && !expandedInFeed && (
+              <button
+                className="more-link-inline"
+                onClick={() => setExpandedInFeed(true)}
+                aria-label="Expand post"
+              >
+                ...more
+              </button>
+            )}
+          </div>
 
           {post.media_url && post.media_type === "image" && (
             <img
@@ -745,18 +787,7 @@ export default function Post({
         post={post}
         API_BASE={API_BASE}
         currentUser={currentUser}
-        onLike={() => document.querySelector(`#like-${post.id}`)?.click()}
-        onCommentClick={() => {
-          setOpenComment(true);
-          setShowImageModal(false);
-        }}
-        onRepostClick={() => {
-          setShowImageModal(false);
-          setOpenRepostModal(true);
-        }}
-        onSendClick={() => {
-          document.querySelector(`#send-${post.id}`)?.click();
-        }}
+        refresh={refresh}
       />
     </article>
   );

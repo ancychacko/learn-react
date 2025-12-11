@@ -7,6 +7,7 @@ import MainLayout from "./Layout/MainLayout";
 import NotificationPage from "./Components/NotificationPage";
 import PostView from "./Components/PostView";
 import Messaging from "./Pages/Messaging";
+import Job from "./Pages/Jobs/Job";
 
 export default function App() {
   const API_BASE =
@@ -36,21 +37,32 @@ export default function App() {
   }, [API_BASE]);
   return (
     <BrowserRouter>
-      <MainLayout API_BASE={API_BASE} user={currentUser}></MainLayout>
       <Routes>
+        {/* PUBLIC ROUTES - NO MAINLAYOUT */}
         <Route path="/" element={<Register />} />
         <Route path="/Register" element={<Register />} />
         <Route path="/Login" element={<Login />} />
-        <Route path="/Home" element={<Welcome API_BASE={API_BASE} />} />
-        <Route
-          path="/Notifications"
-          element={<NotificationPage API_BASE={API_BASE} />}
-        />
-        <Route path="/Post/:id" element={<PostView API_BASE={API_BASE} />} />
-        <Route
-          path="/Messaging"
-          element={<Messaging API_BASE={API_BASE} currentUser={currentUser} />}
-        />
+
+        {/* PRIVATE ROUTES WITH LAYOUT */}
+        <Route element={<MainLayout API_BASE={API_BASE} user={currentUser} />}>
+          <Route path="/Home" element={<Welcome API_BASE={API_BASE} />} />
+          <Route path="/MyNetwork" />
+          <Route
+            path="/Jobs"
+            element={<Job API_BASE={API_BASE} currentUser={currentUser} />}
+          />
+          <Route
+            path="/Notifications"
+            element={<NotificationPage API_BASE={API_BASE} />}
+          />
+          <Route
+            path="/Messaging"
+            element={
+              <Messaging API_BASE={API_BASE} currentUser={currentUser} />
+            }
+          />
+          <Route path="/Post/:id" element={<PostView API_BASE={API_BASE} />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
