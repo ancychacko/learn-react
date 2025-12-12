@@ -96,6 +96,7 @@ const shares = require("../Controllers/shares");
 const notifications = require("../Controllers/notifications");
 const following = require("../Controllers/following");
 const messages = require("../Controllers/messages");
+const network = require("../Controllers/network");
 
 // ----------------------------------------
 // 🔒 AUTH MIDDLEWARE
@@ -196,5 +197,20 @@ router.post(
 
 router.get("/messages/conversations", requireLogin, messages.getConversations);
 router.get("/messages/:userId", requireLogin, messages.getChat);
+
+// Get pending invitations
+router.get("/network/invitations", requireLogin, network.getInvitations);
+// Get people suggestions
+router.get("/network/suggestions", requireLogin, network.getSuggestions);
+// Get user's connections
+router.get("/network/connections", requireLogin, network.getConnections);
+// Get connections count
+router.get("/network/connections/count", requireLogin, network.getConnectionsCount);
+// Send connection request
+router.post("/network/connect",requireLogin, network.sendConnectionRequest);
+// Accept connection request
+router.post("network/accept",requireLogin,network.acceptConnection);
+// Reject connection request
+router.post("network/reject",requireLogin,network.rejectConnection);
 
 module.exports = router;

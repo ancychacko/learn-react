@@ -1,0 +1,174 @@
+/* ==========================================
+   JOBS PAGE LAYOUT
+   ========================================== */
+.jobs-page {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  padding: 20px 40px;
+  background: #f3f2ef;
+
+  /* Required for sticky sidebar */
+  min-height: 100vh;
+}
+
+/* ==========================================
+   LEFT SIDEBAR (PROFILE + JOBS SIDEBAR)
+   ========================================== */
+.jobs-left {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  /* ⭐ MAKE LEFT SIDEBAR STICKY LIKE LINKEDIN */
+  position: sticky;
+  top: 80px; /* Adjust based on your header height */
+  align-self: flex-start;
+}
+
+/* ==========================================
+   PROFILE CARD (FROM YOUR OLD CSS)
+   ========================================== */
+.jobs-profile-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+}
+
+.jobs-profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.jobs-profile-name {
+  margin: 0;
+}
+
+.jobs-profile-title {
+  font-size: 14px;
+  color: #555;
+  margin: 4px 0;
+}
+
+.jobs-profile-location {
+  font-size: 13px;
+  color: #777;
+}
+
+.jobs-section {
+  margin: 14px 0;
+  font-size: 15px;
+}
+
+.link-blue {
+  color: #0a66c2;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* ==========================================
+   RIGHT MAIN JOB FEED
+   ========================================== */
+.jobs-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.jobs-box {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+}
+
+.jobs-subtitle {
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+/* ==========================================
+   JOB ITEM
+   ========================================== */
+.job-item {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.job-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  background: #e1e9ee;
+}
+
+.job-info h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.job-muted {
+  font-size: 13px;
+  color: #888;
+}
+
+.show-all {
+  margin-top: 10px;
+  color: #0a66c2;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ==========================================
+   RECENT SEARCHES
+   ========================================== */
+.recent-search {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.recent-search p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.recent-search span {
+  font-size: 13px;
+  color: #777;
+}
+
+/* ==========================================
+   JOBS SIDEBAR CARD (Preferences, My jobs, Post job)
+   ========================================== */
+.jobs-sidebar-card {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.jobs-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.jobs-divider {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 6px 0;
+}
+
+/* Avoid overriding .link-blue above */

@@ -136,25 +136,6 @@ export default function ImagePreviewModal({
     return `${window.location.protocol}//${window.location.hostname}:4000${path}`;
   }
 
-  const RepostMenuPortal = ({ children }) => {
-    if (!menuPos) return null;
-    return ReactDOM.createPortal(
-      <div
-        className="repost-menu-portal"
-        style={{
-          position: "fixed",
-          top: `${menuPos.top}px`,
-          left: `${menuPos.left}px`,
-          zIndex: 30050,
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {children}
-      </div>,
-      document.body
-    );
-  };
-
   return ReactDOM.createPortal(
     <div className="img-modal-overlay" onClick={onClose}>
       <div className="img-modal" ref={modalRef} onClick={stop}>
@@ -251,51 +232,51 @@ export default function ImagePreviewModal({
 
                   {/* REPOST MENU VIA PORTAL */}
                   {repostMenuOpen && (
-                      <div className="repost-menu">
-                        <button
-                          className="repost-menu-item"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setRepostMenuOpen(false);
-                            setOpenRepostModal(true);
-                          }}
-                        >
-                          <Edit3 size={17} />
-                          <span>Repost with thoughts</span>
-                        </button>
+                    <div className="repost-menu">
+                      <button
+                        className="repost-menu-item"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setRepostMenuOpen(false);
+                          setOpenRepostModal(true);
+                        }}
+                      >
+                        <Edit3 size={17} />
+                        <span>Repost with thoughts</span>
+                      </button>
 
-                        <button
-                          className="repost-menu-item"
-                          onClick={async (e) => {
-                            e.stopPropagation();
-                            setRepostMenuOpen(false);
-                            try {
-                              const r = await fetch(
-                                `${API_BASE}/api/posts/${post.id}/share`,
-                                {
-                                  method: "POST",
-                                  credentials: "include",
-                                  headers: {
-                                    "Content-Type": "application/json",
-                                  },
-                                  body: JSON.stringify({
-                                    recipients: [],
-                                    share_to_feed: true,
-                                    comment: null,
-                                    visibility: "Anyone",
-                                  }),
-                                }
-                              );
-                              if (r.ok) refresh?.();
-                            } catch (err) {
-                              console.error(err);
-                            }
-                          }}
-                        >
-                          <Repeat2 size={17} />
-                          <span>Repost instantly</span>
-                        </button>
-                      </div>
+                      <button
+                        className="repost-menu-item"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          setRepostMenuOpen(false);
+                          try {
+                            const r = await fetch(
+                              `${API_BASE}/api/posts/${post.id}/share`,
+                              {
+                                method: "POST",
+                                credentials: "include",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                  recipients: [],
+                                  share_to_feed: true,
+                                  comment: null,
+                                  visibility: "Anyone",
+                                }),
+                              }
+                            );
+                            if (r.ok) refresh?.();
+                          } catch (err) {
+                            console.error(err);
+                          }
+                        }}
+                      >
+                        <Repeat2 size={17} />
+                        <span>Repost instantly</span>
+                      </button>
+                    </div>
                   )}
                 </div>
 
@@ -308,19 +289,20 @@ export default function ImagePreviewModal({
               </div>
 
               {/* COMMENT SECTION (below action bar) */}
-              {openComment && (
-                <div className="img-comment-container" onClick={stop}>
-                  <Comment
-                    API_BASE={API_BASE}
-                    postId={post.id}
-                    currentUser={currentUser}
-                    onCountChange={(count) => {
-                      setCommentCount(count);
-                      refresh?.();
-                    }}
-                  />
-                </div>
-              )}
+              <div
+                className="img-comment-container"
+                style={{ display: openComment ? "block" : "none" }}
+              >
+                <Comment
+                  API_BASE={API_BASE}
+                  postId={post.id}
+                  currentUser={currentUser}
+                  onCountChange={(count) => {
+                    setCommentCount(count);
+                    refresh?.();
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
