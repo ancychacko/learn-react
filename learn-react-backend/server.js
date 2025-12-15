@@ -22,6 +22,7 @@ const routes = require("./routes");
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 
 // -----------------------------
 // CORS
@@ -29,7 +30,7 @@ app.use(cookieParser());
 const allowedOrigins = [
   "http://localhost:3000",
   "http://192.168.2.109:3000",
-  "http://172.16.2.121:3000",
+  "http://172.16.2.188:3000",
 ];
 if (process.env.CORS_ORIGINS) {
   process.env.CORS_ORIGINS.split(",").forEach((o) =>
@@ -82,6 +83,24 @@ app.use("/uploads", express.static(UPLOAD_DIR));
 // -----------------------------
 app.use("/api", routes);
 
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error("Error:", err);
+  res.status(500).json({
+    error: "Internal server error",
+    message: process.env.NODE_ENV === "development" ? err.message : undefined,
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: "Route not found" });
+});
 // -----------------------------
 // Start server
 // -----------------------------

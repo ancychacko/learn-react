@@ -48,7 +48,7 @@ module.exports = async function createNotification({
     await pool.query(
       `
       INSERT INTO notifications
-      (recipient_id, actor_id, type, post_id, comment_id, share_id, data)
+      (recipient_id, actor_id, type, post_id, comment_id, share_id,data)
       VALUES ($1, $2, $3, $4, $5, $6, $7)
       `,
       [

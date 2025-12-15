@@ -198,6 +198,8 @@ router.post(
 router.get("/messages/conversations", requireLogin, messages.getConversations);
 router.get("/messages/:userId", requireLogin, messages.getChat);
 
+//NETWORKING ROUTES (🔒 Protected)
+
 // Get pending invitations
 router.get("/network/invitations", requireLogin, network.getInvitations);
 // Get people suggestions
@@ -205,12 +207,16 @@ router.get("/network/suggestions", requireLogin, network.getSuggestions);
 // Get user's connections
 router.get("/network/connections", requireLogin, network.getConnections);
 // Get connections count
-router.get("/network/connections/count", requireLogin, network.getConnectionsCount);
+router.get(
+  "/network/connections/count",
+  requireLogin,
+  network.getConnectionsCount
+);
 // Send connection request
-router.post("/network/connect",requireLogin, network.sendConnectionRequest);
+router.post("/network/connect", requireLogin, network.sendConnectionRequest);
 // Accept connection request
-router.post("network/accept",requireLogin,network.acceptConnection);
+router.post("network/accept", requireLogin, network.acceptConnection);
 // Reject connection request
-router.post("network/reject",requireLogin,network.rejectConnection);
+router.post("network/reject", requireLogin, network.rejectConnection);
 
 module.exports = router;
