@@ -7,59 +7,6 @@ const pool = require("../Database/pool");
  *  Returns LinkedIn-style notifications + hides muted actors
  * ===========================================================
  */
-// async function getNotifications(req, res) {
-//   if (!req.session.userId)
-//     return res.status(401).json({ error: "Not authenticated" });
-
-//   try {
-//     const userId = req.session.userId;
-
-//     const sql = `
-//       SELECT
-//         n.id,
-//         n.actor_id,
-//         n.post_id,
-//         n.comment_id,
-//         n.share_id,
-//         n.type,
-//         n.data,
-//         n.is_read,
-//         n.created_at,
-
-//         -- Actor Info
-//         u.name AS actor_name,
-//         u.avatar_url AS actor_avatar,
-
-//         -- Post preview
-//         p.content AS post_content,
-//         p.media_url AS post_media,
-
-//         -- Comment preview
-//         c.content AS comment_content
-
-//       FROM notifications n
-//       LEFT JOIN users u ON u.id = n.actor_id
-//       LEFT JOIN posts p ON p.id = n.post_id
-//       LEFT JOIN comments c ON c.id = n.comment_id
-
-//       WHERE n.recipient_id = $1
-//       AND NOT EXISTS (
-//         SELECT 1 FROM muted_notifications m
-//         WHERE m.user_id = $1 AND m.actor_id = n.actor_id
-//       )
-
-//       ORDER BY n.created_at DESC
-//       LIMIT 200;
-//     `;
-
-//     const result = await pool.query(sql, [userId]);
-//     res.json(result.rows);
-//   } catch (err) {
-//     console.error("GET /api/notifications error", err);
-//     res.status(500).json({ error: "Server error" });
-//   }
-// }
-
 async function getNotifications(req, res) {
   if (!req.session.userId)
     return res.status(401).json({ error: "Not authenticated" });

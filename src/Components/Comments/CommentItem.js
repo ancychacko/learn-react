@@ -18,8 +18,8 @@ import {
 import ReplyItem from "./ReplyItem";
 import CommentInput from "./CommentInput";
 import "./Comment.css";
-import useClickOutside from "../Hooks/useClickOutside";
-import { useToast } from "../Contexts/ToastContext";
+import useClickOutside from "../../Hooks/useClickOutside";
+import { useToast } from "../../Contexts/ToastContext";
 
 export default function CommentItem({
   comment,

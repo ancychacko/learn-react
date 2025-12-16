@@ -1,7 +1,7 @@
 // src/Components/NotificationPage.js
 // import React, { useEffect, useState } from "react";
 // import NotificationItem from "./NotificationItem";
-// import ProfileCard from "../Components/ProfileSidebar/ProfileHeaderCard";
+// import ProfileCard from "../ProfileSidebar/ProfileHeaderCard";
 // import "./Notifications.css";
 
 // export default function NotificationsPage({ API_BASE = "" }) {
@@ -9,18 +9,34 @@
 //   const [loading, setLoading] = useState(true);
 //   const [filter, setFilter] = useState("all");
 //   const [me, setMe] = useState(null);
+//   const [authChecked, setAuthChecked] = useState(false);
 
 //   useEffect(() => {
-//     loadUser();
-//     loadNotifications();
+//     checkAuth();
 //   }, []);
 
-//   async function loadUser() {
+//   async function checkAuth() {
 //     try {
-//       const r = await fetch(`${API_BASE}/api/me`, { credentials: "include" });
-//       if (r.ok) setMe(await r.json());
+//       const r = await fetch(`${API_BASE}/api/me`, {
+//         credentials: "include",
+//       });
+
+//       if (!r.ok) {
+//         alert("Please login to access notifications.");
+//         window.location.href = "/Login";
+//         return;
+//       }
+
+//       const user = await r.json();
+//       setMe(user);
+
+//       // Load notifications only after authenticated
+//       loadNotifications();
+//       setAuthChecked(true);
 //     } catch (e) {
-//       console.error("Failed to load user:", e);
+//       console.error("Auth check failed:", e);
+//       alert("Please login to access notifications.");
+//       window.location.href = "/Login";
 //     }
 //   }
 
@@ -30,6 +46,13 @@
 //       const r = await fetch(`${API_BASE}/api/notifications`, {
 //         credentials: "include",
 //       });
+
+//       if (r.status === 401) {
+//         alert("Please login to access notifications.");
+//         window.location.href = "/Login";
+//         return;
+//       }
+
 //       if (r.ok) setItems(await r.json());
 //     } catch (e) {
 //       console.error("Failed to load notifications:", e);
@@ -61,6 +84,9 @@
 //       console.error(e);
 //     }
 //   }
+
+//   // Don't render until authentication check completes
+//   if (!authChecked) return null;
 
 //   const filteredItems =
 //     filter === "all" ? items : items.filter((i) => i.type === filter);
@@ -107,7 +133,6 @@
 //           </button>
 //         </div>
 
-//         {/* MARK ALL READ */}
 //         {items.some((x) => !x.is_read) && (
 //           <button className="ln-mark-all" onClick={markAllRead}>
 //             Mark all as read
@@ -143,17 +168,23 @@
 // }
 
 // src/Components/NotificationPage.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import NotificationItem from "./NotificationItem";
-import ProfileCard from "../Components/ProfileSidebar/ProfileHeaderCard";
+import ProfileCard from "../ProfileSidebar/ProfileHeaderCard";
+import { ChevronDown } from "lucide-react";
+import useClickOutside from "../../Hooks/useClickOutside";
 import "./Notifications.css";
 
 export default function NotificationsPage({ API_BASE = "" }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [myPostsDropdownOpen, setMyPostsDropdownOpen] = useState(false);
   const [me, setMe] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
+
+  const dropdownRef = useRef();
+  useClickOutside(dropdownRef, () => setMyPostsDropdownOpen(false));
 
   useEffect(() => {
     checkAuth();
@@ -212,6 +243,16 @@ export default function NotificationsPage({ API_BASE = "" }) {
     setItems((prev) => prev.filter((n) => n.actor_id !== actorId));
   }
 
+  function handleAcceptConnection(id) {
+    // Remove the connection request notification after accepting
+    setItems((prev) => prev.filter((n) => n.id !== id));
+  }
+
+  function handleRejectConnection(id) {
+    // Remove the connection request notification after rejecting
+    setItems((prev) => prev.filter((n) => n.id !== id));
+  }
+
   async function markAllRead() {
     try {
       await Promise.all(
@@ -232,8 +273,26 @@ export default function NotificationsPage({ API_BASE = "" }) {
   // Don't render until authentication check completes
   if (!authChecked) return null;
 
-  const filteredItems =
-    filter === "all" ? items : items.filter((i) => i.type === filter);
+  // Filter logic
+  const filteredItems = items.filter((item) => {
+    if (filter === "all") return true;
+    if (filter === "jobs") return item.type === "job"; // For future job notifications
+    if (filter === "mentions") return item.type === "mention"; // For future mention notifications
+    if (filter === "my-posts")
+      return ["like", "comment", "share"].includes(item.type);
+    if (filter === "like") return item.type === "like";
+    if (filter === "comment") return item.type === "comment";
+    if (filter === "share") return item.type === "share";
+    return true;
+  });
+
+  function getMyPostsLabel() {
+    if (filter === "like") return "My posts: Reactions";
+    if (filter === "comment") return "My posts: Comments";
+    if (filter === "share") return "My posts: Reposts";
+    if (filter === "my-posts") return "My posts";
+    return "My posts";
+  }
 
   return (
     <div className="ln-notifications-page">
@@ -246,34 +305,91 @@ export default function NotificationsPage({ API_BASE = "" }) {
       <div className="ln-right">
         <h1 className="ln-title">Notifications</h1>
 
-        {/* FILTER TABS */}
-        <div className="ln-filters">
+        {/* FILTER TABS - LinkedIn Style */}
+        <div className="ln-filters-new">
           <button
-            className={filter === "all" ? "active" : ""}
-            onClick={() => setFilter("all")}
+            className={`filter-tab ${filter === "all" ? "active" : ""}`}
+            onClick={() => {
+              setFilter("all");
+              setMyPostsDropdownOpen(false);
+            }}
           >
             All
           </button>
 
           <button
-            className={filter === "comment" ? "active" : ""}
-            onClick={() => setFilter("comment")}
+            className={`filter-tab ${filter === "jobs" ? "active" : ""}`}
+            onClick={() => {
+              setFilter("jobs");
+              setMyPostsDropdownOpen(false);
+            }}
           >
-            Comments
+            Jobs
           </button>
 
-          <button
-            className={filter === "like" ? "active" : ""}
-            onClick={() => setFilter("like")}
-          >
-            Likes
-          </button>
+          {/* My posts with dropdown */}
+          <div className="filter-dropdown" ref={dropdownRef}>
+            <button
+              className={`filter-tab ${
+                ["my-posts", "like", "comment", "share"].includes(filter)
+                  ? "active"
+                  : ""
+              }`}
+              onClick={() => setMyPostsDropdownOpen(!myPostsDropdownOpen)}
+            >
+              {getMyPostsLabel()} <ChevronDown size={16} />
+            </button>
+
+            {myPostsDropdownOpen && (
+              <div className="filter-dropdown-menu">
+                <div
+                  className="filter-dropdown-item"
+                  onClick={() => {
+                    setFilter("my-posts");
+                    setMyPostsDropdownOpen(false);
+                  }}
+                >
+                  All
+                </div>
+                <div
+                  className="filter-dropdown-item"
+                  onClick={() => {
+                    setFilter("like");
+                    setMyPostsDropdownOpen(false);
+                  }}
+                >
+                  Reactions
+                </div>
+                <div
+                  className="filter-dropdown-item"
+                  onClick={() => {
+                    setFilter("comment");
+                    setMyPostsDropdownOpen(false);
+                  }}
+                >
+                  Comments
+                </div>
+                <div
+                  className="filter-dropdown-item"
+                  onClick={() => {
+                    setFilter("share");
+                    setMyPostsDropdownOpen(false);
+                  }}
+                >
+                  Reposts
+                </div>
+              </div>
+            )}
+          </div>
 
           <button
-            className={filter === "share" ? "active" : ""}
-            onClick={() => setFilter("share")}
+            className={`filter-tab ${filter === "mentions" ? "active" : ""}`}
+            onClick={() => {
+              setFilter("mentions");
+              setMyPostsDropdownOpen(false);
+            }}
           >
-            Shares
+            Mentions
           </button>
         </div>
 
@@ -303,6 +419,8 @@ export default function NotificationsPage({ API_BASE = "" }) {
               }
               onDelete={handleDelete}
               onMute={handleMute}
+              onAcceptConnection={handleAcceptConnection}
+              onRejectConnection={handleRejectConnection}
             />
           ))}
         </div>

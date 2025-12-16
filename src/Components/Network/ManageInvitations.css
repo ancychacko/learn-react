@@ -1,0 +1,369 @@
+/* ManageInvitations.css */
+
+.manage-invitations-page {
+  min-height: 100vh;
+  background: #f3f2ef;
+  padding: 90px 20px 40px;
+}
+
+.manage-invitations-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+/* Header */
+.manage-invitations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.manage-invitations-header h1 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: #000;
+}
+
+.settings-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.settings-btn:hover {
+  background: #f3f2ef;
+  color: #000;
+}
+
+/* Tabs */
+.manage-invitations-tabs {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 24px;
+}
+
+.tab-btn {
+  padding: 12px 0;
+  margin-right: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #666;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.tab-btn:hover {
+  color: #000;
+}
+
+.tab-btn.active {
+  color: #01754f;
+  font-weight: 600;
+}
+
+.tab-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #01754f;
+}
+
+/* Filter Section */
+.filter-section {
+  padding: 16px 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.filter-btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: #01754f;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.filter-btn:hover {
+  background: #015a3d;
+}
+
+/* Content */
+.invitations-content {
+  min-height: 400px;
+}
+
+.invitations-list {
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Invitation Card */
+.invitation-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  transition: all 0.2s;
+  background: white;
+}
+
+.invitation-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: #d0d0d0;
+}
+
+.invitation-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.invitation-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.invitation-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: #000;
+  cursor: pointer;
+  display: inline;
+}
+
+.invitation-name:hover {
+  text-decoration: underline;
+  color: #0a66c2;
+}
+
+.invitation-title {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 4px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.invitation-time {
+  font-size: 12px;
+  color: #999;
+  margin: 0;
+}
+
+/* Action Buttons */
+.invitation-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ignore-btn,
+.accept-btn,
+.withdraw-btn {
+  padding: 8px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  white-space: nowrap;
+}
+
+/* Ignore Button */
+.ignore-btn {
+  background: transparent;
+  color: #666;
+  border: 1px solid #666;
+}
+
+.ignore-btn:hover:not(:disabled) {
+  background: #f3f2ef;
+  color: #000;
+  border-color: #000;
+}
+
+/* Accept Button */
+.accept-btn {
+  background: #0a66c2;
+  color: white;
+  border: 1px solid #0a66c2;
+}
+
+.accept-btn:hover:not(:disabled) {
+  background: #004182;
+  border-color: #004182;
+}
+
+/* Withdraw Button */
+.withdraw-btn {
+  background: transparent;
+  color: #666;
+  border: 1px solid #666;
+}
+
+.withdraw-btn:hover:not(:disabled) {
+  background: #f3f2ef;
+  color: #000;
+  border-color: #000;
+}
+
+.ignore-btn:disabled,
+.accept-btn:disabled,
+.withdraw-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty-illustration {
+  width: 200px;
+  height: auto;
+  margin-bottom: 24px;
+}
+
+.empty-state h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.empty-state p {
+  font-size: 16px;
+  color: #666;
+  margin: 8px 0 0 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .manage-invitations-page {
+    padding: 70px 12px 20px;
+  }
+
+  .manage-invitations-header {
+    padding: 20px 16px 12px;
+  }
+
+  .manage-invitations-header h1 {
+    font-size: 18px;
+  }
+
+  .manage-invitations-tabs {
+    padding: 0 16px;
+  }
+
+  .tab-btn {
+    margin-right: 16px;
+    font-size: 15px;
+  }
+
+  .filter-section {
+    padding: 12px 16px;
+  }
+
+  .invitations-list {
+    padding: 12px 16px;
+  }
+
+  .invitation-card {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: center;
+  }
+
+  .invitation-avatar {
+    width: 56px;
+    height: 56px;
+    align-self: center;
+  }
+
+  .invitation-info {
+    width: 100%;
+    text-align: center;
+  }
+
+  .invitation-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .ignore-btn,
+  .accept-btn,
+  .withdraw-btn {
+    width: 100%;
+  }
+
+  .empty-illustration {
+    width: 160px;
+  }
+
+  .empty-state h2 {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .manage-invitations-header h1 {
+    font-size: 16px;
+  }
+
+  .tab-btn {
+    font-size: 14px;
+    margin-right: 12px;
+  }
+
+  .invitation-name {
+    font-size: 15px;
+  }
+
+  .invitation-title {
+    font-size: 13px;
+  }
+
+  .filter-btn {
+    font-size: 13px;
+    padding: 6px 14px;
+  }
+}

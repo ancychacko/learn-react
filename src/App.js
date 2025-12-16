@@ -4,11 +4,12 @@ import Register from "./Components/Register";
 import Login from "./Components/Login";
 import Welcome from "./Components/Welcome";
 import MainLayout from "./Layout/MainLayout";
-import NotificationPage from "./Components/NotificationPage";
+import NotificationPage from "./Components/Notifications/NotificationPage";
 import PostView from "./Components/PostView";
 import Messaging from "./Pages/Messaging";
 import Job from "./Components/Jobs/Job";
 import MyNetwork from "./Components/Network/MyNetwork";
+import ManageInvitations from "./Components/Network/ManageInvitations";
 
 export default function App() {
   const API_BASE =
@@ -47,9 +48,14 @@ export default function App() {
         {/* PRIVATE ROUTES WITH LAYOUT */}
         <Route element={<MainLayout API_BASE={API_BASE} user={currentUser} />}>
           <Route path="/Home" element={<Welcome API_BASE={API_BASE} />} />
-          <Route 
-          path="/MyNetwork" 
-          element={<MyNetwork API_BASE={API_BASE} />}
+          <Route
+            path="/MyNetwork"
+            element={<MyNetwork API_BASE={API_BASE} />}
+          />
+
+          <Route
+            path="/mynetwork/invitations"
+            element={<ManageInvitations API_BASE={API_BASE} />}
           />
           <Route
             path="/Jobs"

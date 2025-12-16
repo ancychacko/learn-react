@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 import Like from "./Like";
-import Comment from "./Comment";
+import Comment from "../Components/Comments/Comment";
 import SendModal from "./SendModal";
 import RepostModal from "./RepostModal";
 import useClickOutside from "../Hooks/useClickOutside";

@@ -218,5 +218,26 @@ router.post("/network/connect", requireLogin, network.sendConnectionRequest);
 router.post("network/accept", requireLogin, network.acceptConnection);
 // Reject connection request
 router.post("network/reject", requireLogin, network.rejectConnection);
+// Accept connection by requester ID (for notifications)
+router.post(
+  "/network/accept-by-requester",
+  requireLogin,
+  network.acceptConnectionByRequester
+);
+// Reject connection by requester ID (for notifications)
+router.post(
+  "/network/reject-by-requester",
+  requireLogin,
+  network.rejectConnectionByRequester
+);
+
+// Get sent invitations
+router.get(
+  "/network/sent-invitations",
+  requireLogin,
+  network.getSentInvitations
+);
+// Withdraw sent invitation
+router.post("network/withdraw", requireLogin, network.withdrawInvitation);
 
 module.exports = router;
