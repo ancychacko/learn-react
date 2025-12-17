@@ -10,6 +10,8 @@ import Messaging from "./Pages/Messaging";
 import Job from "./Components/Jobs/Job";
 import MyNetwork from "./Components/Network/MyNetwork";
 import ManageInvitations from "./Components/Network/ManageInvitations";
+import CatchUp from "./Components/Network/CatchUpPage";
+import Connections from "./Components/Network/Connections";
 
 export default function App() {
   const API_BASE =
@@ -54,8 +56,17 @@ export default function App() {
           />
 
           <Route
-            path="/mynetwork/invitations"
+            path="/MyNetwork/catchup"
+            element={<CatchUp API_BASE={API_BASE} />}
+          />
+
+          <Route
+            path="/MyNetwork/invitations"
             element={<ManageInvitations API_BASE={API_BASE} />}
+          />
+          <Route
+            path="/mynetwork/connections"
+            element={<Connections API_BASE={API_BASE} />}
           />
           <Route
             path="/Jobs"

@@ -450,3 +450,263 @@
     margin-top: 8px;
   }
 }
+
+/* ==================== CATCH UP STYLES ==================== */
+
+/* Vertical Filter Card (LinkedIn style) */
+.catchup-filter-card {
+  display: flex;
+  gap: 8px;
+  padding: 16px 20px;
+  background: white;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 0;
+}
+
+.catchup-filter-item {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.catchup-filter-item:hover {
+  background: #f3f2ef;
+  color: #000;
+}
+
+.catchup-filter-item.active {
+  background: #0a66c2;
+  color: white;
+  font-weight: 600;
+  border-left-color: #0a66c2;
+}
+
+/* Content Card */
+.catchup-content-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.12);
+}
+
+/* Empty State */
+.catchup-empty {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-icon {
+  margin: 0 auto 24px;
+  width: 96px;
+  height: 96px;
+}
+
+.empty-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.empty-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #000;
+}
+
+.empty-description {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 24px 0;
+  line-height: 1.4;
+}
+
+.grow-network-btn-blue {
+  padding: 12px 24px;
+  border-radius: 24px;
+  border: none;
+  background: #0a66c2;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.grow-network-btn-blue:hover {
+  background: #004182;
+}
+
+/* Update Cards */
+.catchup-updates {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.update-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid #e0e0e0;
+  transition: all 0.2s;
+}
+
+.update-card:last-child {
+  border-bottom: none;
+}
+
+.update-card:hover {
+  background: #f8f8f8;
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-left: -16px;
+  margin-right: -16px;
+  border-radius: 8px;
+}
+
+.update-avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.update-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.update-icon {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.update-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.update-text {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.4;
+}
+
+.update-text strong {
+  font-weight: 600;
+  color: #000;
+}
+
+.update-time {
+  margin: 0;
+  font-size: 12px;
+  color: #999;
+}
+
+.say-congrats-btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid #0a66c2;
+  background: white;
+  color: #0a66c2;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.say-congrats-btn:hover {
+  background: #e7f3ff;
+  border-color: #004182;
+  color: #004182;
+}
+
+.catchup-loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-size: 15px;
+}
+
+/* Responsive for Catch Up */
+@media (max-width: 968px) {
+  .catchup-filter-card {
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .catchup-filter-card {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .catchup-filter-item {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #d0d0d0;
+    border-left: 1px solid #d0d0d0;
+    white-space: nowrap;
+    font-size: 14px;
+  }
+
+  .catchup-filter-item.active {
+    border: 1px solid #0a66c2;
+    border-left: 1px solid #0a66c2;
+  }
+
+  .update-card {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+
+  .update-avatar-wrapper {
+    align-self: center;
+  }
+
+  .update-content {
+    text-align: center;
+  }
+
+  .say-congrats-btn {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .catchup-empty {
+    padding: 40px 20px;
+  }
+
+  .empty-icon {
+    width: 80px;
+    height: 80px;
+  }
+}

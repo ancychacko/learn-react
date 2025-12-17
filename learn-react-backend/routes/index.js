@@ -240,4 +240,6 @@ router.get(
 // Withdraw sent invitation
 router.post("network/withdraw", requireLogin, network.withdrawInvitation);
 
+// Get catch-up updates
+router.get("network/catchup", requireLogin, network.getCatchUpUpdates);
 module.exports = router;

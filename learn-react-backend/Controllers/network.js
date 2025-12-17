@@ -738,3 +738,51 @@ exports.withdrawInvitation = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+// Get catch-up updates (connection activities)
+exports.getCatchUpUpdates = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const filter = req.query.filter || "all";
+
+    // For now, return mock data as this would require additional tables
+    // In production, you'd query from user_updates or activity_feed table
+
+    // Get recent connections for activity feed
+    const connections = await pool.query(
+      `SELECT 
+        u.id,
+        u.name,
+        u.title,
+        u.avatar_url,
+        c.created_at,
+        c.accepted_at
+      FROM connections c
+      JOIN users u ON (
+        CASE 
+          WHEN c.requester_id = $1 THEN u.id = c.receiver_id
+          ELSE u.id = c.requester_id
+        END
+      )
+      WHERE (c.requester_id = $1 OR c.receiver_id = $1)
+      AND c.status = 'accepted'
+      ORDER BY c.accepted_at DESC
+      LIMIT 20`,
+      [userId]
+    );
+
+    // Transform to update format
+    const updates = connections.rows.map((conn) => ({
+      id: conn.id,
+      name: conn.name,
+      avatar_url: conn.avatar_url,
+      type: "connection",
+      created_at: conn.accepted_at || conn.created_at,
+    }));
+
+    res.json(updates);
+  } catch (err) {
+    console.error("Error fetching catch-up updates:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
