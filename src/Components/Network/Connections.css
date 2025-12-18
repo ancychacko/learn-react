@@ -210,6 +210,13 @@
   color: #999;
 }
 
+.connection-blocked {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: #d32f2f;
+  font-weight: 600;
+}
+
 /* Connection Actions */
 .connection-actions {
   display: flex;
@@ -232,14 +239,21 @@
   white-space: nowrap;
 }
 
-.message-btn:hover {
+.message-btn:hover:not(:disabled) {
   background: #e7f3ff;
   border-color: #004182;
   color: #004182;
 }
 
+.message-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-color: #d0d0d0;
+  color: #999;
+}
+
 .more-btn {
-  width: 32px;
+  width: 40px;
   height: 32px;
   border-radius: 50%;
   border: none;

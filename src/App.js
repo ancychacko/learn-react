@@ -65,7 +65,7 @@ export default function App() {
             element={<ManageInvitations API_BASE={API_BASE} />}
           />
           <Route
-            path="/mynetwork/connections"
+            path="/MyNetwork/connections"
             element={<Connections API_BASE={API_BASE} />}
           />
           <Route

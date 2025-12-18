@@ -1,8 +1,9 @@
 // src/Components/Network/Connections.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, MoreHorizontal } from "lucide-react";
+import { Search, Ellipsis } from "lucide-react";
 import { useToast } from "../../Contexts/ToastContext";
+import useClickOutside from "../../Hooks/useClickOutside";
 import "./Connections.css";
 
 export default function Connections({ API_BASE }) {
@@ -14,7 +15,6 @@ export default function Connections({ API_BASE }) {
   const [authChecked, setAuthChecked] = useState(false);
   const [sortBy, setSortBy] = useState("recently_added");
   const [searchQuery, setSearchQuery] = useState("");
-  //   const []
 
   useEffect(() => {
     checkAuth();
@@ -112,6 +112,72 @@ export default function Connections({ API_BASE }) {
     setFilteredConnections(filtered);
   }
 
+  async function handleRemoveConnection(connectionId) {
+    try {
+      const res = await fetch(`${API_BASE}/api/network/remove`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ connectionId }),
+      });
+
+      if (res.ok) {
+        addToast("Connection removed successfully", { type: "success" });
+        setConnections((prev) => prev.filter((c) => c.id !== connectionId));
+        setFilteredConnections((prev) =>
+          prev.filter((c) => c.id !== connectionId)
+        );
+      } else {
+        const error = await res.json();
+        addToast(error.error || "Failed to remove connection", {
+          type: "error",
+        });
+      }
+    } catch (err) {
+      console.error("Failed to remove connection:", err);
+      addToast("An error occurred", { type: "error" });
+    }
+  }
+
+  async function handleBlockUser(userId, isBlocked) {
+    try {
+      const endpoint = isBlocked ? "unblock" : "block";
+      const res = await fetch(`${API_BASE}/api/network/${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ userId }),
+      });
+
+      if (res.ok) {
+        const message = isBlocked
+          ? "User unblocked successfully"
+          : "User blocked successfully";
+        addToast(message, { type: "success" });
+
+        // Update the connection's blocked status
+        setConnections((prev) =>
+          prev.map((c) =>
+            c.id === userId ? { ...c, is_blocked: !isBlocked } : c
+          )
+        );
+        setFilteredConnections((prev) =>
+          prev.map((c) =>
+            c.id === userId ? { ...c, is_blocked: !isBlocked } : c
+          )
+        );
+      } else {
+        const error = await res.json();
+        addToast(error.error || "Failed to update block status", {
+          type: "error",
+        });
+      }
+    } catch (err) {
+      console.error("Failed to update block status:", err);
+      addToast("An error occurred", { type: "error" });
+    }
+  }
+
   if (!authChecked) return null;
 
   return (
@@ -175,6 +241,8 @@ export default function Connections({ API_BASE }) {
                 key={connection.id}
                 connection={connection}
                 API_BASE={API_BASE}
+                onRemove={handleRemoveConnection}
+                onBlock={handleBlockUser}
               />
             ))
           )}
@@ -185,8 +253,12 @@ export default function Connections({ API_BASE }) {
 }
 
 // Connection Card Component
-function ConnectionCard({ connection, API_BASE }) {
+function ConnectionCard({ connection, API_BASE, onRemove, onBlock }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close menu when clicking outside
+  useClickOutside(menuRef, () => setMenuOpen(false));
 
   const avatar = connection.avatar_url
     ? `${API_BASE}${connection.avatar_url}`
@@ -200,23 +272,25 @@ function ConnectionCard({ connection, API_BASE }) {
       year: "numeric",
     }
   );
-  const navigate = useNavigate();
-  function handleMessage(userId) {
-    navigate(`/Messaging/${userId}`);
-  }
-  //   async function handleRemove(connectionId) {
-  //   const res = await fetch(`${API_BASE}/api/network/remove`, {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     credentials: 'include',
-  //     body: JSON.stringify({ connectionId })
-  //   });
 
-  //   if (res.ok) {
-  //     // Remove from list
-  //     setConnections(prev => prev.filter(c => c.id !== connectionId));
-  //   }
-  // }
+  function handleRemoveClick() {
+    if (window.confirm(`Remove ${connection.name} from your connections?`)) {
+      onRemove(connection.id);
+      setMenuOpen(false);
+    }
+  }
+
+  function handleBlockClick() {
+    const action = connection.is_blocked ? "unblock" : "block";
+    const message = connection.is_blocked
+      ? `Unblock ${connection.name}?`
+      : `Block ${connection.name}? They won't be able to see your profile or contact you.`;
+
+    if (window.confirm(message)) {
+      onBlock(connection.id, connection.is_blocked);
+      setMenuOpen(false);
+    }
+  }
 
   return (
     <div className="connection-card">
@@ -226,13 +300,11 @@ function ConnectionCard({ connection, API_BASE }) {
         <h3 className="connection-name">{connection.name}</h3>
         <p className="connection-title">{connection.title || "Professional"}</p>
         <p className="connection-date">Connected on {connectedDate}</p>
+        {connection.is_blocked && <p className="connection-blocked">Blocked</p>}
       </div>
 
       <div className="connection-actions">
-        <button
-          className="message-btn"
-          onClick={() => handleMessage(connection.id)}
-        >
+        <button className="message-btn" disabled={connection.is_blocked}>
           Message
         </button>
         <button
@@ -240,13 +312,18 @@ function ConnectionCard({ connection, API_BASE }) {
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="More options"
         >
-          <MoreHorizontal size={30} color="black" />
+          <Ellipsis size={40} color="black" />
         </button>
 
         {menuOpen && (
-          <div className="connection-menu">
-            <div className="menu-item">Remove connection</div>
-            <div className="menu-item">Report / Block</div>
+          <div className="connection-menu" ref={menuRef}>
+            <div className="menu-item" onClick={handleRemoveClick}>
+              Remove connection
+            </div>
+            <div className="menu-item" onClick={handleBlockClick}>
+              {connection.is_blocked ? "Unblock" : "Block"}
+            </div>
+            <div className="menu-item">Report</div>
           </div>
         )}
       </div>

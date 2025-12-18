@@ -553,20 +553,59 @@ exports.rejectConnection = async (req, res) => {
 };
 
 // Get user's connections count and details
+// exports.getConnections = async (req, res) => {
+//   try {
+//     const userId = req.session.userId;
+
+//     const result = await pool.query(
+//       `SELECT
+//         u.id,
+//         u.name,
+//         u.title,
+//         u.avatar_url,
+//         c.created_at as connected_at
+//       FROM connections c
+//       JOIN users u ON (
+//         CASE
+//           WHEN c.requester_id = $1 THEN u.id = c.receiver_id
+//           ELSE u.id = c.requester_id
+//         END
+//       )
+//       WHERE (c.requester_id = $1 OR c.receiver_id = $1)
+//       AND c.status = 'accepted'
+//       ORDER BY c.created_at DESC`,
+//       [userId]
+//     );
+
+//     res.json({
+//       count: result.rows.length,
+//       connections: result.rows,
+//     });
+//   } catch (err) {
+//     console.error("Error fetching connections:", err);
+//     res.status(500).json({ error: "Server error" });
+//   }
+// };
+
+// Get user's connections count and details with block status
 exports.getConnections = async (req, res) => {
   try {
     const userId = req.session.userId;
 
     const result = await pool.query(
-      `SELECT 
+      `SELECT
         u.id,
         u.name,
         u.title,
         u.avatar_url,
-        c.created_at as connected_at
+        c.created_at as connected_at,
+        EXISTS(
+          SELECT 1 FROM blocked_users
+          WHERE user_id = $1 AND blocked_user_id = u.id
+        ) as is_blocked
       FROM connections c
       JOIN users u ON (
-        CASE 
+        CASE
           WHEN c.requester_id = $1 THEN u.id = c.receiver_id
           ELSE u.id = c.requester_id
         END
@@ -783,6 +822,110 @@ exports.getCatchUpUpdates = async (req, res) => {
     res.json(updates);
   } catch (err) {
     console.error("Error fetching catch-up updates:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+// Remove connection
+exports.removeConnection = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { connectionId } = req.body;
+
+    if (!connectionId) {
+      return res.status(400).json({ error: "Connection ID required" });
+    }
+
+    // Delete the connection
+    const result = await pool.query(
+      `DELETE FROM connections 
+       WHERE ((requester_id = $1 AND receiver_id = $2) 
+       OR (requester_id = $2 AND receiver_id = $1))
+       AND status = 'accepted'
+       RETURNING *`,
+      [userId, connectionId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Connection not found" });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error removing connection:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+// Block user
+exports.blockUser = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { userId: targetUserId } = req.body;
+
+    if (!targetUserId) {
+      return res.status(400).json({ error: "User ID required" });
+    }
+
+    // Check if block table exists, if not create it
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS blocked_users (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        blocked_user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        created_at TIMESTAMP DEFAULT NOW(),
+        UNIQUE(user_id, blocked_user_id)
+      )
+    `);
+
+    // Add to blocked users
+    await pool.query(
+      `INSERT INTO blocked_users (user_id, blocked_user_id)
+       VALUES ($1, $2)
+       ON CONFLICT (user_id, blocked_user_id) DO NOTHING`,
+      [userId, targetUserId]
+    );
+
+    // Optionally remove connection
+    await pool.query(
+      `DELETE FROM connections 
+       WHERE ((requester_id = $1 AND receiver_id = $2) 
+       OR (requester_id = $2 AND receiver_id = $1))`,
+      [userId, targetUserId]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error blocking user:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+// Unblock user
+exports.unblockUser = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { userId: targetUserId } = req.body;
+
+    if (!targetUserId) {
+      return res.status(400).json({ error: "User ID required" });
+    }
+
+    // Remove from blocked users
+    const result = await pool.query(
+      `DELETE FROM blocked_users 
+       WHERE user_id = $1 AND blocked_user_id = $2
+       RETURNING *`,
+      [userId, targetUserId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "User is not blocked" });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error unblocking user:", err);
     res.status(500).json({ error: "Server error" });
   }
 };
