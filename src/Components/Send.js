@@ -21,11 +21,24 @@ export default function Send({
   return (
     <>
       <button
-        className="action-btn send-btn"
         onClick={() => setModalOpen(true)}
-        style={{ minWidth: 90 }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "6px",
+          background: "transparent",
+          border: "none",
+          cursor: "pointer",
+          padding: "10px 12px",
+          borderRadius: "8px",
+          fontSize: "14px",
+          color: "#5f6368",
+          minWidth: "110px",
+          transition: "background 0.15s, color 0.15s",
+        }}
       >
-        <SendIcon size={18} className="icon" />
+        <SendIcon size={18} />
         <span>Send</span>
       </button>
 

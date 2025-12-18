@@ -169,4 +169,14 @@ router.post("/network/block", requireLogin, network.blockUser);
 // Unblock user
 router.post("/network/unblock", requireLogin, network.unblockUser);
 
+// Search connections (for messaging)
+router.get(
+  "/network/connections/search",
+  requireLogin,
+  network.searchConnections
+);
+
+// Report user
+router.post("/network/report", requireLogin, network.reportUser);
+
 module.exports = router;

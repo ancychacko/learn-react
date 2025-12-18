@@ -8,10 +8,12 @@ export default function LinksCard() {
 
   return (
     <div className="profilecard-links">
-        <button onClick={() => navigate("/Saved")}>Saved items</button>
-       <button onClick={() => navigate("/Groups")}>Groups</button>
-       <button onClick={() => navigate("/Newsletters")}>Newsletters</button>
+      <button onClick={() => navigate("/Saved")}>Saved items</button>
+      <button onClick={() => navigate("/Groups")}>Groups</button>
+      <button onClick={() => navigate("MyNetwork/Newsletters")}>
+        Newsletters
+      </button>
       <button onClick={() => navigate("/Events")}>Events</button>
-     </div>
+    </div>
   );
 }

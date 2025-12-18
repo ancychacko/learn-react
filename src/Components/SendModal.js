@@ -1,6 +1,6 @@
 // src/Components/SendModal.js
 import React, { useEffect, useState } from "react";
-import "./Send.css";
+import "./SendModal.css";
 import { X } from "lucide-react";
 
 export default function SendModal({

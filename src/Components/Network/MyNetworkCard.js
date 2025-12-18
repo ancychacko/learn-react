@@ -115,11 +115,29 @@ export default function MyNetworkCard({ API_BASE, refreshTrigger }) {
       <SidebarItem
         icon={<UserPlus size={20} />}
         label="Following & followers"
+        onClick={() => navigate("/MyNetwork/Following")}
       />
-      <SidebarItem icon={<Layers size={20} />} label="Groups" />
-      <SidebarItem icon={<Calendar size={20} />} label="Events" />
-      <SidebarItem icon={<FileText size={20} />} label="Pages" count="6" />
-      <SidebarItem icon={<Mail size={20} />} label="Newsletters" />
+      <SidebarItem
+        icon={<Layers size={20} />}
+        label="Groups"
+        onClick={() => navigate("/Groups")}
+      />
+      <SidebarItem
+        icon={<Calendar size={20} />}
+        label="Events"
+        onClick={() => navigate("/Events")}
+      />
+      <SidebarItem
+        icon={<FileText size={20} />}
+        label="Pages"
+        count="6"
+        onClick={() => navigate("/MyNetwork/Pages")}
+      />
+      <SidebarItem
+        icon={<Mail size={20} />}
+        label="Newsletters"
+        onClick={() => navigate("/MyNetwork/Newsletters")}
+      />
     </div>
   );
 }

@@ -929,3 +929,77 @@ exports.unblockUser = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+// Search connections (for message modal)
+exports.searchConnections = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { query } = req.query;
+
+    if (!query || query.trim().length === 0) {
+      return res.json([]);
+    }
+
+    const result = await pool.query(
+      `SELECT 
+        u.id,
+        u.name,
+        u.title,
+        u.avatar_url
+      FROM connections c
+      JOIN users u ON (
+        CASE 
+          WHEN c.requester_id = $1 THEN u.id = c.receiver_id
+          ELSE u.id = c.requester_id
+        END
+      )
+      WHERE (c.requester_id = $1 OR c.receiver_id = $1)
+      AND c.status = 'accepted'
+      AND LOWER(u.name) LIKE LOWER($2)
+      ORDER BY u.name
+      LIMIT 10`,
+      [userId, `%${query}%`]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error searching connections:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+// Report user
+exports.reportUser = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    const { userId: reportedUserId } = req.body;
+
+    if (!reportedUserId) {
+      return res.status(400).json({ error: "User ID required" });
+    }
+
+    // Create reported_users table if not exists
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS reported_users (
+        id SERIAL PRIMARY KEY,
+        reporter_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        reported_user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        created_at TIMESTAMP DEFAULT NOW(),
+        UNIQUE(reporter_id, reported_user_id)
+      )
+    `);
+
+    // Add to reported users
+    await pool.query(
+      `INSERT INTO reported_users (reporter_id, reported_user_id)
+       VALUES ($1, $2)
+       ON CONFLICT (reporter_id, reported_user_id) DO NOTHING`,
+      [userId, reportedUserId]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error reporting user:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
