@@ -111,10 +111,18 @@ router.post(
   messages.upload.single("attachment"),
   messages.sendMessage
 );
-
+// Get all conversations for current user
 router.get("/messages/conversations", requireLogin, messages.getConversations);
-router.get("/messages/:userId", requireLogin, messages.getChat);
 
+// Get chat messages with a specific user
+router.get("/messages/chat/:userId", requireLogin, messages.getChat);
+
+// Search connections for messaging
+router.get("/messages/search", requireLogin, messages.searchConnections);
+
+// Delete a message (optional)
+router.delete("/messages/:messageId", requireLogin, messages.deleteMessage);
+// ----------------------------------------
 //NETWORKING ROUTES (🔒 Protected)
 
 // Get pending invitations
