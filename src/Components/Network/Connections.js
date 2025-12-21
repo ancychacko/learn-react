@@ -382,7 +382,7 @@ import { useNavigate } from "react-router-dom";
 import { Search, Ellipsis } from "lucide-react";
 import { useToast } from "../../Contexts/ToastContext";
 import useClickOutside from "../../Hooks/useClickOutside";
-import NewMessageModal from "./MessageModal";
+import MessageModal from "./MessageModal";
 import "./Connections.css";
 
 export default function Connections({ API_BASE }) {
@@ -665,7 +665,7 @@ export default function Connections({ API_BASE }) {
       </div>
 
       {/* ⭐ NEW: Message Modal */}
-      <NewMessageModal
+      <MessageModal
         isOpen={messageModalOpen}
         onClose={() => {
           setMessageModalOpen(false);

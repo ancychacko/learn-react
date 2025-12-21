@@ -118,10 +118,15 @@ router.get("/messages/conversations", requireLogin, messages.getConversations);
 router.get("/messages/chat/:userId", requireLogin, messages.getChat);
 
 // Search connections for messaging
-router.get("/messages/search", requireLogin, messages.searchConnections);
+router.get(
+  "/network/connections/search",
+  requireLogin,
+  network.searchConnections
+);
 
 // Delete a message (optional)
 router.delete("/messages/:messageId", requireLogin, messages.deleteMessage);
+
 // ----------------------------------------
 //NETWORKING ROUTES (🔒 Protected)
 
