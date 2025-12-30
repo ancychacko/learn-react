@@ -1,5 +1,6 @@
 // src/Components/CommentItem.js
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ThumbsUp,
   CornerDownLeft,
@@ -189,7 +190,7 @@ export default function CommentItem({
       toast.addToast("Network error", { type: "error" });
     }
   }
-
+  const navigate = useNavigate();
   return (
     <div className="comment-item" style={{ marginBottom: 8 }}>
       <img
@@ -200,6 +201,11 @@ export default function CommentItem({
         }
         className="comment-avatar"
         alt={comment.user_name}
+        onClick={() =>
+          navigate(`/Profile/${encodeURIComponent(comment.user_name)}`)
+        }
+        role="button"
+        style={{ cursor: "pointer" }}
       />
 
       <div style={{ flex: 1 }}>
@@ -212,7 +218,16 @@ export default function CommentItem({
             }}
           >
             <div style={{ width: "100%" }}>
-              <div className="comment-author">{comment.user_name}</div>
+              <div
+                className="comment-author"
+                onClick={() =>
+                  navigate(`/Profile/${encodeURIComponent(comment.user_name)}`)
+                }
+                role="button"
+                style={{ cursor: "pointer" }}
+              >
+                {comment.user_name}
+              </div>
 
               {!editing ? (
                 <div className="comment-text">{comment.content}</div>

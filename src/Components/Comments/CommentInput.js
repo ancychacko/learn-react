@@ -78,7 +78,7 @@ export default function CommentInput({
       if (taRef.current) taRef.current.style.height = "auto";
     }
   }
-
+  
   return (
     <form
       onSubmit={handleSubmit}

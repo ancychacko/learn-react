@@ -1,5 +1,6 @@
 // src/Components/Post.js
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Ellipsis,
   Pencil,
@@ -125,6 +126,7 @@ export default function Post({
     const overflowing = el.scrollHeight > el.clientHeight + 1;
     setShowMoreLink(overflowing);
   }, [post.content]);
+  const navigate = useNavigate();
 
   return (
     <article className="post-card">
@@ -139,9 +141,23 @@ export default function Post({
             }
             className="avatar-sm"
             alt=""
+            onClick={() =>
+              navigate(`/Profile/${encodeURIComponent(post.user_name)}`)
+            }
+            role="button"
+            style={{ cursor: "pointer" }}
           />
           <div>
-            <div className="post-author">{post.user_name}</div>
+            <div
+              className="post-author"
+              onClick={() =>
+                navigate(`/Profile/${encodeURIComponent(post.user_name)}`)
+              }
+              role="button"
+              style={{ cursor: "pointer" }}
+            >
+              {post.user_name}
+            </div>
             <div className="post-meta">
               {new Date(post.created_at).toLocaleString()} •{" "}
               <span className="post-visibility">{renderVisibility()}</span>

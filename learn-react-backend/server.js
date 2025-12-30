@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 const allowedOrigins = [
   "http://localhost:3000",
   "http://192.168.2.80:3000",
-  "http://172.16.2.124:3000",
+  "http://172.16.2.91:3000",
 ];
 if (process.env.CORS_ORIGINS) {
   process.env.CORS_ORIGINS.split(",").forEach((o) =>

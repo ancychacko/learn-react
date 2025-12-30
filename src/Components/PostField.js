@@ -1,5 +1,6 @@
 // src/Components/PostField.js
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Image, Video, FileText } from "lucide-react";
 import Post from "./Post";
 import PostFieldModal from "./PostFieldModal";
@@ -93,6 +94,7 @@ export default function PostField({ API_BASE, currentUserId, currentUser }) {
       setShowModal(true);
     }
   }
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -103,6 +105,11 @@ export default function PostField({ API_BASE, currentUserId, currentUser }) {
             src={avatarFull(currentUser?.avatar_url)}
             alt="avatar"
             className="compose-avatar"
+            onClick={() =>
+              navigate(`/Profile/${encodeURIComponent(currentUser?.name)}`)
+            }
+            role="button"
+            style={{ cursor: "pointer" }}
           />
           <div
             className="compose-input"
