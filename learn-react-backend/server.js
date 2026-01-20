@@ -30,11 +30,11 @@ app.use(express.urlencoded({ extended: true }));
 const allowedOrigins = [
   "http://localhost:3000",
   "http://192.168.2.103:3000",
-  "http://172.16.2.135:3000",
+  "http://172.16.2.210:3000",
 ];
 if (process.env.CORS_ORIGINS) {
   process.env.CORS_ORIGINS.split(",").forEach((o) =>
-    allowedOrigins.push(o.trim())
+    allowedOrigins.push(o.trim()),
   );
 }
 
@@ -46,7 +46,7 @@ app.use(
       return cb(new Error("Not allowed by CORS"));
     },
     credentials: true,
-  })
+  }),
 );
 
 // -----------------------------
@@ -68,7 +68,7 @@ app.use(
       sameSite: "lax",
       maxAge: 1000 * 60 * 60 * 24,
     },
-  })
+  }),
 );
 
 // -----------------------------
