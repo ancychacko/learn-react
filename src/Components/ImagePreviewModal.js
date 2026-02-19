@@ -265,7 +265,7 @@ export default function ImagePreviewModal({
                                   comment: null,
                                   visibility: "Anyone",
                                 }),
-                              }
+                              },
                             );
                             if (r.ok) refresh?.();
                           } catch (err) {
@@ -338,6 +338,6 @@ export default function ImagePreviewModal({
         )}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
