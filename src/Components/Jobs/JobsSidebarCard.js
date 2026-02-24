@@ -1,9 +1,11 @@
 // src/Components/Jobs/JobsSidebarCard.js
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Bookmark, List, PenSquare } from "lucide-react";
 import "./Job.css";
 
 export default function JobsSidebarCard() {
+  const navigate = useNavigate();
   return (
     <div className="jobs-sidebar-card">
       <div className="jobs-sidebar-item">
@@ -18,9 +20,12 @@ export default function JobsSidebarCard() {
 
       <hr className="jobs-divider" />
 
-      <div className="jobs-sidebar-item link-blue">
+      <div
+        className="jobs-sidebar-item link-blue"
+        onClick={() => navigate("/PostJob")}
+      >
         <PenSquare size={18} />
-        <span>Post a free job</span>
+        <span>Post a free job </span>
       </div>
     </div>
   );
