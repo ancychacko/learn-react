@@ -34,7 +34,7 @@ export default function NewMessageModal({
   const searchInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
-
+   
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -230,7 +230,7 @@ export default function NewMessageModal({
               : "New message"}
           </span>
         </div>
-        <div className="mm-header-actions" onClick={(e) => e.stopPropagation()}>
+        <div className="mm-header-actions" onClick={(e) => e.stopPropagation()}>7
           <button
             className="mm-icon-btn"
             onClick={() => setIsMinimized(!isMinimized)}
